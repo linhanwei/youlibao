@@ -1,0 +1,105 @@
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">邀请码管理</h4></li>
+</ul>
+<form id="myForm" class="form-inline" method="post" action="__APP__/AgentManage/inviteManege.html" enctype="multipart/form-data">
+  	<div class="form-group">
+	    <label for="name">邀请人姓名</label>
+	    <input type="text" class="form-control" id="name" name="name">
+  	</div>
+  	<button type="submit" class="btn btn-default">搜索</button>
+</form>
+<div class="panel panel-default" style="margin-top: 20px;">
+	<table class="table">
+        <thead>
+          <tr>
+            <th>邀请码</th>
+            <th>级别</th>
+            <th>姓名</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        	<volist name="list" id="vo">
+				<tr>
+					<th scope="row"><{$vo.invitecode}></th>
+					<td><{$vo.lv_name}></td>
+					<td><{$vo.name}></td>
+					<td>
+						
+						<button type="button" url="<{$vo.url}>" class="btn btn-info share_url">分享链接</button>
+						<button type="button" aid="<{$vo.inviteid}>" class="btn btn-danger del_invite">删除</button>
+					</td>
+				</tr>
+			</volist>
+        </tbody>
+  	</table>
+</div>
+<nav>
+  <ul class="pagination">
+    <{$page}>
+    <li>
+		<a>总条数:<{$list_count}></a>
+	</li>
+  </ul>
+</nav>
+<script>
+	$(function(){
+
+	  	//分页
+	    $('.pagination li').click(function(){
+	        var page = $(this).children('a').attr('page');
+	        var class_name = $(this).attr('class');
+	        var name = '<{$search.name}>';
+	      
+	        if(class_name != 'active'){
+		        LoadPage('__APP__/AgentManage/inviteManege.html',{'p': page,'name':name});
+	        }
+	        
+	    });
+
+	    //分享链接
+	    $('.share_url').click(function(){
+	    	var url = $(this).attr('url');
+	    	window.open(url);
+
+	    	return false;
+	    });
+
+
+	    //删除
+	    $('.del_invite').click(function(event) {
+	    	/* Act on the event */
+	    	var aid = $(this).attr('aid');
+
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+
+	    	if (confirm("是否确定删除"))  {  
+		    	$.post('__APP__/AgentManage/delInviteCode.html', {aid: aid}, function(data) {
+		    		alert(data.msg);
+		    		if(data.status == 1){
+		    			LoadPage("__APP__/AgentManage/inviteManege.html");
+		    		}
+		    	});
+		    }
+
+		    return false;
+
+	    });
+
+	    //搜索
+	    $('#myForm').submit(function() {
+		  		 
+	  		$(this).ajaxSubmit(function(data){
+               $('.main .container-fluid').html(data);
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+	      
+	});
+
+</script>

@@ -1,0 +1,75 @@
+<extend name="Public:base" />
+<block name="title"><title>待审核代理</title></block>
+<block name="header">
+    <include file="Public/agentHeader" />
+</block>
+<block name="main">
+	<div class="container noMargin">
+	    <div class="form-group">
+	        <div class="row">
+	        	<form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/myAgent.html">
+		            <div class="input-group searchInputBox mb10">
+		                <input type="text" class="form-control" name="search" value="<{$search}>" placeholder="姓名或授权号查询">
+		                <span class="input-group-btn">
+		                    <button class="btn" type="submit">搜索</button>
+		                </span>
+		            </div>
+		        </form>
+	            <div class="searResMyJA">
+	                <table class="table">
+	                   <tr>
+	                       <td>姓名</td>
+	                       <td>微信</td>
+	                       <td>级别</td>
+	                       <td>操作</td>
+	                   </tr>
+	                    <volist name="list" id="vo">
+		                    <tr>
+		                        <td><{$vo.name}></td>
+		                        <td><{$vo.weixin}></td>
+		                        <td style="width: 36%;"><{$vo.agent_lv_name}></td>
+		                        <td style="width: 14%;" aid="<{$vo.agentid}>"><button status="1" class="btn my-btn my-btn-full mb05">同意</button><button class="my-btn btn" status="0" >拒绝</button></td>
+		                    </tr>
+		                </volist>
+	                </table>
+	                <if condition="!$list">
+		            	<center><{$empty}></center>
+			        </if>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+    <script type="text/javascript">
+    	$(function(){
+    		//分页
+		    $('.pagination li').click(function(){
+		        var page = $(this).children('a').attr('page');
+		        var class_name = $(this).attr('class');
+		        var search = '<{$search}>';
+
+		        if(class_name != 'active'){
+		        	location.href = '__APP__/AgentManage/myAgent.html?p='+page+'&search='+search;
+			        
+		        }
+		        
+		    });
+
+		    //拒绝或者同意
+		    $('.my-btn').click(function(event) {
+		    	var status = $(this).attr('status');
+		    	var aid = $(this).parent('td').attr('aid');
+		    	console.log(status,aid);
+		    	$.post('__APP__/AgentManage/examineAgent.html', {status:status,aid:aid}, function(data) {
+		    		showMsg(data.msg);
+		    		if(data.status == 1){
+		    			location.href = location.href;
+		    		}
+		    	});
+		    });
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <include file="Public/footer" />
+</block>

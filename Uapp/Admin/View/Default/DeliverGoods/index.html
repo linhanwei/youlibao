@@ -1,0 +1,154 @@
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">出库记录</h4></li>
+</ul>
+<form id="myForm" class="form-inline" method="post" action="__APP__/DeliverGoods/index.html" enctype="multipart/form-data">
+	<div class="form-group">
+	    <label for="star">发货人代理星级</label>
+	    <select class="form-control" name="star" id="star">
+  			<option value="">--请选择--</option>
+  			<option value="0">工厂</option>
+	  		<volist name="agent_lv_list" id="lvo">
+		  		<option value="<{$lvo.lv}>"><{$lvo.name}></option>
+		  	</volist>
+		</select>
+  	</div>
+  	
+  	<div class="form-group">
+	    <label for="search_field">
+		    <select class="form-control" name="search_field" id="search_field">
+		    	<option value="code">条形码</option>
+		  		<option value="order_sn">发货单号</option>
+		  		<option value="consignee">收货人</option>
+		  		<option value="admin_name">发货人</option>
+			</select>
+		</label>
+		<input type="text" class="form-control" id="search_value" name="search_value" value="<{$search.search_value}>">
+  	</div>
+  	
+  	<!-- <div class="form-group">
+	    <label for="exampleInputEmail2">商品标题</label>
+	    <input type="text" class="form-control" id="title" name="title">
+  	</div> -->
+  	<button type="submit" class="btn btn-default">搜索</button>
+</form>
+<div class="panel panel-default" style="margin-top: 20px;">
+	<table class="table">
+        <thead>
+          <tr>
+            <th>发货单号</th>
+            <th>收货人</th>
+            <th>发货人</th>
+            <th>发货时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        	<volist name="list" id="vo">
+				<tr>
+					<th scope="row"><{$vo.order_sn}></th>
+					<td><{$vo.consignee}></td>
+					<td><{$vo.admin_name}></td>
+					<td><{$vo.add_time}></td>
+					<td>
+						<button type="button" aid="<{$vo.order_sn}>" web_type="<{$search.web_type}>" class="btn btn-info show_detail">查看详情</button>
+						<button type="button" aid="<{$vo.order_sn}>" web_type="<{$search.web_type}>" class="btn btn-danger del_agent">删除</button>
+					</td>
+				</tr>
+			</volist>
+        </tbody>
+  	</table>
+  	
+</div>
+<if condition="$list">
+	<nav>
+	  <ul class="pagination">
+	    <{$page}>
+	    <li>
+			<a>发货总数:<{$list_count}></a>
+		</li>
+	  </ul>
+	</nav>
+<else />
+	<center>没有发货单</center>
+</if>
+<script>
+	$(function(){
+
+	  	//分页
+	    $('.pagination li').click(function(){
+	        var page = $(this).children('a').attr('page');
+	        var class_name = $(this).attr('class');
+	        var search_field = '<{$search.search_field}>';
+	        var search_value = '<{$search.search_value}>';
+	        var star = '<{$search.star}>';
+	        var web_type = '<{$search.web_type}>';
+	        
+	        if(class_name != 'active'){
+		        LoadPage('__APP__/DeliverGoods/index.html',{'p': page,'search_field':search_field,'search_value':search_value,'star':star,web_type:web_type});
+	        }
+	        
+	    });
+
+	    //删除
+	    $('.del_agent').click(function(event) {
+	    	/* Act on the event */
+	    	var aid = $(this).attr('aid'),
+	    		web_type = $(this).attr('web_type');
+
+	    	if(aid == ''){
+	    		alert('请选择订单');
+	    		return false;
+	    	}
+
+	    	if(web_type == ''){
+	    		alert('请选择站点');
+	    		return false;
+	    	}
+
+
+	    	if (confirm("是否确定删除"))  {  
+		    	$.post('__APP__/DeliverGoods/delOrder.html', {order_sn: aid,web_type:web_type}, function(data) {
+		    		alert(data.msg);
+		    		if(data.status == 1){
+		    			LoadPage("__APP__/DeliverGoods/index.html");
+		    		}
+		    	});
+		    }
+
+		    return false;
+
+	    });
+
+	    //查看详情
+	    $('.show_detail').click(function(){
+	    	var aid = $(this).attr('aid'),
+	    		web_type = $(this).attr('web_type');
+
+	    	if(aid == ''){
+	    		alert('请选择订单');
+	    		return false;
+	    	}
+
+	    	if(web_type == ''){
+	    		alert('请选择站点');
+	    		return false;
+	    	}
+
+	        LoadPage('__APP__/DeliverGoods/showDetail.html',{'aid':aid,web_type:web_type});
+	        
+	    });
+
+	    //搜索
+	    $('#myForm').submit(function() {
+		  		 
+	  		$(this).ajaxSubmit(function(data){
+               $('.main .container-fluid').html(data);
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+	      
+	});
+
+</script>

@@ -1,0 +1,183 @@
+header {
+  background-color: #54a5ff;
+  max-height: 120px;
+  color: #fff;
+  padding: 10px 0 0;
+  position: relative; }
+  header .headLis {
+    margin-bottom: 3%; }
+  header .teamBox {
+    margin-top: 7%; }
+  header .user_pic {
+    width: 80%; }
+  header .user-name {
+    font-size: 16px;
+    line-height: 30px; }
+  header .user-info {
+    padding: 1% 2%; }
+    header .user-info .rank {
+      font-size: 12px;
+      line-height: 30px; }
+      header .user-info .rank:before {
+        background-size: 100%;
+        content: '';
+        vertical-align: middle;
+        display: inline-block;
+        width: 25px;
+        height: 25px; }
+      header .user-info .rank.rank1:before {
+        background-image: url("../images/icon_rank1.png"); }
+      header .user-info .rank.rank2:before {
+        background-image: url("../images/icon_rank2.png"); }
+      header .user-info .rank.rank3:before {
+        background-image: url("../images/icon_rank3.png"); }
+    header .user-info .registerTime {
+      font-size: 12px; }
+    header .user-info .team {
+      border-right: 1px solid rgba(255, 255, 255, 0.5); }
+      header .user-info .team:before {
+        background-size: 100%;
+        content: '';
+        vertical-align: middle;
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background-image: url("../images/icon_team.png");
+        margin-top: -2px; }
+    header .user-info .superior:before {
+      background-size: 100%;
+      content: '';
+      vertical-align: middle;
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background-image: url("../images/icon_superior.png");
+      margin-top: -2px; }
+  header .empowerPic {
+    width: 50px;
+    position: absolute;
+    right: 0;
+    top: 50%; }
+  header .set span {
+    margin-top: 8px; }
+
+.main .notice {
+  color: #cb1a25;
+  background-color: #fff;
+  padding: 2% 5%; }
+  .main .notice span {
+    color: #7c7c7c;
+    margin-right: 5%; }
+
+.main .my-income {
+  margin-top: 10px;
+  padding: 2% 5%;
+  background-color: #fff; }
+  .main .my-income .month:before {
+    background-size: 100%;
+    content: '';
+    vertical-align: middle;
+    display: inline-block;
+    background-image: url("../images/icon1.png");
+    width: 20px;
+    height: 20px; }
+  .main .my-income .incomeDet {
+    text-align: center; }
+    .main .my-income .incomeDet span {
+      display: block;
+      color: #cb1a25; }
+  .main .my-income #my-income {
+    height: 200px; }
+
+.main .tool {
+  margin-top: 10px;
+  background-color: #fff; }
+  .main .tool .rowA {
+    border-bottom: 1px solid #e5e5e5; }
+  .main .tool .itemIcon {
+    padding: 2% 3%;
+    position: relative; }
+    .main .tool .itemIcon:first-child {
+      border-right: 1px solid #e5e5e5; }
+    .main .tool .itemIcon:before {
+      background-size: 100%;
+      content: '';
+      vertical-align: middle;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin: -2% 2% 0 0; }
+  .main .tool .all-tool {
+    border-right-width: 0 !important;
+    padding-left: 5%; }
+    .main .tool .all-tool:before {
+      width: 25px;
+      height: 25px;
+      background-image: url("../images/icon2.png");
+      margin: 0; }
+  .main .tool .my-stock:before {
+    background-image: url("../images/icon_function1.png"); }
+  .main .tool .my-stockRecord:before {
+    background-image: url("../images/icon_function2.png"); }
+  .main .tool .my-profit:before {
+    background-image: url("../images/icon_function3.png"); }
+  .main .tool .my-newAgency:before {
+    background-image: url("../images/icon_function4.png"); }
+  .main .tool .my-balanceRecord:before {
+    background-image: url("../images/icon_function5.png"); }
+  .main .tool .my-delivery:before {
+    background-image: url("../images/icon_function6.png"); }
+  .main .tool .right {
+    position: absolute;
+    right: 5%;
+    top: 0;
+    margin-top: 5%; }
+    .main .tool .right span {
+      color: #cb1a25; }
+
+.main .teamManage {
+  margin-top: 10px;
+  background-color: #fff; }
+  .main .teamManage .title {
+    padding: 2% 5%; }
+  .main .teamManage .teamIcon:before {
+    background-size: 100%;
+    content: '';
+    vertical-align: middle;
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-image: url("../images/icon3.png"); }
+  .main .teamManage .teamNum {
+    color: #7c7c7c; }
+  .main .teamManage .table-responsive {
+    border-width: 0; }
+  .main .teamManage .table-title {
+    background-color: #f6f6f6;
+    padding: 2%;
+    text-align: center; }
+  .main .teamManage .table tr th, .main .teamManage .table tr td {
+    text-align: center;
+    line-height: 40px;
+    height: 40px;
+    padding: 0 8px; }
+  .main .teamManage .table tr td .circle {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 18px;
+    display: inline-block;
+    border: 1px solid #7c7c7c; }
+    .main .teamManage .table tr td .circle.first {
+      color: #cb1a25;
+      border-color: #cb1a25; }
+    .main .teamManage .table tr td .circle.second {
+      color: #ff5a00;
+      border-color: #ff5a00; }
+    .main .teamManage .table tr td .circle.third {
+      color: #ffb22b;
+      border-color: #ffb22b; }
+  .main .teamManage .table tr td:last-child {
+    padding: 0;
+    width: 20px; }

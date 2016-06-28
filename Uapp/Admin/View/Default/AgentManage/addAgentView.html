@@ -1,0 +1,254 @@
+<style type="text/css" media="screen">
+	#picList{
+		margin-top:65px;
+	}
+	.form-group .pic_list{
+		display:inline;
+	}
+	.form-group .pic_list:first-child{
+		margin-left:19%;
+	}
+	.form-group .pic_list .pic_del{
+		
+		display: inline-block;
+	    position: relative;
+	    top: -63px;
+	    left: 69px;
+	    background: #DBEAF9;
+	    width: 48px;
+	    height: 30px;
+	    line-height: 30px;
+	    text-align: center;
+	}
+</style>
+<link href="__PUBLIC__/plug/bootstrap/css/datetimepicker.css" rel="stylesheet">
+<script src="__PUBLIC__/plug/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">添加代理商</h4></li>
+</ul>
+<form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/addAgent.html" enctype="multipart/form-data">
+	<input type="hidden" name="id" value="<{$info.agentid}>"  id="id" >
+	<!-- <div class="form-group">
+		<label for="team_name" class="col-sm-2 control-label">团队名称</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="team_name" value="<{$info.team_name}>" class="form-control" id="team_name" placeholder="输入团队名称">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div> -->
+	<div class="form-group">
+		<label for="name" class="col-sm-2 control-label">代理姓名</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="name" value="<{$info.name}>" class="form-control" id="name" placeholder="输入姓名">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<fieldset disabled>
+		<div class="form-group">
+			<label for="inputPassword3" class="col-sm-2 control-label">授权编号</label>
+			<div class="col-sm-2">
+				<input type="text" name="agentno" value="<{$info.agentno}>" class="form-control" id="agentno" placeholder="">
+			</div>
+		</div>
+	</fieldset>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">代理手机</label>
+		<div class="col-sm-2">
+			<input type="text" name="tel" value="<{$info.tel}>" class="form-control" id="tel" placeholder="">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">身份证号</label>
+		<div class="col-sm-2">
+			<input type="text" name="cardno" value="<{$info.cardno}>" class="form-control" id="cardno" placeholder="">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<div class="form-group">
+		<label for="weixin" class="col-sm-2 control-label">代理微信</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="weixin" value="<{$info.weixin}>" class="form-control" id="weixin" placeholder="输入微信号">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<div class="form-group">
+		<label for="star" class="col-sm-2 control-label">代理星级</label>
+		<div class="col-sm-2">
+		  	<select class="form-control" name="star" id="star">
+		  		<volist name="agent_lv_list" id="lvo">
+			  		<option value="<{$lvo.lv}>"><{$lvo.name}></option>
+			  	</volist>
+			  
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="startime" class="col-sm-2 control-label">开始时间</label>
+		<div class="col-sm-2">
+			<input size="16" type="text" name="startime" value="<{$info.startime}>" value="2012-06-15" readonly class="form_datetime form-control">
+		  	<!-- <input type="text" name="startime" value="<{$info.startime}>" class="form-control tcal frm-controlM tcalInput" id="pw2" placeholder=""> -->
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="endtime" class="col-sm-2 control-label">结束时间</label>
+		<div class="col-sm-2">
+			<input size="16" type="text" name="endtime" value="<{$info.endtime}>" readonly class="form-control form_datetime">
+		  	<!-- <input type="text" name="endtime" value="<{$info.endtime}>" class="form-control tcal frm-controlM tcalInput" id="pw2" placeholder=""> -->
+		</div>
+	</div>
+	<div class="form-group">
+        <label  for="province" class="col-sm-2 control-label">所在省份:</label>
+        <div class="col-sm-2">
+	        <select class="form-control" name="province" id="province">
+			  <option value="<{$info.province}>"><{$info.province}></option>
+			</select>
+		</div>
+    </div>
+    <div class="form-group">
+        <label  for="city" class="col-sm-2 control-label">所在城市:</label>
+        <div class="col-sm-2">
+	        <select class="form-control" name="city" id="city">
+			  <option value="<{$info.city}>"><{$info.city}></option>
+			</select>
+		</div>
+    </div>
+    <div class="form-group">
+        <label  for="county" class="col-sm-2 control-label">所在县、区:</label>
+        <div class="col-sm-2">
+	        <select class="form-control" name="county" id="county">
+			  <option value="<{$info.county}>"><{$info.county}></option>
+			</select>
+		</div>
+    </div>
+    <div class="form-group">
+        <label  for="address" class="col-sm-2 control-label">详细地址:</label>
+        <div class="col-sm-5">
+	        <input type="text" class="form-control" name="address" id="address" value="<{$info.address}>">
+	    </div>
+    </div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">代理QQ</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="qq" value="<{$info.qq}>" class="form-control" id="specs" placeholder="输入QQ号">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">代理状态</label>
+		<div class="col-sm-2">
+		  	<select class="form-control" name="stat">
+		  		<option value="" selected="">---请选择---</option>
+		  		<option value="1">已审核</option>
+		  		<option value="0" selected="">待总部审核</option>
+		  		<option value="-1">黑名单</option>
+		  		<option value="-2">待上级审核</option>
+		  		<option value="-3">驳回修改</option>
+			</select>
+		</div>
+		
+	</div>
+	<div class="form-group">
+		<label for="password" class="col-sm-2 control-label">修改密码</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="password" value="" class="form-control" id="password" placeholder="输入密码">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="password2" class="col-sm-2 control-label">确认密码</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="password2" value="" class="form-control" id="password2" placeholder="输入密码">
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-10">
+		  	<button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 12%;margin: 0 auto;">提交</button>
+		</div>
+	</div>
+</form>
+<script src="__PUBLIC__/Common/js/area.js"></script>
+<script type="text/javascript">
+	var s=["province","city","county"];//三个select的name
+	var province = '<{$info.province}>';
+	var city = '<{$info.city}>';
+	var county = '<{$info.county}>';
+	province = province ? province : "省份";
+	city = city ? city : "地级市";
+	county = county ? county : "市、县级市";
+	var opt0 = [province,city,county];//初始值
+	_init_area();
+
+	$(function(){
+		
+	  	$('#myForm').submit(function() {
+	  		var team_name = is_empty('#team_name');
+	  		var name = is_empty('#name');
+	  		var tel = is_empty('#tel');
+	  		var cardno = is_empty('#cardno');
+	  		var weixin = is_empty('#weixin');
+	  		var password = is_empty('#password');
+	  		var password2 = is_empty('#password2');
+	  		var phone = $('#tel').val();
+	  		var card = $('#cardno').val();
+	  		var weixinno = $('#weixin').val();
+
+
+	  		// if(team_name === false){
+	  		// 	showMsg('团队名称不能为空!');
+	  		// 	return false;
+	  		// }
+	  		if(name === false){
+	  			showMsg('姓名不能为空!');
+	  			return false;
+	  		}
+	  		if(tel === false){
+	  			showMsg('手机号码不能为空!');
+	  			return false;
+	  		}
+	  		var partten = /^1[3,4,5,7,8]\d{9}$/;
+			if(!partten.test(phone)){
+				showMsg('手机号码格式不正确!');
+	  			return false;
+			}
+
+	  		if(cardno === false){
+	  			showMsg('身份证号不能为空!');
+	  			return false;
+	  		}
+	  		var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;  
+			if(reg.test(card) === false){  
+			
+			    showMsg('身份证输入不合法!');
+			   return  false;  
+			}  
+	  		if(weixin === false){
+	  			showMsg('微信号不能为空!');
+	  			return false;
+	  		}
+
+	  		if(password && password != password2){
+	  			showMsg('修改密码与确认密码不一致!');
+	  			return false;
+	  		}
+	  		
+              
+	  		$(this).ajaxSubmit(function(data){
+                showMsg(data.msg);
+                console.log(data);
+                if(data.status == 1){
+                	LoadPage("__APP__/AgentManage/index.html")
+                }
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+
+	  	//时间选择器
+	   	$(".form_datetime").datetimepicker({
+	        format: "yyyy-mm-dd",
+	        autoclose: true,
+	    });
+
+	   	
+	});
+
+</script>

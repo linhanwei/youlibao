@@ -1,0 +1,73 @@
+<extend name="Public:base" />
+<block name="title"><title>发货列表</title></block>
+<block name="header">
+    <style type="text/css" media="screen">
+    	.row {
+		    margin-right: -31px;
+		    margin-left: -32px;
+		}
+    </style>		
+</block>
+<block name="main">
+	<div class="container noMargin">
+	    <div class="form-group">
+	        <div class="row">
+	        	<form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/showOrderInfo.html">
+		            <div class="input-group searchInputBox mb10">
+		            	
+		                <input type="text" class="form-control" name="order_sn" id="order_sn" placeholder="发货单号">
+		                <span class="input-group-btn">
+		                    <button class="btn" type="submit">搜索</button>
+		                </span>
+			            
+		            </div>
+	            </form>
+	            <if condition="$list">
+		            <div class="searResMyJA">
+		                <table class="table">
+		                   <tr>
+		                       <td>发货单号</td>
+		                       <td>收货人</td>
+		                       <td>发货时间</td>
+		                   </tr>
+		                   	<volist name="list" id="vo" >
+			                    <tr>
+			                        <td><a href="__APP__/AgentManage/showOrderInfo.html?order_sn=<{$vo.order_sn}>" ><{$vo.order_sn}></a></td>
+			                        <td><{$vo.consignee}></td>
+			                        <td><{$vo.add_time}></td>
+			                    </tr>
+			                </volist>
+		                    
+		                </table>
+		                <nav>
+						  <ul class="pagination">
+						    <{$page}>
+						  </ul>
+						</nav>
+		            </div>
+	            <else />
+	            	<center><{$empty}></center>
+		        </if>
+	        </div>
+	    </div>
+	</div>
+    <script type="text/javascript">
+    	$(function(){
+    		//分页
+		    $('.pagination li').click(function(){
+		        var page = $(this).children('a').attr('page');
+		        var class_name = $(this).attr('class');
+
+		        if(class_name != 'active'){
+		        	location.href = '__APP__/AgentManage/deliverList.html?p='+page;
+			        
+		        }
+		        
+		    });
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <include file="Public/footer" />
+</block>

@@ -1,0 +1,115 @@
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">标签列表</h4></li>
+</ul>
+<form id="myForm" class="form-inline" method="post" action="__APP__/MakeCode/index.html" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="exampleInputName2">
+    	<select class="form-control" name="code_type">
+		  <option value="max_code">大标号码</option>
+		  <option value="middle_code">中标标号码</option>
+		  <option value="min_code">小标号码</option>
+		  <option value="security_code">防伪标号码</option>
+		</select>
+    </label>
+    <input type="text" class="form-control" id="code_value" name="code_value">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail2">状态</label>
+    <select class="form-control" name="status">
+    	<option value="">请选择</option>
+		<option value="1">已导出</option>
+		<option value="0">未导出</option>
+	</select>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail2">拖的数量</label>
+    <input type="text" class="form-control" size="2" id="min_number" name="min_number">
+  </div>
+  <!-- <div class="form-group">
+    <label for="exampleInputEmail2">开始时间</label>
+    <input type="text" class="form-control" id="start_time" name="start_time">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail2">结束时间</label>
+    <input type="text" class="form-control" id="end_time" name="end_time">
+  </div> -->
+  <button type="submit" class="btn btn-default">搜索</button>
+</form>
+<div class="panel panel-default" style="margin-top: 20px;">
+	<table class="table">
+        <thead>
+          <tr>
+            <th>序号</th>
+            <th>大标号码</th>
+            <th>中标标号码</th>
+            <th>小标号码</th>
+            <th>防伪标号码</th>
+            <th>状态</th>
+            <th>拖数</th>
+            <th>添加时间</th>
+          </tr>
+        </thead>
+        <tbody>
+        	<volist name="list" id="vo">
+				<tr>
+					<th scope="row"><{$vo.id}></th>
+					<td><{$vo.max_code}></td>
+					<td><{$vo.middle_code}></td>
+					<td><{$vo.min_code}></td>
+					<td><{$vo.security_code}></td>
+					<td>
+						<switch name="vo.status">    
+							<case value="1">已导出</case>   
+							<default />未导出
+						</switch>
+					
+					</td>
+					<td><{$vo.min_number}></td>
+					<td><{$vo.add_time}></td>
+					
+				</tr>
+			</volist>
+        </tbody>
+  	</table>
+</div>
+<nav>
+  <ul class="pagination">
+    <{$page}>
+  </ul>
+</nav>
+<script>
+	$(function(){
+
+	  	//分页
+	    $('.pagination li').click(function(){
+	    	var code_type = '<{$post.code_type}>';
+	    	var code_value = '<{$post.code_value}>';
+	    	var status = '<{$post.status}>';
+	    	var min_number = '<{$post.min_number}>';
+	    	var start_time = '<{$post.start_time}>';
+	    	var end_time = '<{$post.end_time}>';
+	        var page = $(this).children('a').attr('page');
+	        var class_name = $(this).attr('class');
+
+	        if(class_name != 'active'){
+		        LoadPage('__APP__/MakeCode/index.html',{'p': page,'code_type':code_type,'code_value':code_value,'status':status,'min_number':min_number,'start_time':start_time,'end_time':end_time});
+	        }
+	        
+	    });
+
+	    
+
+	    //搜索
+	    $('#myForm').submit(function() {
+		  		 
+	  		$(this).ajaxSubmit(function(data){
+               $('.main .container-fluid').html(data);
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+	      
+	});
+
+</script>

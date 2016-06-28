@@ -1,0 +1,356 @@
+<style type="text/css" media="screen">
+	#picList{
+		margin-top:65px;
+	}
+	.form-group .pic_list{
+		display:inline;
+	}
+	.form-group .pic_list:first-child{
+		margin-left:19%;
+	}
+	.form-group .pic_list .pic_del{
+		
+		display: inline-block;
+	    position: relative;
+	    top: -63px;
+	    left: 69px;
+	    background: #DBEAF9;
+	    width: 48px;
+	    height: 30px;
+	    line-height: 30px;
+	    text-align: center;
+	}
+	.border_line{
+		border: 1px solid gray;
+		margin-top:10px;
+		padding-top: 15px;
+	}
+</style>
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">添加商品</h4></li>
+</ul>
+<form id="myForm" class="form-horizontal" method="post" action="__APP__/Goods/addSub.html" enctype="multipart/form-data">
+	<input type="hidden" name="id" value="<{$info.id}>"  id="id" >
+	<div class="form-group">
+		<label for="inputEmail3" class="col-sm-2 control-label">商品编码</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="code" value="<{$info.code}>" class="form-control" id="code" placeholder="输入商品编码">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">商品名称</label>
+		<div class="col-sm-4">
+		  	<input type="text" name="title" value="<{$info.title}>" class="form-control" id="title" placeholder="输入商品名称">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+        <div class="form-group">
+		<label for="short_name" class="col-sm-2 control-label">商品名简称</label>
+		<div class="col-sm-4">
+		  	<input type="text" name="short_name" value="<{$info.short_name}>" class="form-control" id="short_name" placeholder="输入商品名简称">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">市场价格(全国统一价)</label>
+		<div class="col-sm-1">
+		  	<input type="text" name="mark_price" value="<{$info.mark_price}>" class="form-control" id="mark_price" placeholder="市场价格">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<!-- 取返利的价格:谁发货就取该等级的返利 -->
+	<div class="form-group border_line">
+		<label for="agent1_profit_id" class="col-sm-2 control-label">官方合伙人:</label>
+		<input type="hidden" name="agent1_profit_id" value="<{$agent1_profit.id}>"  id="agent1_profit_id" >
+		<div class="col-sm-9">
+			<div class="form-group">
+				<label for="agent1_agent_price" class="col-sm-2 control-label">官方商品价格</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent1_agent_price" value="<{$agent1_profit.agent_price}>" class="form-control" id="agent1_agent_price" placeholder="商品价格">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+		  	<div class="form-group">
+				<label for="agent1_top1_profit" class="col-sm-2 control-label">间接官方公司返利</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent1_top1_profit" value="<{$agent1_profit.top1_profit}>" class="form-control" id="agent1_top1_profit" placeholder="间接官方公司返利">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+                        <div class="form-group">
+				<label for="agent1_top2_profit" class="col-sm-2 control-label">直接官方公司返利</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent1_top2_profit" value="<{$agent1_profit.top2_profit}>" class="form-control" id="agent1_top2_profit" placeholder="直接官方公司返利">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+		  	<div class="form-group">
+				<label for="agent2_agent1_profit" class="col-sm-2 control-label">大区发货公司返利</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent2_agent1_profit" value="<{$agent2_profit.agent1_profit}>" class="form-control" id="agent2_agent1_profit" placeholder="大区发货公司返利">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+		  	<div class="form-group">
+				<label for="agent3_agent1_profit" class="col-sm-2 control-label">总代发货公司返利</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent3_agent1_profit" value="<{$agent3_profit.agent1_profit}>" class="form-control" id="agent3_agent1_profit" placeholder="总代发货公司返利">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+		</div>
+	</div>
+	<div class="form-group border_line">
+		<label for="agent2_profit_id" class="col-sm-2 control-label">大区合伙人:</label>
+		<input type="hidden" name="agent2_profit_id" value="<{$agent2_profit.id}>"  id="agent2_profit_id" >
+		<div class="col-sm-9">
+			<div class="form-group">
+				<label for="agent2_agent_price" class="col-sm-2 control-label">大区商品价格</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent2_agent_price" value="<{$agent2_profit.agent_price}>" class="form-control" id="agent2_agent_price" placeholder="商品价格">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+		  	<div class="form-group">
+				<label for="agent3_agent2_profit" class="col-sm-2 control-label">总代发货公司返利</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent3_agent2_profit" value="<{$agent3_profit.agent2_profit}>" class="form-control" id="agent3_agent2_profit" placeholder="总代发货公司返利">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+		</div>
+	</div>
+	<div class="form-group border_line">
+		<label for="agent3_profit_id" class="col-sm-2 control-label">总代合伙人:</label>
+		<input type="hidden" name="agent3_profit_id" value="<{$agent3_profit.id}>"  id="agent3_profit_id" >
+		<div class="col-sm-9">
+			<div class="form-group">
+				<label for="agent3_agent_price" class="col-sm-2 control-label">总代商品价格</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent3_agent_price" value="<{$agent3_profit.agent_price}>" class="form-control" id="agent3_agent_price" placeholder="商品价格">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+		  	<!-- 该返利其实就是总代扫码给特约的时候就直接返利 -->
+		  	<div class="form-group">
+				<label for="agent3_agent3_profit" class="col-sm-2 control-label">总代发货公司返利</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent3_agent3_profit" value="<{$agent3_profit.agent3_profit}>" class="form-control" id="agent3_agent3_profit" placeholder="总代发货公司返利">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+		</div>
+	</div>
+	<div class="form-group border_line">
+		<label for="agent4_profit_id" class="col-sm-2 control-label">特约合伙人:</label>
+		<input type="hidden" name="agent4_profit_id" value="<{$agent4_profit.id}>"  id="agent4_profit_id" >
+		<div class="col-sm-9">
+			<div class="form-group">
+				<label for="agent4_agent_price" class="col-sm-2 control-label">特约商品价格</label>
+				<div class="col-sm-2">
+			  		<input type="text" name="agent4_agent_price" value="<{$agent4_profit.agent_price}>" class="form-control" id="agent4_agent_price" placeholder="商品价格">
+			  	</div>
+			  	<div class="is_must">必填(<i>*</i>)</div>
+		  	</div>
+		</div>
+	</div>
+	<!-- <div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">价格</label>
+		<div class="col-sm-1">
+		  	<input type="text" name="price" value="<{$info.price}>" class="form-control" id="price" placeholder="商品价格">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">进货价格</label>
+		<div class="col-sm-1">
+		  	<input type="text" name="stock_price" value="<{$info.stock_price}>" class="form-control" id="stock_price" placeholder="进货价格">
+		</div>
+	</div> -->
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">商品规格</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="specs" value="<{$info.specs}>" class="form-control" id="specs" placeholder="输入商品规格">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">商品库存</label>
+		<div class="col-sm-1">
+			<input type="text" name="stock" value="<{$info.stock}>" class="form-control" id="stock" placeholder="商品库存">
+		</div>
+	</div>
+	<div class="form-group" id="picList">
+		<volist name="info['pic_list']" id="vo" key="pk">
+			<div class="pic_list">
+				<div class="pic_del" img_path="<{$info['y_pic_list'][$pk-1]}>">删除</div>
+				<img src="<{$vo}>"  class="img-rounded" style="height: 70px;">
+			</div>
+		</volist>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">商品图片</label>
+		<div class="col-sm-2 goods_images">
+		  	<input type="file" name="images[]" class="form-control images"  >
+		</div>
+		<div id="more_images">更多+</div>
+	</div>
+	<div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">商品详情</label>
+		<div class="col-sm-10">
+			<include file="Public/ueditor" />
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-10">
+		  	<button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 12%;margin: 0 auto;">提交</button>
+		</div>
+	</div>
+</form>
+
+<script>
+	$(function(){
+		
+	  	$('#myForm').submit(function() {
+	  		var code = is_empty('#code');
+	  		var title = is_empty('#title');
+	  		var mark_price = is_empty('#mark_price');
+                        var short_name = is_empty('#short_name');
+
+	  		if(code === false){
+	  			showMsg('商品编码不能为空!');
+	  			return false;
+	  		}
+	  		if(title === false){
+	  			showMsg('商品名称不能为空!');
+	  			return false;
+	  		}
+                        if(short_name === false){
+	  			showMsg('商品名简称不能为空!');
+	  			return false;
+	  		}
+	  		if(mark_price === false){
+	  			showMsg('市场价格不能为空!');
+	  			return false;
+	  		}
+
+	  		// 官方
+	  		var agent1_agent_price = $('#agent1_agent_price').val(),
+	  			agent1_top1_profit = $('#agent1_top1_profit').val(),
+	  			agent1_top2_profit = $('#agent1_top2_profit').val();
+
+	  		if(!agent1_agent_price){
+	  			showMsg('官方商品价格不能为空!');
+	  			return false;
+	  		}
+
+	  		if(!agent1_top1_profit){
+	  			showMsg('直接官方公司返利不能为空!');
+	  			return false;
+	  		}
+	  		if(!agent1_top2_profit){
+	  			showMsg('间接官方公司返利不能为空!');
+	  			return false;
+	  		}
+	
+	  		// 大区
+	  		var agent2_agent_price = $('#agent2_agent_price').val(),
+	  			agent2_agent1_profit = $('#agent2_agent1_profit').val();
+
+  			if(!agent2_agent_price){
+	  			showMsg('大区商品价格不能为空!');
+	  			return false;
+	  		}
+
+	  		if(!agent2_agent1_profit){
+	  			showMsg('官方: 大区发货公司返利不能为空!');
+	  			return false;
+	  		}
+	  			
+	  		// 总代
+	  		var agent3_agent_price = $('#agent3_agent_price').val(),
+	  			agent3_agent1_profit = $('#agent3_agent1_profit').val(),	
+	  			agent3_agent2_profit = $('#agent3_agent2_profit').val(),
+	  			agent3_agent3_profit = $('#agent3_agent3_profit').val();
+
+  			if(!agent3_agent_price){
+	  			showMsg('总代商品价格不能为空!');
+	  			return false;
+	  		}
+
+	  		if(!agent3_agent1_profit){
+	  			showMsg('官方: 总代发货公司返利不能为空!');
+	  			return false;
+	  		}
+
+	  		if(!agent3_agent2_profit){
+	  			showMsg('大区: 总代发货公司返利不能为空!');
+	  			return false;
+	  		}
+	  		if(!agent3_agent3_profit){
+	  			showMsg('总代: 总代发货公司返利不能为空!');
+	  			return false;
+	  		}
+
+	  		// 特约
+	  		var agent4_agent_price = $('#agent4_agent_price').val();
+
+	  		if(!agent4_agent_price){
+	  			showMsg('特约商品价格不能为空!');
+	  			return false;
+	  		}
+       
+            var pic_len = $('.images').length;
+            var ye_pic_len = $('#picList .pic_list').length;
+            var k = 0;
+            for(var i=0;i<pic_len;i++){
+                var pic_val = $('.images').eq(i).val();
+                if(pic_val){
+                    k++; 
+                }
+              
+            }
+	  		if(k == 0 && ye_pic_len == 0){
+                showMsg('商品图片不能为空!');
+                return false;
+            }
+                       
+	  		$(this).ajaxSubmit(function(data){
+                showMsg(data.msg);
+                console.log(data);
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+
+	   	//添加更多图片
+	   	$('#more_images').click(function(event) {
+	   		/* Act on the event */
+	   		$('.goods_images').append($('.images').eq(0).clone());
+	   	});
+
+	   	//删除商品图片
+	   	$('.pic_del').click(function(event) {
+	   		/* Act on the event */
+	   		var _this = $(this);
+	   		var goods_id = $('#id').val();
+	   		var img_path = $(this).attr('img_path');
+	   		
+	   		$.post('__APP__/Goods/delPic.html', {goods_id: goods_id,pic_url:img_path}, function(data) {
+	   			/*optional stuff to do after success */
+	   			if(data.status == 1){
+	   				_this.parent().remove();
+	   			}
+	   			showMsg(data.msg);
+	   			console.log(data);
+	   		});
+	   	});
+
+	});
+
+	//对编辑器的操作最好在编辑器ready之后再做
+	ue.ready(function() {
+	    //设置编辑器的内容
+	    ue.setContent('<{$info.descs}>');
+	});
+</script>

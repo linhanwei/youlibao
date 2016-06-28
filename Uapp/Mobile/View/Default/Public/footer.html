@@ -1,0 +1,29 @@
+<footer>
+    <div class="row-default">
+    <dl class="col <if condition="$action_name eq 'agentCheckView'">active</if>" >
+            <a href="__APP__/Public/agentCheckView.html">
+                <dt class=" nav1 "></dt>
+                <dd>代理查询</dd>
+            </a>
+
+        </dl>
+        <dl class="col <if condition="$action_name eq 'searchSecurityView'">active</if>">
+            <a href="__APP__/Public/searchSecurityView.html">
+                <dt class="nav2"></dt>
+                <dd>防伪码查询</dd>
+            </a>
+        </dl>
+        <dl class="col <if condition="$action_name eq 'agentManage'">active</if>" >
+            <a  href="__APP__/AgentManage/index.html">
+                <dt class="nav3"></dt>
+                <dd>代理后台</dd>
+            </a>
+        </dl>
+        <dl class="col <if condition="($action_name eq 'serchProductView') or ($action_name eq 'serchProductResult')">active</if>" >
+            <a  href="__APP__/Public/serchProductView.html">
+                <dt class="nav4"></dt>
+                <dd>产品溯源</dd>
+            </a>
+        </dl>
+    </div>
+</footer>

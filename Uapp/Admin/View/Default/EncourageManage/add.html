@@ -1,0 +1,83 @@
+<style type="text/css" media="screen">
+	#picList{
+		margin-top:65px;
+	}
+	.form-group .pic_list{
+		display:inline;
+	}
+	.form-group .pic_list:first-child{
+		margin-left:19%;
+	}
+	.form-group .pic_list .pic_del{
+		
+		display: inline-block;
+	    position: relative;
+	    top: -63px;
+	    left: 69px;
+	    background: #DBEAF9;
+	    width: 48px;
+	    height: 30px;
+	    line-height: 30px;
+	    text-align: center;
+	}
+	.border_line{
+		border: 1px solid gray;
+		margin-top:10px;
+		padding-top: 15px;
+	}
+</style>
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">添加</h4></li>
+</ul>
+<form id="myForm" class="form-horizontal" method="post" action="__APP__/EncourageManage/addSub.html" enctype="multipart/form-data">
+	<input type="hidden" name="id" value="<{$info.id}>"  id="id" >
+	<div class="form-group">
+		<label for="title" class="col-sm-2 control-label">激励语</label>
+		<div class="col-sm-8">
+		  	<input type="text" name="title" value="<{$info.title}>" class="form-control" id="title" placeholder="输入激励语">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<div class="form-group">
+		<label for="is_select" class="col-sm-2 control-label">是否展示</label>
+		<div class="col-sm-2">
+		  	<select class="form-control" name="is_select" id="is_select">
+		  		<option value="1" <if condition="$info['is_select'] eq 1" >selected </if> >是</option>
+		  		<option value="2" <if condition="$info['is_select'] eq 2" >selected </if> >否</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-10">
+		  	<button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 12%;margin: 0 auto;">提交</button>
+		</div>
+	</div>
+</form>
+
+<script>
+	$(function(){
+		
+	  	$('#myForm').submit(function() {
+	  		
+	  		var title = is_empty('#title');
+	  		
+	  		if(title === false){
+	  			showMsg('激励语不能为空!');
+	  			return false;
+	  		}
+          
+	  		$(this).ajaxSubmit(function(data){
+                showMsg(data.msg);
+                console.log(data);
+                if(data.status == 1){
+            		LoadPage("__APP__/EncourageManage/index.html");
+                }
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+
+	});
+
+</script>

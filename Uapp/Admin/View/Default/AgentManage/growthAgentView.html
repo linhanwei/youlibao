@@ -1,0 +1,120 @@
+<style type="text/css" media="screen">
+	#picList{
+		margin-top:65px;
+	}
+	.form-group .pic_list{
+		display:inline;
+	}
+	.form-group .pic_list:first-child{
+		margin-left:19%;
+	}
+	.form-group .pic_list .pic_del{
+		
+		display: inline-block;
+	    position: relative;
+	    top: -63px;
+	    left: 69px;
+	    background: #DBEAF9;
+	    width: 48px;
+	    height: 30px;
+	    line-height: 30px;
+	    text-align: center;
+	}
+</style>
+<link href="__PUBLIC__/plug/bootstrap/css/datetimepicker.css" rel="stylesheet">
+<script src="__PUBLIC__/plug/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<ul class="list-group" 
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">发展代理商</h4></li>
+</ul>
+<form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/growthAgentView.html" enctype="multipart/form-data">
+	<fieldset disabled>
+		<div class="form-group">
+			<label for="star" class="col-sm-2 control-label">代理星级</label>
+			<div class="col-sm-2">
+			  	<select class="form-control" name="star" id="star">
+			  		<volist name="agent_lv_list" id="lvo">
+			  			<if condition="$lvo['lv'] eq 1">
+					  		<option value="<{$lvo.lv}>"><{$lvo.name}></option>
+					  	</if>
+				  	</volist>
+				  
+				</select>
+			</div>
+		</div>
+	</fieldset>
+        <div class="form-group">
+		<label for="name" class="col-sm-2 control-label">上级ID</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="top2_id" value="" class="form-control" id="top2_id" placeholder="输入上级ID">
+		</div>
+		<div class="is_must">(如果上级是工厂不必填)</div>
+	</div>
+	<div class="form-group">
+		<label for="name" class="col-sm-2 control-label">代理姓名</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="name" value="" class="form-control" id="name" placeholder="输入姓名">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<div class="form-group">
+		<label for="team_name" class="col-sm-2 control-label">团队名称</label>
+		<div class="col-sm-2">
+		  	<input type="text" name="team_name" value="" class="form-control" id="team_name" placeholder="输入团队名称">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<if condition="$return">
+		<div class="form-group">
+			<label for="invite_url" class="col-sm-2 control-label">邀请链接</label>
+			<div class="col-sm-4">
+			  	<input type="text" name="invite_url" value="<{$return.url}>" class="form-control" id="invite_url">
+			</div>
+			<div class="is_must">点击文本框选定后复制</div>
+		</div>
+		<div class="form-group">
+			<label for="invite_code" class="col-sm-2 control-label">邀请码</label>
+			<div class="col-sm-2">
+			  	<input type="text" name="invite_code" value="<{$return.code}>" class="form-control" id="invite_code">
+			</div>
+			<div class="is_must">点击文本框选定后复制</div>
+		</div>
+	</if>
+	
+	<div class="form-group">
+		<div class="col-sm-10">
+		  	<button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 12%;margin: 0 auto;">提交</button>
+		</div>
+	</div>
+</form>
+
+<script type="text/javascript">
+	
+	$(function(){
+		
+	  	$('#myForm').submit(function() {
+	  		var name = is_empty('#name'),
+	  			team_name = is_empty('#team_name');
+	  		
+	  		if(name === false){
+	  			showMsg('姓名不能为空!');
+	  			return false;
+	  		}
+
+	  		if(team_name === false){
+	  			showMsg('团队名称不能为空!');
+	  			return false;
+	  		}
+	  		
+	  		$(this).ajaxSubmit(function(data){
+                $('.main .container-fluid').html(data);
+            	return false;
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+
+	   	
+	});
+
+</script>

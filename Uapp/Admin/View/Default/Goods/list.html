@@ -1,0 +1,83 @@
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">商品列表</h4></li>
+</ul>
+<form id="myForm" class="form-inline" method="post" action="__APP__/Goods/index.html" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="exampleInputName2">商品编码</label>
+    <input type="text" class="form-control" id="code" name="code">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail2">商品标题</label>
+    <input type="text" class="form-control" id="title" name="title">
+  </div>
+  <button type="submit" class="btn btn-default">搜索</button>
+</form>
+<div class="panel panel-default" style="margin-top: 20px;">
+	<table class="table">
+        <thead>
+          <tr>
+            <th>商品编码</th>
+            <th>商品名称</th>
+            <th>商品价格</th>
+            <th>商品图片</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        	<volist name="list" id="vo">
+				<tr>
+					<th scope="row"><{$vo.code}></th>
+					<td><{$vo.title}></td>
+					<td><{$vo.mark_price}></td>
+					<td>
+						<if condition="$vo['index_pic']">
+					      	<img src="<{$vo.index_pic}>"  class="img-rounded" style="height: 70px;">
+				      	</if>
+					</td>
+					<td><span goods_id = <{$vo.id}> class="edit_goods" >修改</span></td>
+				</tr>
+			</volist>
+        </tbody>
+  	</table>
+</div>
+<nav>
+  <ul class="pagination">
+    <{$page}>
+  </ul>
+</nav>
+<script>
+	$(function(){
+
+	  	//分页
+	    $('.pagination li').click(function(){
+	        var page = $(this).children('a').attr('page');
+	        var class_name = $(this).attr('class');
+
+	        if(class_name != 'active'){
+		        LoadPage('__APP__/Goods/index.html',{'p': page});
+	        }
+	        
+	    });
+
+	    //修改
+	    $('.edit_goods').click(function(event) {
+	    	/* Act on the event */
+	    	var goods_id = $(this).attr('goods_id');
+	    	LoadPage('__APP__/Goods/add.html',{'goods_id': goods_id});
+
+	    });
+
+	    //搜索
+	    $('#myForm').submit(function() {
+		  		 
+	  		$(this).ajaxSubmit(function(data){
+               $('.main .container-fluid').html(data);
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+	      
+	});
+
+</script>

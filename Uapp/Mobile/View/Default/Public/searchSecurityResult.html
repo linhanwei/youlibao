@@ -1,0 +1,43 @@
+<extend name="Public:base" />
+<block name="title"><title>防伪码查询</title></block>
+<block name="header">
+    <include file="Public/agentHeader" />
+</block>
+<block name="main">
+	<div class="container p40 nobg">
+		<if condition="$code_count">
+			<div class="row">
+				<div class="col-xs-4 center"><img src="__PUBLIC__/Mobile/images/icon_search1.png" alt=""></div>
+			</div>
+			<div class="row">
+				<div class="col-xs-11 center">您所查询的防伪码为:酷兜云商正品</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-9 center">该防伪码已被查询过:<span class="search-num"><{$log_count}>次</span></div>
+			</div>
+			<div class="row search_time">
+				<div class="col-xs-7 center show-time time-tit">最近被查询的时间</div>
+				<volist name="list" id="vo">
+					<div class="col-xs-8 center show-time"><{$vo.add_time}></div>
+				</volist>
+				
+			</div>
+		<else />
+			<div class="row">
+				<div class="col-xs-4 center"><img src="__PUBLIC__/Mobile/images/icon_search2.png" alt=""></div>
+			</div>
+			<div class="row">
+				<div class="col-xs-8 center">您所查询的防伪码是假的!</div>
+			</div>
+		</if>
+	</div>
+    <script type="text/javascript">
+    	$(function(){
+    		
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <include file="Public/footer" />
+</block>

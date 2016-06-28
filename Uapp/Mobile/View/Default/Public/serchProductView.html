@@ -1,0 +1,137 @@
+<extend name="Public:base" />
+<block name="title"><title>产品名片查询</title></block>
+<block name="header">
+    <include file="Public/agentHeader" />
+</block>
+<block name="main">
+	<div class="container nobg productCard">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#scanCard" aria-controls="home" role="tab" data-toggle="tab">扫描防串货码</a></li>
+            <li role="presentation"><a href="#importCard" aria-controls="profile" role="tab" data-toggle="tab">输入防串货码</a></li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="scanCard">
+                <div class="cardImg wx_scanning">
+                    <img src="__PUBLIC__/Mobile/images/pic_code.png"/>
+                </div>
+                
+            </div>
+            <div role="tabpanel" class="tab-pane" id="importCard">
+            	<form id="myForm" class="form-horizontal" method="post" action="__APP__/Public/serchProductResult.html" enctype="multipart/form-data">
+	                <input type="text" class="form-control" name="code" placeholder="输入防串货码"/>
+	                <button type="submit" class="btn   btn-block" style="margin-top: 20px;">查询</button>
+                </form>
+            </div>
+	        
+        </div>
+        
+	</div>
+	<if condition="$is_weixin">
+		<script src="__PUBLIC__/plug/zepto/1.1.6/zepto.js"></script>
+		<script src="__PUBLIC__/plug/weixin/js/jweixin-1.js"></script>
+	    <script type="text/javascript">
+	    	
+	    		wx.config({
+			      debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+			      appId: '<{$wxjsinfo.appId}>', // 必填，公众号的唯一标识
+			      timestamp: <{$wxjsinfo.timestamp}>, // 必填，生成签名的时间戳
+			      nonceStr: '<{$wxjsinfo.nonceStr}>', // 必填，生成签名的随机串
+			      signature: '<{$wxjsinfo.signature}>',// 必填，签名，见附录1
+			      jsApiList: [
+			        'checkJsApi',
+			        'onMenuShareTimeline',
+			        'onMenuShareAppMessage',
+			        'onMenuShareQQ',
+			        'onMenuShareWeibo',
+			        'onMenuShareQZone',
+			        'hideMenuItems',
+			        'showMenuItems',
+			        'hideAllNonBaseMenuItem',
+			        'showAllNonBaseMenuItem',
+			        'translateVoice',
+			        'startRecord',
+			        'stopRecord',
+			        'onVoiceRecordEnd',
+			        'playVoice',
+			        'onVoicePlayEnd',
+			        'pauseVoice',
+			        'stopVoice',
+			        'uploadVoice',
+			        'downloadVoice',
+			        'chooseImage',
+			        'previewImage',
+			        'uploadImage',
+			        'downloadImage',
+			        'getNetworkType',
+			        'openLocation',
+			        'getLocation',
+			        'hideOptionMenu',
+			        'showOptionMenu',
+			        'closeWindow',
+			        'scanQRCode',
+			        'chooseWXPay',
+			        'openProductSpecificView',
+			        'addCard',
+			        'chooseCard',
+			        'openCard'
+			      ]
+			  });
+	    	
+
+			function convertImgToBase64(url, callback, outputFormat){ 
+			  var canvas = document.createElement('CANVAS'); 
+			  var ctx = canvas.getContext('2d'); 
+			  var img = new Image; 
+			  img.crossOrigin = 'Anonymous'; 
+			  img.onload = function(){ 
+			    canvas.height = img.height; 
+			    canvas.width = img.width; 
+			    ctx.drawImage(img,0,0); 
+			    var dataURL = canvas.toDataURL(outputFormat || 'image/png'); 
+			    callback.call(this, dataURL); 
+			    canvas = null; 
+			  }; 
+			  img.src = url; 
+			} 
+		</script>
+	</if>
+    <script type="text/javascript">
+    	$(function(){
+
+    		$('.wx_scanning').click(function(event) {
+    			// 9.1.2 扫描二维码并返回结果
+    			scanning();
+				
+    		});
+
+    		function scanning(){
+    			if(isWeiXin()){
+    				wx.scanQRCode({
+					  needResult: 1,
+					  desc: 'scanQRCode desc',
+					  success: function (res) {
+					  	var result = res.resultStr;
+					  	var is_bool = result.indexOf(",");
+					  	if(is_bool >= 0){
+					  		var new_result = result.split(',');
+					  		var min_code = new_result[1];  //获取一维码号码
+
+					  		location.href = '__APP__/Public/serchProductResult.html?code='+min_code;
+					  	}
+					    // alert(JSON.stringify(res));
+					  }
+					});
+				
+    			}
+
+    			return false;
+    		}
+
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <include file="Public/footer" />
+</block>

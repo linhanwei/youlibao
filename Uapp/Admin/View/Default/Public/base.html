@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="__PUBLIC__/plug/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script src="__PUBLIC__/plug/jquery/1.11.3/jquery.min.js"></script>
+        <script src="__PUBLIC__/plug/bootstrap/js/bootstrap.min.js"></script>
+        <style>
+            .menu{
+                width: 15%;
+                float: left;
+            }
+            .menu .list-group .active{
+                background-color: #eee;
+            }
+            .list-group-item .list-group{
+                margin-bottom: 0px;
+            }
+            .main{
+                width: 85%;
+                float: left;
+            }
+
+            .images{
+                margin-bottom:5px;
+            }
+            #more_images{
+                background: #DBEAF9;
+                float: left;
+                height: 30px;
+                line-height: 30px;
+                text-align: center;
+                width: 60px;
+            }
+            
+            .is_must{float:left;width:10%;}
+            .is_must i{
+                color:red;
+                font-size: 22px;
+                color: red;
+                position: relative;
+                top: 9px;
+                left: -1px;
+            }
+        </style>
+        <script>
+            var URL = '__APP__/';
+
+            function LoadPage(url,data){
+            
+                if(url){
+                    $.post(url, data, function(data) {
+                        /*optional stuff to do after success */
+                        $('.main .container-fluid').html(data);
+                    });
+                    
+                }
+            }
+
+            function is_empty(ele){
+                if(!ele){
+                    return false;
+                }
+
+                var val = $(ele).val();
+
+                if(!val){
+                    return false;
+                }
+
+                return val;
+            }
+
+            function showMsg(msg){
+                alert(msg);
+            }
+    
+        </script>
+        <block name="title"><title>__WEBNAME__</title></block>
+    </head>
+    <body>
+       
+            <block name="header">
+                <div class="page-header">
+                    <div class="admin_name" style="margin-left: 50px;display: inline-block;">管理员:<{$member_info.username}></div>
+                    <div class="logout" style="display: inline-block;margin-left: 30px;"><a href="__APP__/Login/logout.html">退出</a></div>
+                </div>
+            </block>
+            <div class="container-fluid">
+                <block name="menu">
+                    <div class="menu">
+                        <ul class="list-group" >
+                            <li class="list-group-item list-group-item-success">功能菜单</li>
+                            <li class="list-group-item">
+                                <!-- 代理管理 -->
+                                <div class="list-group-item list-group-item-warning">代理管理</div>
+                                <div class="list-group">
+                                    <a onclick='LoadPage("__APP__/AgentManage/addAgentView.html")' class="list-group-item">添加代理</a>
+                                    <a onclick='LoadPage("__APP__/AgentManage/index.html")' class="list-group-item">代理商列表</a>
+                                    <a onclick="LoadPage('__APP__/AgentManage/index.html',{status:'0,-1,-2,-3'})" class="list-group-item">待审核代理商</a>
+                                    <a onclick='LoadPage("__APP__/AgentManage/growthAgentView.html")' class="list-group-item">新增代理</a>
+                                </div>
+                                <!-- 防伪 -->
+                                <div class="list-group-item list-group-item-warning">防伪管理</div>
+                                <div class="list-group">
+                                    <a onclick='LoadPage("__APP__/MakeCode/index.html")' class="list-group-item">标签列表</a>
+                                    <a onclick='LoadPage("__APP__/MakeCode/makeCodeView.html")' class="list-group-item">生成标签</a>
+                                    <a onclick='LoadPage("__APP__/MakeCode/exportCodeView.html")' class="list-group-item">导出标签</a>
+                                </div>
+                                <!-- 商品 -->
+                                <div class="list-group-item list-group-item-warning">商品管理</div>
+                                <div class="list-group">
+                                    <a onclick='LoadPage("__APP__/Goods/index.html")' class="list-group-item">商品列表</a>
+                                    <a onclick='LoadPage("__APP__/Goods/add.html")' class="list-group-item">添加商品</a>
+                                </div>
+                                <!-- 出库 -->
+                                <div class="list-group-item list-group-item-warning">出库管理</div>
+                                <div class="list-group">
+                                   <!--  <a onclick='LoadPage("__APP__/Index/editPass.html")' class="list-group-item">系统出库</a> -->
+                                    <a onclick='LoadPage("__APP__/DeliverGoods/index.html")' class="list-group-item">出库记录</a>
+                                    <!-- <a onclick='LoadPage("__APP__/Index/editPass.html")' class="list-group-item">小标出库记录</a> -->
+                                </div>
+                                <!-- 内容管理 -->
+                                <div class="list-group-item list-group-item-warning">内容管理</div>
+                                <div class="list-group">
+                                    <a onclick='LoadPage("__APP__/EncourageManage/index.html")' class="list-group-item">励志语管理</a>
+                                    <a onclick='LoadPage("__APP__/EncourageManage/add.html")' class="list-group-item">添加励志语</a>
+                                </div>
+                                <!-- 管理员设置 -->
+                                <div class="list-group-item list-group-item-warning">管理员设置</div>
+                                <div class="list-group">
+                                    <a onclick='LoadPage("__APP__/System/systemSetView.html")' class="list-group-item">系统设置</a>
+                                </div>
+                            </li>
+                          
+                        </ul>
+                    </div>
+                </block>
+                <block name="main">
+                    主要内容
+                    
+                </block>
+            </div>
+            <block name="footer">底部</block>
+       
+    </body>
+</html>

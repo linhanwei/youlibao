@@ -1,0 +1,36 @@
+<extend name="Public:base" />
+<block name="title"><title>代理查询</title></block>
+<block name="header">
+    <include file="Public/agentHeader" />
+</block>
+<block name="main">
+	<div class="container p40 nobg">
+		<form id="myForm" class="form-horizontal" method="post" action="__APP__/Public/agentCheckResult.html" enctype="multipart/form-data">
+		    <div class="form-group onlyInput mt12P">
+			       <!-- <input type="text" class="form-control" placeholder="姓名" name="name" id="name" /> -->
+			       <input type="text" class="form-control" placeholder="微信号" name="weixin" id="weixin" />
+			       <!-- <input type="text" class="form-control" placeholder="手机号" name="tel" id="tel" /> -->
+	        	<button type="submit" class="btn btn-primary  btn-block">查询</button>
+		    </div>
+		</form>
+	</div>
+    <script type="text/javascript">
+    	$(function(){
+    		$('#myForm').submit(function() {
+		  		// var name = is_empty('#name');
+		  		// var weixin = is_empty('#weixin');
+		  		var tel = is_empty('#tel');
+
+		  		if(weixin === false){
+		  			showMsg('请输入微信号!');
+		  			return false;
+		  		}
+		  		
+		   	});
+    	});
+
+    </script>
+</block>
+<block name="footer">
+	<include file="Public/footer" />
+</block>

@@ -1,0 +1,34 @@
+<extend name="Public:base" />
+<block name="title"><title>防伪码查询</title></block>
+<block name="header">
+    <include file="Public/agentHeader" />
+</block>
+<block name="main">
+	<div class="container p40 nobg">
+		<form id="myForm" class="form-horizontal" method="post" action="__APP__/Public/searchSecurityResult.html" >
+		    <div class="form-group onlyInput mt12P">
+		        <h4 class="panel-title text-center mb20">消费者防伪码查询<br />
+		        (请刮开涂层输入完整的防伪码)</h4>
+		        <input type="text" class="form-control" placeholder="请输入防伪码" name="code" id="code" />
+		        <button type="submit" class="btn btn-primary  btn-block">查询</button>
+		    </div>
+		</form>
+	</div>
+    <script type="text/javascript">
+    	$(function(){
+    		$('#myForm').submit(function() {
+		  		var code = is_empty('#code');
+		  		
+		  		if(code === false){
+		  			showMsg('请输入防伪码!');
+		  			return false;
+		  		}
+		  		
+		   	});
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <include file="Public/footer" />
+</block>

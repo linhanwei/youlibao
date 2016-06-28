@@ -1,0 +1,64 @@
+<extend name="Public:base" />
+<block name="title"><title>邀请码管理</title></block>
+<block name="header">
+    
+</block>
+<block name="main">
+	
+	<table class="table invitationCodeManage">
+	    <tr>
+	        <td>编号</td>
+	        <td>可用邀请码</td>
+	        <td>级别</td>
+	        <td>姓名</td>
+	        <td>操作</td>
+	    </tr>
+	    <volist name="list" id="vo">
+		    <tr>
+		        <td><{$vo.inviteid}></td>
+		        <td><{$vo.invitecode}><span class="colorLighter btn-block">（长按复制）</span></td>
+		        <td><{$vo.lv_name}></td>
+		        <td><{$vo.name}></td>
+		        <td><a href="<{$vo.url}>"><i class="iconM share-icon"></i></a><i class="iconM delete-icon" inid="<{$vo.inviteid}>" ></i></td>
+		    </tr>
+		</volist>
+	</table>
+	<ul class="pagination">
+		<{$page}>
+	</ul>
+	<if condition="!$list">
+    	<center><{$empty}></center>
+    </if>
+	
+    <script type="text/javascript">
+    	$(function(){
+    		//分页
+		    $('.pagination li').click(function(){
+		        var page = $(this).children('a').attr('page');
+		        var class_name = $(this).attr('class');
+
+		        if(class_name != 'active'){
+		        	location.href = '__APP__/AgentManage/inviteManage.html?p='+page;
+			        
+		        }
+		        
+		    });
+
+		    //删除邀请码
+		    $('.delete-icon').click(function(event) {
+		    	var inid = $(this).attr('inid');
+		    	console.log(inid);
+		    	$.post('__APP__/AgentManage/delInvite.html', {inid: inid}, function(data) {
+		    		showMsg(data.msg);
+		    		if(data.status == 1){
+		    			location.href = location.href;
+		    		}
+		    	});
+		    });
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <include file="Public/footer" />
+</block>

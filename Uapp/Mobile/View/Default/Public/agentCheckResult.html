@@ -1,0 +1,37 @@
+<extend name="Public:base" />
+<block name="title"><title>代理商查询</title></block>
+<block name="header">
+    <include file="Public/agentHeader" />
+</block>
+<block name="main">
+	<div class="container noMargin accredit" style="margin-bottom: 100px;">
+		
+		    <div class="accreditImg">
+		    	<if condition="$auth_img">
+			        <img src="<{$auth_img}>">
+			        <p>(手机长按授权书保存)</p>
+			    </if>
+		    </div>
+		    <div class="result">
+		        <p>查询结果如下：</p>
+		        <if condition="$agent_info['stat'] eq 1">
+			        <ul>
+			            <li>代理人姓名：<span><{$agent_info.name}></span></li>
+			            <li>代理人微信：<span><{$agent_info.weixin}></span></li>
+			            <li>代理人级别：<span><{$agent_info.agent_lv_name}></span></li>
+			        </ul>
+			    </if>
+		        <p><{$notice_msg}></p>
+		    </div>
+	   
+	</div>
+    <script type="text/javascript">
+    	$(function(){
+    		
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <include file="Public/footer" />
+</block>

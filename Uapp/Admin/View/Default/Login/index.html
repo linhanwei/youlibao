@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="__PUBLIC__/plug/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script src="__PUBLIC__/plug/jquery/1.11.3/jquery.min.js"></script>
+        <script src="__PUBLIC__/plug/bootstrap/js/bootstrap.min.js"></script>
+        <style>
+           #main{
+                width:20%;
+                margin:0 auto;
+           }
+        </style>
+        <script>
+           
+        </script>
+        <block name="title"><title>__WEBNAME__</title></block>
+    </head>
+    <body>
+        <div class="container">
+            <div id="main">
+                <form id="form1" action="__APP__/Login/loginSub" method="post" name="form1">
+                    <center><h2>管理登录</h2></center>
+                    
+                    <div class="form-group">
+                        <label for="name">用户名</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="输入用户名">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">密　码</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="输入密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="code">验证码</label>
+                        <input type="text" class="form-control" id="code" name="code" placeholder="输入验证码">
+                    </div>
+                    <div class="form-group">
+                        <a id="A2" href="" onclick="ChangeCode();return false;">
+                            <img id="ImageCheck" title="看不清，换一个" src="__APP__/Login/entry" align="absmiddle" />
+                        </a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">登录</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    function ChangeCode()
+    { 
+        document.getElementById("ImageCheck").src = "__APP__/Login/entry?" + Math.random().toString();
+    } 
+
+</script>

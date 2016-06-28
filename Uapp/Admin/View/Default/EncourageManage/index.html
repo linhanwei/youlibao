@@ -1,0 +1,86 @@
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">商品列表</h4></li>
+</ul>
+<form id="myForm" class="form-inline" method="post" action="__APP__/EncourageManage/index.html" enctype="multipart/form-data">
+  
+  <div class="form-group">
+    <label for="exampleInputEmail2">励志语</label>
+    <input type="text" class="form-control" id="title" name="title" value="<{$title}>">
+  </div>
+  <button type="submit" class="btn btn-default">搜索</button>
+</form>
+<div class="panel panel-default" style="margin-top: 20px;">
+	<table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>励志语</th>
+            <th>是否显示</th>
+            <th>修改时间</th>
+            <th>添加时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        	<volist name="list" id="vo">
+				<tr>
+					<th scope="row"><{$vo.id}></th>
+					<td><{$vo.title}></td>
+					<td>
+						<if condition="$vo['is_select'] eq 1" >
+							是
+						<else />
+							否
+						</if>
+							
+					</td>
+					<td><{$vo.edit_time}></td>
+					<td><{$vo.add_time}></td>
+					<td><span eid = <{$vo.id}> class="edit" >修改</span></td>
+				</tr>
+			</volist>
+        </tbody>
+  	</table>
+</div>
+<nav>
+  <ul class="pagination">
+    <{$page}>
+  </ul>
+</nav>
+<script>
+	$(function(){
+
+	  	//分页
+	    $('.pagination li').click(function(){
+	        var page = $(this).children('a').attr('page');
+	        var class_name = $(this).attr('class');
+	        var title = '<{$title}>';
+
+	        if(class_name != 'active'){
+		        LoadPage('__APP__/EncourageManage/index.html',{'p': page,'title':title});
+	        }
+	        
+	    });
+
+	    //修改
+	    $('.edit').click(function(event) {
+	    	/* Act on the event */
+	    	var id = $(this).attr('eid');
+	    	LoadPage('__APP__/EncourageManage/add.html',{'id': id});
+
+	    });
+
+	    //搜索
+	    $('#myForm').submit(function() {
+		  		 
+	  		$(this).ajaxSubmit(function(data){
+               $('.main .container-fluid').html(data);
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+	      
+	});
+
+</script>

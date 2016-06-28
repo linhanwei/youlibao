@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>
+    邀请注册
+</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="__PUBLIC__/Admin/js/jquery-1.8.3.min.js" type="text/javascript"></script>
+</head>
+<body style="overflow-x: hidden">
+    <form id="form1" onsubmit="javascript:return WebForm_OnSubmit();" action="__APP__/Login/regSub" method="post" name="form1">
+    <!--中心内容-->
+    <div class="page_box">
+        <div class="pagebg_top">
+            <div class="pagebg_bottom" style="padding-bottom: 80px;">
+                <div class="page_title_line">
+                    温馨提示：请务必填写真实有效的信息，一旦注册无法修改！</div>
+                <div class="page_title_best">
+                    用户注册</div>
+                <div class="page_best_box">
+                    <dl class="page_best_list_box_zhuce">
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>注册邀请码：</em>
+                            </div>
+                            <div class="left">
+                                <input type="text" id="txtCustomerCode" value="<{$code}>" name="InvitationCode"/>
+                                <span id="RequiredFieldValidator1" class="tips">*</span>
+                                （* 为必填项）
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>手机号：</em>
+                            </div>
+                            <div class="left">
+                                <input type="text" id="txtUserName" name="UserName"/>
+                                <span id="RequiredFieldValidator2" class="tips">*</span>
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>密码：</em>
+                            </div>
+                            <div class="left">
+                                <input type="password" id="txtPassword" name="PassWord"/>
+                                <span id="RequiredFieldValidator3" class="tips">*</span>
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>重复密码：</em>
+                            </div>
+                            <div class="left">
+                                <input type="password" id="txtPassword2" />
+                                <span id="RequiredFieldValidator4" class="tips">*</span>
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>姓名：</em>
+                            </div>
+                            <div class="left">
+                                <input type="text" id="txtCustomerName" name="CustomerName"/>
+                                <span id="RequiredFieldValidator5" class="tips">*</span>
+                            </div>
+                        </dd> <dd>
+                        <div class="left txtright">
+                            <span>*</span><em>邮  箱：</em>
+                        </div>
+                        <div class="left">
+                            <input type="text" id="txtEmail" name="Email"/>
+                            <span id="RequiredFieldValidator6" class="tips">*</span>
+                        </div>
+                    </dd> <dd>
+                        <div class="left txtright">
+                            <span>*</span><em>身份证号码：</em>
+                        </div>
+                        <div class="left">
+                            <input type="text" id="txtIDCard" name="IDCard"/>
+                            <span id="RequiredFieldValidator7" class="tips">*</span>
+                        </div>
+                    </dd> <dd>
+                        <div class="left txtright">
+                            <span>*</span><em>微信号：</em>
+                        </div>
+                        <div class="left">
+                            <input type="text" id="txtWeiXinNo" name="WeiXinNo"/>
+                            <span id="RequiredFieldValidator8" class="tips">*</span>
+                        </div>
+                    </dd> <dd>
+                        <div class="left txtright">
+                            <span>*</span><em>微信名：</em>
+
+                        </div>
+                        <div class="left">
+                            <input type="text" id="txtWeiXinName" name="WeiXinName"/>
+                            <span id="RequiredFieldValidator9" class="tips">*</span>
+                        </div>
+                    </dd> <dd>
+                        <div class="left txtright">
+                            <span>*</span><em>公司名称：</em>
+                        </div>
+                        <div class="left">
+                            <input type="text" id="txtCompanyName" name="CompanyName"/>
+                            <span id="RequiredFieldValidator10" class="tips">*</span>
+                        </div>
+                    </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>省  份：</em>
+                            </div>
+                            <div class="left">
+                                <select id="ddl_prov" name="ProvinceID">
+                                   <option value="1">--请选择--</option>
+                               </select>
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>城  市：</em>
+                            </div>
+                            <div class="left">
+                                <select id="ddl_city" name="CityID">
+                                    <option value="1">--请选择--</option>
+                                </select>
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>区  域：</em>
+                            </div>
+                            <div class="left">
+                                <select id="ddl_qu" name="AreaID">
+                                    <option value="1">--请选择--</option>
+                                </select>
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>详细地址：</em>
+                            </div>
+                            <div class="left">
+                                <textarea rows="" cols="" id="txtAddress" name="Address"></textarea>
+                                <span id="RequiredFieldValidator11" class="tips">*</span>
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                               <em>性  别：</em>
+                            </div>
+                            <div class="left">
+                                <input type="radio" name="Sex" checked value="1" /><label>男</label>
+                                <input type="radio" name="Sex"  value="0"/><label>女</label>
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <em>是否网店授权：</em>
+                            </div>
+                            <div class="left">
+                                <input type="radio" name="isshouq" checked /><label>否</label>
+                                <input type="radio" name="isshouq"  /><label>是</label>
+                            </div>
+                        </dd>
+                        <dd>
+                            <div class="left txtright">
+                                <span>*</span><em>验证码：</em>
+                            </div>
+                            <div class="left">
+                                <input type="text" name="code"/>
+                                <img src="__APP__/Login/entry" title="" id="ImageCheck" alt="看不清" style="vertical-align: middle;width: 80px" onclick="ChangeCode();return false;"/>
+                            </div>
+                        </dd>
+                        <dd>
+                            <span style="margin-left: 90px; color: #F00;">
+                            <span id="lblGUID" style="display: none">ffbb4284-0600-427f-a244-12757f2cf1c3</span>
+                            <input name="cktrue" type="checkbox" id="cktrue" checked="checked" />&nbsp;&nbsp;
+                            本人同意管理员拥有修改信息权限</span><br />
+                            <span style="display: block;margin: 10px auto">
+                            <input type="image" name="ImageButton1" id="ImageButton1" src="__PUBLIC__/Admin/images/zhuce1.png" style="border-width:0px;display: block;margin: 0px auto" />
+                            </span>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="c">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    function WebForm_OnSubmit(){
+        if(!isEmpty('#txtCustomerCode','#RequiredFieldValidator1')){
+            alert('注册邀请码不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtUserName','#RequiredFieldValidator2')){
+            alert('手机号不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtPassword','#RequiredFieldValidator3')){
+            alert('密码不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtPassword2','#RequiredFieldValidator4')){
+            alert('重复密码不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtCustomerName','#RequiredFieldValidator5')){
+            alert('姓名不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtEmail','#RequiredFieldValidator6')){
+            alert('邮 箱不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtIDCard','#RequiredFieldValidator7')){
+            alert('姓名不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtWeiXinNo','#RequiredFieldValidator8')){
+            alert('微信号不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtWeiXinName','#RequiredFieldValidator9')){
+            alert('微信名不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtCompanyName','#RequiredFieldValidator10')){
+            alert('公司名称不能为空!');
+            return false;
+        }
+        if(!isEmpty('#txtAddress','#RequiredFieldValidator11')){
+            alert('详细地址不能为空!');
+            return false;
+        }
+    };
+    
+    function isEmpty(obj,tips){
+        
+            if($(obj).val() == ''){
+                return false
+            }
+            
+            return true;
+    }
+    
+    function ChangeCode()
+    { 
+        document.getElementById("ImageCheck").src = "__APP__/Login/entry?" + Math.random().toString();
+    } 
+
+</script>
+<script type="text/javascript">
+
+        $(function() {
+            LoadProvince();
+            $("#ddl_prov").change(function() {
+                var currentId = $(this).val();
+                var qu = $("#ddl_qu").val();
+                var dllCity = $("#ddl_city");
+                var ddlqu = $("#ddl_qu");
+                $("#hd_province").val(currentId);
+                dllCity.html("");
+                ddlqu.html("");
+                dllCity.append("<option value='-1'>----请选择城市----</option>");
+                ddlqu.append("<option value='-1'>----请选择区域----</option>");
+                $.ajax({
+                    url: '__APP__/Public/city',
+                    data: { method: 'get', pid: currentId },
+                    success: function(d) {
+                        var jsonDatac = d;
+                        if (jsonDatac.length > 0) {
+                            for (var i = 0; i < jsonDatac.length; i++) {
+                                var option = $("<option>");
+                                option.val(jsonDatac[i].id);
+                                option.text(jsonDatac[i].name);
+                                dllCity.append(option);
+                            }
+                        }
+                    }
+                });
+            });
+            $("#ddl_city").change(function() {
+                var quID = $(this).val();
+                var ddlqu = $("#ddl_qu");
+                $("#hd_city").val(quID);
+                ddlqu.html("");
+                ddlqu.append("<option value='-1'>----请选择区域----</option>");
+                $.ajax({
+                    url: "__APP__/Public/area",
+                    data: { method: 'qu', pid: quID },
+                    success: function(d) {
+                        var jsonDatac = d;
+                        if (jsonDatac.length > 0) {
+                            for (var i = 0; i < jsonDatac.length; i++) {
+                                var option = $("<option>");
+                                option.val(jsonDatac[i].id);
+                                option.text(jsonDatac[i].name);
+                                ddlqu.append(option);
+                            }
+                        }
+                    }
+                });
+            });
+            $("#ddl_qu").change(function() {
+                var currentId = $(this).val();
+                $("#hd_district").val($(this).val());
+
+            });
+        });
+      
+        function LoadProvince() {
+            $("#hd_province").val(-1);
+            $("#hd_city").val(-1);
+            $("#hd_district").val(-1);
+            $.ajax({
+                url:"__APP__/Public/province",
+                data:{method: 'load'},
+                success:function(d){
+                    var jsonData = d;
+                    var ddlProvince = $("#ddl_prov");
+                    //ddlProvince.append($("<option value='-1'>----请选择省份----</option>"));
+                    if(jsonData.length>0){
+                        for(var i=0;i<jsonData.length;i++){
+                            var option = $("<option>");
+                            option.val(jsonData[i].id);
+                            option.text(jsonData[i].name);
+                            ddlProvince.append(option);
+                        }
+                         $("#ddl_prov").val(-1);
+                    }
+                }
+            });
+        } 
+    
+</script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<extend name="Public:base" />
+<block name="title"><title>我的代理</title></block>
+<block name="header">
+    <include file="Public/agentHeader" />
+</block>
+<block name="main">
+	<div class="container noMargin">
+	    <div class="form-group">
+	        <div class="row">
+	        	<form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/myAgent.html">
+		            <div class="input-group searchInputBox mb10">
+		            	<input type="hidden" name="status" value="1">
+		                <input type="text" class="form-control" name="search" value="<{$search}>" placeholder="姓名或授权号查询">
+		                <span class="input-group-btn">
+		                    <button class="btn" type="submit">搜索</button>
+		                </span>
+		            </div>
+		        </form>
+	            
+		            <div class="searResMyJA">
+		                <table class="table">
+		                   <tr>
+		                       <td>姓名</td>
+		                       <td>微信</td>
+		                       <td>级别</td>
+		                       <td>操作</td>
+		                   </tr>
+		                   	<volist name="list" id="vo">
+			                    <tr>
+			                        <td><{$vo.name}></td>
+			                        <td><{$vo.weixin}></td>
+			                        <td style="width: 30%;"><{$vo.agent_lv_name}><span class="colorLighter btn-block"><{$vo.is_validate_name}></span></td>
+			                        <td style="width: 10%;">
+			                        	<a href="__APP__/AgentManage/editMyAgentView.html?aid=<{$vo.agentid}>"><i class="icon_edit"></i></a>
+		                        	</td>
+			                    </tr>
+			                </volist>
+		                    
+		                </table>
+		                <nav>
+						  <ul class="pagination">
+						    <{$page}>
+						  </ul>
+						</nav>
+		            </div>
+	            <if condition="!$list">
+	            	<center><{$empty}></center>
+		        </if>
+		        
+	        </div>
+	    </div>
+	</div>
+    <script type="text/javascript">
+    	$(function(){
+    		//分页
+		    $('.pagination li').click(function(){
+		        var page = $(this).children('a').attr('page');
+		        var class_name = $(this).attr('class');
+		        var search = '<{$search}>';
+
+		        if(class_name != 'active'){
+		        	location.href = '__APP__/AgentManage/myAgent.html?status=1&p='+page+'&search='+search;
+			        
+		        }
+		        
+		    });
+    	});
+
+    </script>
+</block>
+<block name="footer">
+	<include file="Public/footer" />
+</block>

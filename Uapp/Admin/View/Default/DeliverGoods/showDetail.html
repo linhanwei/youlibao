@@ -1,0 +1,75 @@
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">发货详情</h4></li>
+</ul>
+<p class="text-justify">发货单号:<{$order_info.order_sn}></p>
+<p class="text-justify">发货人:<{$order_info.admin_name}></p>
+<p class="text-justify">发货人微信号:<{$admin_info.weixin}></p>
+<p class="text-justify">收货人:<{$order_info.consignee}></p>
+<p class="text-justify">收货人微信号:<{$member_info.weixin}></p>
+<p class="text-justify">发货时间:<{$order_info.add_time}></p>
+<div class="panel panel-default" style="margin-top: 20px;">
+	<table class="table">
+        <thead>
+          <tr>
+            <th>商品编号</th>
+            <th>商品名称</th>
+            <th>条形码</th>
+            <th>商品图片</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        	<volist name="list" id="vo">
+				<tr>
+					<th scope="row"><{$vo.goods_id}></th>
+					<td><{$vo.goods_name}></td>
+          <td><{$vo.code}></td>
+					<td><img src="<{$vo.index_pic}>"  class="img-rounded" style="width: 80px;"></td>
+          <td>
+            <button type="button" aid="<{$vo.order_sn}>" code="<{$vo.code}>" web_type="" class="btn btn-danger del_agent">删除</button>
+          </td>
+				</tr>
+			</volist>
+        </tbody>
+  	</table>
+  	
+</div>
+<if condition="!$order_info">
+	<center>没有发货单</center>
+</if>
+<script>
+	$(function(){
+      //删除
+      $('.del_agent').click(function(event) {
+        /* Act on the event */
+        var aid = $(this).attr('aid');
+        var code = $(this).attr('code');
+
+
+        if(aid == ''){
+          alert('请选择订单');
+          return false;
+        }
+
+        if(code == ''){
+          alert('请选择条形码');
+          return false;
+        }
+
+        if (confirm("是否确定删除"))  {  
+          $.post('__APP__/DeliverGoods/delOrderGoods.html', {order_sn: aid,code:code}, function(data) {
+            alert(data.msg);
+            if(data.status == 1){
+              LoadPage("__APP__/DeliverGoods/showDetail.html",{aid:aid});
+            }
+          });
+        }
+
+        return false;
+
+      });
+
+	      
+	});
+
+</script>

@@ -1,0 +1,16 @@
+<extend name="Public:base" />
+<block name="main">
+    <div class="main">
+        <div class="container-fluid">
+           	<div class="row">
+           		<div class="col-xs-6 col-md-4"><button type="button" class="btn btn-success"><h3>有效代理总数:<{$valid_count}></h3></button></div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6 col-md-4"><button type="button" class="btn btn-warning"><h3>待审核:<{$stay_count}></h3></button></div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6 col-md-4"><button type="button" class="btn btn-info"><h3>总代理数:<{$all_count}></h3></button></div>
+			</div>
+        </div>
+    </div>
+</block>

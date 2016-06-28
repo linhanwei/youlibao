@@ -1,0 +1,131 @@
+<extend name="Public:base" />
+<block name="title"><title>更改下级代理</title></block>
+<block name="header">
+   
+</block>
+<block name="main">
+	<div class="container noMargin juniorAgentEdit">
+		<form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/editMyAgent.html">
+	        <!-- <p class="colorLighter text-center">上级审核后，立即生效</p> -->
+			<input type="hidden" name="agentid"  value="<{$agent_info.agentid}>">
+			<fieldset disabled>
+		        <div class="input-group ">
+		            <span class="input-group-btn">
+		            <label  class="control-label">代理姓名:</label></span>
+		            <input type="text" class="form-control"  name="name" value="<{$agent_info.name}>" disable>
+		        </div>
+		        <div class="input-group ">
+		            <span class="input-group-btn">
+		            <label  class="control-label">代理微信:</label></span>
+		            <input type="text" class="form-control" name="weixin" value="<{$agent_info.weixin}>">
+		        </div>
+		        <div class="input-group ">
+		            <span class="input-group-btn">
+		            <label  class="control-label">代理星级:</label></span>
+		            <input type="text" class="form-control" name="star" value="<{$agent_info.agent_lv_name}>">
+		        </div>
+		        <div class="input-group ">
+		            <span class="input-group-btn">
+		            <label  class="control-label">开始时间:</label></span>
+		            <input type="text" class="form-control" name="start_time" value="<{$agent_info.start_date_time}>">
+		        </div>
+		        <div class="input-group ">
+		            <span class="input-group-btn">
+		            <label  class="control-label">结束时间:</label></span>
+		            <input type="text" class="form-control" name="" value="<{$agent_info.end_date_time}>">
+		        </div>
+		    </fieldset>
+	        <div class="input-group ">
+	            <span class="input-group-btn">
+	            <label  class="control-label">所在省份:</label></span>
+	            <select class="form-control" name="province" id="province">
+				  <option value="<{$agent_info.province}>"><{$agent_info.province}></option>
+				</select>
+	        </div>
+	        <div class="input-group ">
+	            <span class="input-group-btn">
+	            <label  class="control-label">所在城市:</label></span>
+	            <select class="form-control" name="city" id="city">
+				  <option value="<{$agent_info.city}>"><{$agent_info.city}></option>
+				</select>
+	        </div>
+	        <div class="input-group ">
+	            <span class="input-group-btn">
+	            <label  class="control-label">所在县、区:</label></span>
+	            <select class="form-control" name="county" id="county">
+				  <option value="<{$agent_info.county}>"><{$agent_info.county}></option>
+				</select>
+	        </div>
+	        <div class="input-group ">
+	            <span class="input-group-btn">
+	            <label  class="control-label">详细地址:</label></span>
+	            <input type="text" class="form-control" name="" value="<{$agent_info.address}>">
+	        </div>
+	        <div class="input-group ">
+	            <span class="input-group-btn">
+	            <label  class="control-label">代理QQ:</label></span>
+	            <input type="text" class="form-control" name="qq" value="<{$agent_info.qq}>">
+	        </div>
+	        <fieldset disabled>
+		        <div class="input-group ">
+		            <span class="input-group-btn">
+		            <label  class="control-label">代理编号:</label></span>
+		            <input type="text" class="form-control" name="" value="<{$agent_info.agentno}>">
+		        </div>
+		        <div class="input-group ">
+		            <span class="input-group-btn">
+		            <label  class="control-label">代理手机:</label></span>
+		            <input type="text" class="form-control" name="" value="<{$agent_info.tel}>">
+		        </div>
+		        <div class="input-group ">
+		            <span class="input-group-btn">
+		               <label  class="control-label">身份证号:</label>
+		            </span>
+		            <input type="text" class="form-control" name="" value="<{$agent_info.cardno}>">
+		        </div>
+		    </fieldset>
+	        <div class="row-default">
+	            <button type="submit" class="btn  btn-block">修改</button>
+	        </div>
+	    </form>
+	</div>
+	<script src="__PUBLIC__/Common/js/area.js"></script>
+    <script type="text/javascript">
+    	var s=["province","city","county"];//三个select的name
+    	var province = '<{$agent_info.province}>';
+    	var city = '<{$agent_info.city}>';
+    	var county = '<{$agent_info.county}>';
+    	province = province ? province : "省份";
+    	city = city ? city : "地级市";
+    	county = county ? county : "市、县级市";
+		var opt0 = [province,city,county];//初始值
+    	_init_area();
+
+    	$(function(){
+    		$('.btn-block').click(function(event) {
+    			$('#myForm').submit(function() {
+			  		// var code = is_empty('#code');
+			  		
+			  		// if(code === false){
+			  		// 	showMsg('商品编码不能为空!');
+			  		// 	return false;
+			  		// }
+
+			  		$(this).ajaxSubmit(function(data){
+		                showMsg(data.msg);
+		                console.log(data);
+			  		}); 
+
+				    //防止页面刷新
+				    return false;
+			  		
+			   	});
+    		});
+    		
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <include file="Public/footer" />
+</block>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="cleartype" content="on">
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0,initial-scale=1, user-scalable=no">
+        <meta http-equiv="Pragma" content="no-cache" />   
+        <meta http-equiv="Cache-Control" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        <link href="__PUBLIC__/plug/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="__PUBLIC__/Mobile/css/style.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script src="__PUBLIC__/plug/jquery/1.11.3/jquery.min.js"></script>
+        <script src="__PUBLIC__/plug/bootstrap/js/bootstrap.min.js"></script>
+        
+        <link href="__PUBLIC__/Mobile/css/common.css" rel="stylesheet" />
+        <link href="__PUBLIC__/Mobile/css/index.css" rel="stylesheet"/>
+        <script src="__PUBLIC__/Mobile/js/echarts.js"></script>
+        <script src="__PUBLIC__/Mobile/js/common.js"></script>
+
+        <script>
+           
+            function LoadPage(url,data,ele){
+                var element = ele ? ele : '.main .container-fluid';
+                if(url){
+                    $.post(url, data, function(data) {
+                        /*optional stuff to do after success */
+                        $(element).html(data);
+                    });
+                    
+                }
+            }
+
+            function is_empty(ele){
+                if(!ele){
+                    return false;
+                }
+
+                var val = $(ele).val();
+
+                if(!val){
+                    return false;
+                }
+
+                return val;
+            }
+
+            function showMsg(msg){
+                alert(msg);
+            }
+
+            function isWeiXin(){
+                var ua = window.navigator.userAgent.toLowerCase();
+                if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+
+            
+        </script>
+        <block name="title"><title>__WEBNAME__-裂变系统</title></block>
+    </head>
+    <body>
+       
+            <block name="header">
+                
+            </block>
+            <block name="main">
+              
+            </block>
+            <block name="footer"></block>
+       
+    </body>
+</html>
