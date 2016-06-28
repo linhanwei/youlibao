@@ -1,0 +1,223 @@
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success">财务管理<h4 style="margin:0;"></h4></li>
+</ul>
+<form id="myForm" class="form-inline" method="post" action="__APP__/Finance/index.html" enctype="multipart/form-data">
+<!--	<div class="form-group">
+	    <label for="exampleInputName2">代理星级</label>
+	    <select class="form-control" name="star" id="star">
+  			<option value="">--请选择--</option>
+	  		<volist name="agent_lv_list" id="lvo">
+		  		<option value="<{$lvo.lv}>"><{$lvo.name}></option>
+		  	</volist>
+		</select>
+  	</div>-->
+        <div class="form-group">
+	    <label for="exampleInputName2">
+		    <select class="form-control" name="year" id="search_field">
+<!--		  		<option value="">年份</option>
+                                <option value="<{$year}>"><{$year}></option>-->
+                                 <{$year}>
+		  		<option value="2016">2016</option>
+                                <option value="2016">2017</option>
+			</select>
+		</label>
+  	</div>
+   <div class="form-group">
+	    <label for="exampleInputName2">
+		    <select class="form-control" name="month" id="search_field">
+                                 <!--<{$month}>-->
+                                 <{$month}>
+<!--		  		<option value="">月份</option>
+                                <option value="<{$month}>"><{$month}></option>-->
+		  		<option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+			</select>
+		</label>
+  	</div>
+  	<!-- <div class="form-group">
+	    <label for="exampleInputEmail2">商品标题</label>
+	    <input type="text" class="form-control" id="title" name="title">
+  	</div> -->
+  	<button type="submit" class="btn btn-default">搜索</button>
+</form>
+<div class="panel panel-default" style="margin-top: 20px;">
+	<table class="table">
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>等级</th>
+            <th>团队</th>
+            <th>手机</th>
+            <th>时间</th>
+            <th>提款账户</th>
+            <th>提款姓名</th>
+            <th>提款银行</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        	<volist name="list" id="vo">
+				<tr>
+					<th scope="row"><{$vo.agentName}></th>
+					<td><{$vo.lv_name}></td>
+                                        <td><{$vo.team_name}></td>
+                                        <td><{$vo.tel}></td>
+					<td><{$vo.year}>-<{$vo.month}></td>
+					<td><{$vo.bank_account}></td>
+					<td><{$vo.agent_true_name}></td>
+                                        <td><{$vo.bank_name}></td>
+                                        <td>
+                                            <button>提款</button>
+                                        </td>
+<!--                                        <td><{$vo.sale_total_stock}></td>
+					<td><{$vo.is_profit}></td>
+					<td><{$create_time|date="y-m-d",###}></td>
+                                        <td><{$vo.edit_time}></td>-->
+				</tr>
+			</volist>
+        </tbody>
+  	</table>
+</div>
+<nav>
+  <ul class="pagination">
+    <{$page}>
+    <li>
+		<a>总记录数:<{$list_count}></a>
+	</li>
+  </ul>
+</nav>
+<script>
+	$(function(){
+
+	  	//分页
+	    $('.pagination li').click(function(){
+	        var page = $(this).children('a').attr('page');
+	        var class_name = $(this).attr('class');
+	        var pid = '<{$search.parent_id}>';
+	        var search_field = '<{$search.search_field}>';
+	        var search_value = '<{$search.search_value}>';
+	        var star = '<{$search.star}>';
+	        var stat = '<{$search.stat}>';
+
+	        if(class_name != 'active'){
+		        LoadPage('__APP__/Finance/index.html',{'p': page,'pid':pid,'search_field':search_field,'search_value':search_value,'star':star,'status':stat});
+	        }
+	        
+	    });
+
+	    //下级代理
+	    $('.next_agent').click(function(){
+	    	var aid = $(this).attr('aid');
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+	        LoadPage('__APP__/AgentManage/index.html',{'pid':aid});
+	        
+	    });
+
+	    //下载证书
+	    $('.download').click(function(){
+	    	var aid = $(this).attr('aid');
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+	    	var url = '__APP__/AgentManage/downAuthBook.html?aid='+aid;
+	    	window.open(url);
+
+	    	return false;
+	    });
+
+	    //查看证书
+	    $('.show_auth').click(function(){
+	    	var aid = $(this).attr('aid');
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+	        LoadPage('__APP__/AgentManage/showAuthBook.html',{'aid':aid});
+	        
+	    });
+
+
+	    //修改
+	    $('.edit_agent').click(function(event) {
+	    	/* Act on the event */
+	    	var aid = $(this).attr('aid');
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+	    	LoadPage('__APP__/AgentManage/editAgentView.html',{'aid':aid});
+
+	    });
+
+	    //通过
+	    $('.adopt_agent').click(function(event) {
+	    	/* Act on the event */
+	    	var aid = $(this).attr('aid');
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+
+	    	if (confirm("是否确定通过"))  {  
+		    	$.post('__APP__/AgentManage/adoptAgent.html', {aid: aid}, function(data) {
+		    		alert(data.msg);
+		    		if(data.status == 1){
+		    			LoadPage("__APP__/AgentManage/index.html",{status:-2});
+		    		}
+		    	});
+		    }
+
+		    return false;
+	    });
+
+	    //删除
+	    $('.del_agent').click(function(event) {
+	    	/* Act on the event */
+	    	var aid = $(this).attr('aid');
+
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+
+	    	if (confirm("是否确定删除"))  {  
+		    	$.post('__APP__/AgentManage/delAgent.html', {aid: aid}, function(data) {
+		    		alert(data.msg);
+		    		if(data.status == 1){
+		    			LoadPage("__APP__/AgentManage/index.html");
+		    		}
+		    	});
+		    }
+
+		    return false;
+
+	    });
+
+	    //搜索
+	    $('#myForm').submit(function() {
+		  		 
+	  		$(this).ajaxSubmit(function(data){
+               $('.main .container-fluid').html(data);
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+	      
+	});
+
+</script>
