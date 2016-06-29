@@ -1,7 +1,15 @@
 <header class="grid">
     <dl class="rowA">
         <dd class="col col-6 fb far">
-            <div class="user_pic"><img src="__PUBLIC__/Mobile/images/home_pic.png"/></div>
+            <div class="user_pic">
+                <a href="__APP__/Profile/index.html" title="">
+                    <if condition="$member_info['head_img']">
+                        <img src="$member_info['head_img']"/>
+                    <else/>
+                        <img src="__PUBLIC__/Mobile/images/home_pic.png"/>
+                    </if>
+                </a>
+            </div>
         </dd>
         <dd class="col col-15 user-info">
             <div class="rowA headLis">
@@ -16,7 +24,11 @@
                 <div class="col superior fb fac"><span><{$member_info.parent_name}></span></div> 
             </div> 
         </dd>
-        <dd class="col set col-5 fb fac"><span>设置<i class="arrow-white-right"></i></span></dd>
+        <dd class="col set col-5 fb fac">
+            <a href="__APP__/Profile/index.html" title="">
+                <span>设置<i class="arrow-white-right"></i></span>
+            </a>
+        </dd>
     </dl>
     <div class="empowerPic"><img src="__PUBLIC__/Mobile/images/icon_certificate.png"/> </div>
 </header>
