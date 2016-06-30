@@ -1,7 +1,7 @@
 <ul class="list-group" >
     <li class="list-group-item list-group-item-success">财务管理<h4 style="margin:0;"></h4></li>
 </ul>
-<form id="myForm" class="form-inline" method="post" action="__APP__/Finance/index.html" enctype="multipart/form-data">
+<form id="myForm" class="form-inline" method="post" action="__APP__/Finance/operate.html" enctype="multipart/form-data">
 <!--	<div class="form-group">
 	    <label for="exampleInputName2">代理星级</label>
 	    <select class="form-control" name="star" id="star">
@@ -16,7 +16,7 @@
 		    <select class="form-control" name="year" id="search_field">
                                  <{$year}>
 		  		<option value="2016">2016</option>
-                                <option value="2016">2017</option>
+                                <option value="2017">2017</option>
 			</select>
 		</label>
   	</div>
@@ -48,7 +48,7 @@
                                         <td><{$vo.all_surplus_profit}></td>
 					<td><{$vo.all_real_profit}></td>
                                         <td>
-                                            <button onclick="window.location.replace('__APP__/Finance/showAllDetail.html?year=<{$vo.year}>&month=<{$vo.month}>')">详情</button>
+                                            <button onclick='LoadPage("__APP__/Finance/showAllDetail.html",{year:<{$vo.year}>,month:<{$vo.month}>,flag:"2"})'>详情</button>
                                         </td>
 				</tr>
 			</volist>
@@ -82,5 +82,15 @@
 	        
 	    });
         });
+        
+          //搜索
+	    $('#myForm').submit(function() {
+	  		$(this).ajaxSubmit(function(data){
+               $('.main .container-fluid').html(data);
+	  		}); 
+		    //防止页面刷新
+		    return false;
+	   	});
+
 
 </script>

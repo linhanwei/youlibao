@@ -18,7 +18,7 @@
                                 <option value="<{$year}>"><{$year}></option>-->
                                  <{$year}>
 		  		<option value="2016">2016</option>
-                                <option value="2016">2017</option>
+                                <option value="2017">2017</option>
 			</select>
 		</label>
   	</div>
@@ -79,9 +79,12 @@
                                         <td><{$vo.company_profit}></td>
 					<td><{$vo.agent_true_name}></td>
                                         <td><{$vo.bank_name}></td>
-                                        <td>
-                                            <button onclick="window.location.replace('__APP__/Finance/shOneData.html?id=<{$vo.id}>')">审核</button>
-                                            <button onclick="window.location.replace('__APP__/Finance/showAllDetail.html?i?year=<{$vo.year}>&month=<{$vo.month}>')">详情</button>
+                                        <td><{$vo.is_profit}>
+                                            <!--LoadPage("__APP__/Finance/index.html",{flag:1})-->
+                                            <!--<button onclick="window.location.replace('__APP__/Finance/shOneData.html?id=<{$vo.id}>')">审核</button>-->
+                                            <button onclick='LoadPage("__APP__/Finance/shOneData.html",{id:<{$vo.id}>})'>审核</button>
+                                            <!--<button onclick="window.location.replace('__APP__/Finance/showAllDetail.html?year=<{$vo.year}>&month=<{$vo.month}>')">详情</button>-->
+                                             <button onclick='LoadPage("__APP__/Finance/showAllDetail.html",{year:<{$vo.year}>,month:<{$vo.month}>,is_profit:<{$vo.is_profit}>,agent_id:<{$vo.agent_id}>,flag:"0"})'>详情</button>
                                         </td>
 				</tr>
 			</volist>
@@ -115,5 +118,20 @@
 	        
 	    });
         });
+        
+        
+        
+        
+	    //搜索
+	    $('#myForm').submit(function() {
+		  		 
+	  		$(this).ajaxSubmit(function(data){
+               $('.main .container-fluid').html(data);
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+
 
 </script>

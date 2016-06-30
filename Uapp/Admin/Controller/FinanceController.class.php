@@ -5,11 +5,13 @@ class FinanceController extends CommonController {
     
     protected $CompanyReportsLog;
     protected $AgentProfitLog;
+    protected $Agent_lv_list;
     function __construct(){ //定义构造函数
         //继承父类
         parent::__construct();
         $this->CompanyReportsLog=D('CompanyReportsLog');
         $this->AgentProfitLog=D('AgentProfitLog');
+        $this->Agent_lv_list=C('MEMBER_LEVEL');
     }
     
     public function index(){
@@ -33,11 +35,13 @@ class FinanceController extends CommonController {
          $order='add_time desc';
          $page = I('p',1);
          //总的条件为：未分润  is_profit=2
-          if($flag){
-             $where['is_profit']=1;     
+          if($flag=="0"){
+             $where['is_profit']=2;     
           }else{
-              $where['is_profit']=2; 
+              $where['is_profit']=1; 
           }
+//          dump($flag=="0");
+//          dump($flag);
          //获取的数据库模型的对象
          $AgentMonthProfit = D('AgentMonthProfit');
          $Agent = D('Agent');
@@ -66,6 +70,7 @@ class FinanceController extends CommonController {
         $this->assign('list',$list);
         $this->assign('year',$year);
         $this->assign('count',$count);
+        
         if($year){
              $this->assign('year','<option value='.$year.'>'.$year.'</option>');
         }else{
@@ -100,13 +105,15 @@ class FinanceController extends CommonController {
         $count      = $this->CompanyReportsLog->getCount($where,array('key'=>false,'expire'=>null,'cache_type'=>null));// 查询满足要求的总记录数
         $Page       = new \Think\Page($count,$limit);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show       = $Page->show();// 分页显示输出
-        $list=$this->CompanyReportsLog->getList($wher,$limit,$page,$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null));
-//        dump($list);
+        $list=$this->CompanyReportsLog->getList($where,$limit,$page,$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null));
         if($year){
              $this->assign('year','<option value='.$year.'>'.$year.'</option>');
         }else{
              $this->assign('year','<option value="">年份</option>');
         }
+//        dump($count);
+//        dump($list);
+//        dump($year);
         $this->assign('page',$show);// 赋值分页输出
         $this->assign('count',$count);
         $this->assign('list',$list);
@@ -120,17 +127,42 @@ class FinanceController extends CommonController {
     public function  showAllDetail(){
          $year = I('year');
          $month = I('month');
+         $is_profit = I('is_profit');
+         $agent_id = I('agent_id');
+         $flag = I('flag');
          $page = I('p',1);
          if($year && $month){
             //条件内容
             $where['year']=$year;
             $where['month']=$month;
          }
+         //增加对应的选择条件
+         if($is_profile){
+             $where['is_profit']=$is_profit;
+         }
+         if($agent_id){
+             $where['profit_agent_id']=$agent_id;
+         }
         $limit=10;
         $count      = $this->AgentProfitLog->getCount($where,array('key'=>false,'expire'=>null,'cache_type'=>null));// 查询满足要求的总记录数
         $Page       = new \Think\Page($count,$limit);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show       = $Page->show();// 分页显示输出
         $list=$this->AgentProfitLog->getList($where,$limit,$page,$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null));
+        //$this->Agent_lv_list
+         if($list){
+            foreach ($list as $k => $v) {
+                $list[$k]['profit_agent_lv_name'] = $this->Agent_lv_list[$v['profit_agent_lv']]['name'];
+                $list[$k]['buy_agent_lv_name'] = $this->Agent_lv_list[$v['buy_agent_lv']]['name'];
+                //状态的标示
+                if($v['is_profit']=="1"){
+                      $list[$k]['status_name']='已提现';
+                }  
+                else {
+                      $list[$k]['status_name']='未提现';
+                }
+              
+            }
+        }
         if($year){
              $this->assign('year','<option value='.$year.'>'.$year.'</option>');
         }else{
@@ -144,6 +176,7 @@ class FinanceController extends CommonController {
         $this->assign('page',$show);// 赋值分页输出
         $this->assign('count',$count);
         $this->assign('list',$list);
+        $this->assign('flag',$flag);
         $this->assign('count',$count);
         $this->display('detail');
     }
@@ -153,6 +186,7 @@ class FinanceController extends CommonController {
 
     public function shOneData(){
         $id = I('id');
+        
         //实体模型对象
         $AgentMonthProfit = D('AgentMonthProfit');
         $Agent = D('Agent');
@@ -187,7 +221,8 @@ class FinanceController extends CommonController {
 //            $Agent->commit();
         } 
         }
-        redirect('/index');
+//        $this->display('index');
+        $this->redirect('index');
     }
     
     
@@ -207,7 +242,7 @@ class FinanceController extends CommonController {
     //公司的总账表的修改
     public function doCompanyAccountData($money){
          
-         //$Nwhere['_string'] = 'status=2 OR status=3';
+         //$Nwhere['_string'] = 'status=2 OR status=3';   
          $Nwhere['status']=2;
          //查出对应的数据[状态为:2  3标示]
          $report=$this->CompanyReportsLog->getDetail($Nwhere,$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null));
@@ -222,7 +257,7 @@ class FinanceController extends CommonController {
              $report['not_profit']=$report['total_profit']-$report['real_profit'];
              $dateTime=date("Y-m-d H:i:s");
              $report['edit_time']=$dateTime;             
-             $CompanyReportsLog->editData($where=array('id'=>$report['id']),$report);
+             $this->CompanyReportsLog->editData($where=array('id'=>$report['id']),$report);
          }
     }
         
