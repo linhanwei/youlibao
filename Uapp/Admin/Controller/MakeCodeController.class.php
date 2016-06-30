@@ -384,7 +384,7 @@ class MakeCodeController extends CommonController {
         return $maxInfo;
     }
     
-    //获取公共号码 code_type前缀类型:1:大标,2:小标:3:防伪标,4:中标
+    //获取公共号码 code_type前缀类型:1:大标,2:中标,3:小标:4:防伪标,
     /**
      * 
      * @param type $code_type //标签类型

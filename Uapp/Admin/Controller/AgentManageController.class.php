@@ -532,7 +532,7 @@ class AgentManageController extends CommonController {
             $addData['inviteCode'] = $inviteCode;
             $addData['name'] = $name;
             $addData['team_name'] = $team_name;
-            $addData['agentId'] = 1;
+            $addData['agentId'] = $top2_id;
             $addData['star'] = $star;
             $addData['stat'] = 0;
             $addData['top2_id'] = $top2_id;
