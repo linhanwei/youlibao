@@ -15,6 +15,9 @@ return array(
         'LOG_LEVEL'  =>'EMERG,ALERT,CRIT,ERR', // 只记录EMERG ALERT CRIT ERR 错误
         'LOG_TYPE'              =>  'File', // 日志记录类型 默认为文件方式
     
+        //下级限制总人数
+        'NEXT_AGENT_COUNT'=>20,
+    
         //会员表信息
         'M_TABLE_NAME'=>'Member',
         'MID_FIELD_NAME'=>'ID',
@@ -37,12 +40,13 @@ return array(
             -3=>array('lv'=>-3,'name'=>'驳回修改'),
         ),
     
-        //标签区间 type: 1:大标,2:小标,3:防伪标,4:中标
+        //标签区间 type: 1:大标,2:中标,3:小标:4:防伪标,
         'LABEL_CODE_SECTION'=>array(
             array('start'=>1200001,'end'=>2200000,'type'=>1),
-            array('start'=>2800001,'end'=>3800000,'type'=>4),
-            array('start'=>7800001,'end'=>8800000,'type'=>3),
-            array('start'=>4200001,'end'=>5200000,'type'=>2)
+            array('start'=>2800001,'end'=>3800000,'type'=>2),
+            array('start'=>4200001,'end'=>5200000,'type'=>3),
+            array('start'=>7800001,'end'=>8800000,'type'=>4),
+            
         ),
 
 	// 设置默认的模板主题
@@ -87,7 +91,7 @@ return array(
 	'DEFAULT_MODULE'       =>    'Mobile',						//设置默认模块
 	'APP_SUB_DOMAIN_DEPLOY'   =>    1, // 开启子域名配置
 	'APP_SUB_DOMAIN_RULES'    =>    array( 
-		'gcc'   => 'Admin',   // api.domain.com域名指向Test模块),
+		'adminmsb'   => 'Admin',   // api.domain.com域名指向Test模块),
 		'msb'   => 'Mobile',  // m.domain.com域名指向Test模块),
              
 	),

@@ -6,8 +6,8 @@
  * Time: 11:59
  */
 return array(
-    'WX_APPID'=> 'wx810013b3b14a05e9',
-    'WX_APPSECRET'=>'c6c9fc661eaad7779a26a065c7925552',
-    'WX_TOKEN'=>'kudouyuns'
+    'WX_APPID'=> 'wx4a9e1baa09a7b3ae',
+    'WX_APPSECRET'=>'fa863214769e0e700e6453849b91cce1',
+    'WX_TOKEN'=>'kudouyliba'
 
 );
