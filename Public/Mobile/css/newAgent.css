@@ -1,0 +1,33 @@
+body {
+  background-color: #fff; }
+
+.container {
+  padding: 10px 20px 10px 15px; }
+
+.input-group {
+  margin-bottom: 20px;
+  width: 100%; }
+
+.form-control {
+  margin-left: 5px;
+  height: auto !important;
+  padding: 4% 12px !important; }
+
+.tips {
+  margin: 2% 0; }
+
+/**/
+.label-tit {
+  color: #2e2e2e;
+  margin: 10px 0px 5px;
+  font-size: 16px; }
+
+.agentName, select.form-control {
+  background-color: #f6f6f6 !important;
+  border-width: 0 !important; }
+
+.footer {
+  position: absolute;
+  bottom: 5px;
+  width: 100%;
+  left: 0; }

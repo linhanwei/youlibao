@@ -85,6 +85,28 @@ input[type="text"], input[type="tel"], input[type="password"], input[type="searc
 img {
   width: 100%; }
 
+a {
+  color: #2e2e2e; }
+
+a, a:focus, button, button:focus, .btn, .btn:focus, input, textarea {
+  text-decoration: none;
+  outline: none;
+  border: 1px solid transparent; }
+
+input, textarea, select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 0; }
+
+select {
+  background-image: url("../images/icon_pulldown.png") !important;
+  background-position: right center;
+  background-size: 20px auto;
+  background-repeat: no-repeat; }
+
 /***************************布局******************************/
 .fb, .grid .rowA {
   display: -webkit-box;
@@ -357,7 +379,60 @@ img {
   background-image: url("../images/next_gray_content.png"); }
 
 body {
-  background-color: #f6f6f6; }
+  color: #2e2e2e; }
+
+.table-responsive {
+  border-width: 0; }
+
+.input-group-btn {
+  font-size: 14px; }
+
+.form-control {
+  border: 1px solid #e5e5e5 !important;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
+  .form-control[placeholder] {
+    color: #7c7c7c; }
 
 .price:before {
   content: '￥'; }
+
+.btn-submit {
+  background-color: #54a5ff;
+  color: #fff;
+  font-size: 16px;
+  padding: 3% 0;
+  width: 90%;
+  margin: 0 auto; }
+  .btn-submit:focus {
+    color: #fff; }
+
+/**/
+.table tr td, .table tr th {
+  padding: 4% 0 !important; }
+
+/*搜索*/
+.searchInputBox {
+  width: 100%;
+  position: relative; }
+  .searchInputBox:before {
+    content: '';
+    background-image: url("../images/icon_search.png");
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 4px;
+    z-index: 999;
+    background-size: 100%;
+    top: 7px; }
+  .searchInputBox input {
+    padding: 0 25px;
+    border-radius: 20px;
+    background-color: #f6f6f6;
+    border-color: transparent !important;
+    border-top-right-radius: 20px !important;
+    border-bottom-right-radius: 20px !important; }
+  .searchInputBox .btn {
+    border-color: transparent;
+    background-color: transparent;
+    color: #2e2e2e; }

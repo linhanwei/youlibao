@@ -1,0 +1,110 @@
+.banner {
+  width: 100%;
+  position: relative;
+  overflow: hidden; }
+  .banner .slider-outer li {
+    float: left; }
+  .banner .carousel-status {
+    width: 100%;
+    height: 11px;
+    position: absolute;
+    z-index: 1;
+    bottom: 5px;
+    text-align: center; }
+    .banner .carousel-status ul {
+      display: inline-block;
+      height: 6px;
+      padding: 3px 5px;
+      border-radius: 6px;
+      font-size: 0;
+      vertical-align: top; }
+      .banner .carousel-status ul li {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 6px;
+        background: #b3b3b3;
+        margin: 0 5px;
+        vertical-align: top;
+        overflow: hidden; }
+        .banner .carousel-status ul li.on {
+          background: #54a5ff; }
+  .banner .slider-outer {
+    position: relative;
+    z-index: 0; }
+
+header .product {
+  padding: 3% 2%;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5; }
+
+header .product_Name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
+
+header .price {
+  color: #cb1a25; }
+
+.showMore {
+  text-align: center;
+  padding: 2% 0; }
+  .showMore span {
+    color: #7c7c7c; }
+    .showMore span:after {
+      content: '';
+      background-size: 100%;
+      background-repeat: no-repeat;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-right: 2px;
+      vertical-align: middle;
+      background-image: url("../images/icon_down.png");
+      margin-left: 5px; }
+    .showMore span.active:after {
+      background-image: url("../images/icon_up.png"); }
+
+.messageBox {
+  border-top: 1px solid #e5e5e5;
+  margin: 1% 3% 0;
+  padding: 2% 0; }
+
+.main {
+  border-top: 10px solid #f6f6f6;
+  text-align: center; }
+  .main h3 {
+    color: #cb1a25;
+    font-size: 16px;
+    margin: 4% 0 3%; }
+  .main .showTrue .col {
+    margin: 1% 4%; }
+  .main .showTrue p {
+    font-size: 15px;
+    margin-bottom: 2%; }
+  .main .tips {
+    margin: 3% 0; }
+    .main .tips p {
+      color: #cb1a25; }
+  .main .search {
+    padding: 2% 7% 0; }
+    .main .search input {
+      background-color: #f6f6f6;
+      border-radius: 3px;
+      line-height: 36px;
+      padding-left: 3%;
+      display: block;
+      width: 100%;
+      margin-bottom: 5%; }
+      .main .search input[placeholder] {
+        color: #b3b3b3; }
+    .main .search .btn-submit {
+      border-radius: 15px; }
+  .main .searchResult {
+    line-height: 24px;
+    margin-bottom: 2%; }
+    .main .searchResult .result-title {
+      margin: 3% 0; }
+      .main .searchResult .result-title span {
+        color: #cb1a25;
+        padding-left: 5px; }

@@ -1,0 +1,35 @@
+.container {
+  text-align: center;
+  width: 80%;
+  margin: 6% auto 0; }
+  .container .title {
+    color: #cb1a25;
+    width: 55%;
+    margin: 0 auto 19%; }
+  .container .user-photo {
+    width: 33%;
+    margin: 0 auto;
+    padding-bottom: 7%; }
+  .container .inputBox input {
+    background-color: #f6f6f6;
+    border-radius: 3px;
+    width: 100%;
+    display: block;
+    border-width: 0;
+    margin: 5% 0;
+    padding: 5%; }
+    .container .inputBox input[placeholder] {
+      color: #b3b3b3; }
+    .container .inputBox input[type=submit] {
+      border-radius: 25px;
+      background-color: #54a5ff;
+      color: #fff;
+      text-align: center;
+      margin-top: 10%;
+      font-size: 16px; }
+  .container .inputBox .tips {
+    color: #cb1a25; }
+
+@media screen and (max-width: 320px) {
+  .container {
+    width: 90%; } }

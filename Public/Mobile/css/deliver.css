@@ -1,0 +1,105 @@
+.searchBox {
+  width: 90%;
+  margin: 3% auto; }
+
+.searchInputBox {
+  width: 100%;
+  position: relative; }
+  .searchInputBox:before {
+    content: '';
+    background-image: url("../images/icon_search.png");
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 4px;
+    z-index: 999;
+    background-size: 100%;
+    top: 7px; }
+  .searchInputBox input {
+    padding: 0 25px;
+    border-radius: 20px;
+    background-color: #f6f6f6;
+    border-color: transparent !important;
+    border-top-right-radius: 20px !important;
+    border-bottom-right-radius: 20px !important; }
+  .searchInputBox .btn {
+    border-color: transparent;
+    background-color: transparent;
+    color: #2e2e2e; }
+
+.searchResult h4 {
+  margin-bottom: 3%; }
+
+.searchResult .receiveName {
+  text-align: center;
+  padding: 3%; }
+
+.searchResult .state {
+  padding: 1% 3%; }
+
+.searchResult .radioIcon {
+  width: 25px;
+  height: 25px;
+  display: block;
+  background-size: 100%;
+  background-image: url("../images/icon_select_N.png"); }
+  .searchResult .radioIcon.active {
+    background-image: url("../images/icon_select_H.png"); }
+
+.searchResult .delete {
+  width: 25px;
+  height: 25px;
+  display: block;
+  background-size: 100%;
+  background-image: url("../images/icon_delete.png"); }
+
+.searchResult .serialScan:before {
+  content: "";
+  width: 25px;
+  height: 25px;
+  display: block;
+  background-size: 100%;
+  width: 20px;
+  height: 20px;
+  margin-right: 2%;
+  background-image: url("../images/icon_choose.png"); }
+
+.searchResult .serialScan.active:before {
+  background-image: url("../images/icon_choosed.png"); }
+
+.table-responsive {
+  border-top: 1px solid #e5e5e5;
+  padding: 0 2%;
+  margin-bottom: 25%;
+  width: auto; }
+  .table-responsive .table-bordered {
+    border-color: transparent;
+    border-bottom: 1px solid #e5e5e5; }
+    .table-responsive .table-bordered td, .table-responsive .table-bordered th {
+      border-color: transparent;
+      border-bottom: 1px solid #e5e5e5;
+      text-align: center; }
+
+.footer {
+  position: fixed;
+  bottom: 5px;
+  width: 100%;
+  left: 0;
+  background-color: #fff; }
+  .footer .btn-deliver {
+    background-color: #cb1a25;
+    color: #fff;
+    font-size: 16px;
+    padding: 2% 0;
+    width: 90%;
+    margin: 0 auto; }
+
+.deliverFooter {
+  bottom: 0; }
+  .deliverFooter .totalNum {
+    border-top: 1px solid #e5e5e5;
+    text-align: right;
+    padding: 3%;
+    font-size: 15px; }
+  .deliverFooter .btn {
+    border-radius: 0; }

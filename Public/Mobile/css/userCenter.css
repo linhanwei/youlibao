@@ -1,0 +1,72 @@
+@charset "UTF-8";
+body {
+  background-color: #f6f6f6; }
+
+header {
+  background-image: url("../images/personal_bg.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  max-height: 170px;
+  text-align: center;
+  color: #fff;
+  padding: 3% 0; }
+  header .user-photo {
+    width: 15%;
+    margin: 0 auto 3%; }
+    header .user-photo img {
+      margin-bottom: 10%;
+      border-radius: 50%; }
+  header ul li {
+    border-right: 1px solid #88c0ff; }
+    header ul li:last-child {
+      border-right-width: 0; }
+    header ul li span {
+      display: block;
+      color: #afd3fd;
+      font-size: 13px; }
+      header ul li span.icon:before {
+        background-size: 100%;
+        content: '';
+        vertical-align: middle;
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-top: -2px; }
+      header ul li span.level:before {
+        background-image: url("../images/icon_rant.png"); }
+      header ul li span.team:before {
+        background-image: url("../images/icon_team.png"); }
+      header ul li span.superior:before {
+        background-image: url("../images/icon_superior.png"); }
+
+.list {
+  margin-top: 10px;
+  border-top: 1px solid #e5e5e5;
+  background-color: #fff; }
+  .list dd {
+    border-bottom: 1px solid #e5e5e5;
+    padding: 4% 3%;
+    margin: 0 2%; }
+
+/*修改密码*/
+.changePassword .inputBox .rowA {
+  border-bottom: 1px solid #e5e5e5; }
+
+.changePassword .inputBox input {
+  line-height: 50px;
+  width: 100%;
+  display: block;
+  border-width: 0;
+  padding: 0 5%; }
+  .changePassword .inputBox input[placeholder] {
+    color: #b3b3b3; }
+  .changePassword .inputBox input[type=submit] {
+    border-radius: 4px;
+    background-color: #54a5ff;
+    color: #fff;
+    text-align: center;
+    margin-top: 10%;
+    font-size: 16px; }
+
+.changePassword .inputBox .getVerCode {
+  color: #54a5ff; }
