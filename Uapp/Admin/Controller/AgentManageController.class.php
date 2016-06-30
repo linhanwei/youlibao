@@ -520,6 +520,7 @@ class AgentManageController extends CommonController {
         $star = I('star');
         $team_name = I('team_name');
         $top2_id = I('top2_id',0);
+        $is_founder = I('is_founder');
         
         if($name){
             
@@ -535,6 +536,7 @@ class AgentManageController extends CommonController {
             $addData['star'] = $star;
             $addData['stat'] = 0;
             $addData['top2_id'] = $top2_id;
+            $addData['is_founder'] = $is_founder;
             
             if($top2_id > 0){
                 $AgentRelation = D('AgentRelation');
