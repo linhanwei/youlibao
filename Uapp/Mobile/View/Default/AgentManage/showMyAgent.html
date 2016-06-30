@@ -1,0 +1,49 @@
+<extend name="Public:base" />
+<block name="title"><title>我的代理</title></block>
+<block name="header">
+	<link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+    <!-- <include file="Public/agentHeader" /> -->
+</block>
+<block name="main">
+	<div class="table-responsive partner">
+	    <div class="table-title"><{$agent_info['name']}>的<{$MEMBER_LEVEL[$agent_info['agent_grade']+1]['name']}>（<{$count}>）</div>
+	    <table class="table table-bordered">
+
+	        <tr>
+	            <th>级别</th>
+	            <th>姓名</th>
+	            <th>团队人数</th>
+	            <th>出库数量</th>
+	            <th></th>
+	        </tr>
+	        <if condition="$list">
+		        <volist name="list" id="vo" >
+			        <tr>
+			            
+			            <td><{$MEMBER_LEVEL[$vo['buy_agent_lv']]['name']}></td>
+			            <td><{$vo.name}></td>
+			            <td><{$vo.next_count}></td>
+			            <td><{$vo.all_buy_total_stock}></td>
+			            <td>
+			            	<a href="__APP__/AgentManage/showMyAgent.html?pid=<{$vo.agentid}>"><i class="arrow-gray-right"></i></a>
+		            	</td>
+			        </tr>
+			    </volist>
+	       <else />
+	       		<tr>
+		            <td colspan="5">没有代理</td>
+		        </tr>
+	       </if>
+	       
+	    </table>
+	</div>
+    <script type="text/javascript">
+    	$(function(){
+    		
+    	});
+
+    </script>
+</block>
+<block name="footer">
+	<!-- <include file="Public/footer" /> -->
+</block>

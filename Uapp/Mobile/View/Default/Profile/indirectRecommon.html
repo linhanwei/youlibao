@@ -1,0 +1,55 @@
+<extend name="Public:base" />
+<block name="title"><title>关联推荐</title></block>
+<block name="header">
+	<link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+</block>
+<block name="main">
+    <!-- 开始 -->
+        <div class="table-responsive recommend">
+            <div class="grid">
+                <div class="rowA recommend-title">
+                    
+                    <if condition="$member_info['is_founder'] eq 1">
+                        <div class="col ">
+                             <a href="__APP__/Profile/directRecommon.html">直接推荐</a> 
+                        </div>
+
+                        <div class="col active">
+                            <a  href="__APP__/Profile/indirectRecommon.html">间接推荐</a> 
+                        </div> 
+                    <else/>
+                        <div class="col">
+                             <a href="__APP__/Profile/directRecommon.html">直接推荐</a> 
+                        </div>
+
+                    </if>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                
+                <tr>
+                    <th>级别</th>
+                    <th>姓名</th>
+                    <th>出库数量</th>
+                </tr>
+                <if condition="$list">
+                    <volist name="list" id="vo" >
+                        <tr>
+                            <td><{$MEMBER_LEVEL[$vo['agent_grade']]['name']}></td>
+                            <td>$vo['name']</td>
+                            <td>$vo['all_buy_total_stock']</td>
+                        </tr>
+                    </volist>
+               <else />
+                    <tr>
+                        <td colspan="3">没有推荐人</td>
+                    </tr>
+               </if>
+            </table>
+        </div>
+    <!-- 结束 -->
+	
+</block>
+<block name="footer">
+  <!-- <include file="Public/footer" /> -->
+</block>
