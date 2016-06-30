@@ -169,8 +169,11 @@ class PublicController extends Controller {
     public function searchSecurityResult() {
         $code = I('code');
         
+        $return = array('status'=>0,'msg'=>'没有改防伪码','result'=>'');
+                
         if(empty($code)){
-            $this->error('请输入防伪码');
+            $$return['msg'] = '请输入防伪码';
+            $this->ajaxReturn($return,'json');
         }
         
         $code_info = S($code);
@@ -230,16 +233,17 @@ class PublicController extends Controller {
                 $SecurityCheckLog->addData($addData);
 
                 $log_where['code'] = $code;
-                $list = $SecurityCheckLog->getList($log_where,10,1,'add_time DESC',array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
-                $this->assign('list',$list);
-
-                $log_count = count($list);
-                $this->assign('log_count',$log_count);
+                $result['list'] = $SecurityCheckLog->getList($log_where,10,1,'add_time DESC',array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
+                
+                $result['log_count'] = count($list);
+               
             }
+        }else{
+            $this->ajaxReturn($return,'json');
         }
         
-        $this->assign('code_count',$code_info);
-        $this->display('searchSecurityResult');
+        $return = array('status'=>1,'msg'=>'查询正确','result'=>$result);
+        $this->ajaxReturn($return,'json');
     }
     
     //处理四舍五入防伪码
@@ -387,7 +391,7 @@ class PublicController extends Controller {
             }
             $this->assign('goods_info',$goods_info);
         }
-        
+       
         $this->display('serchProductResult');
         
     }

@@ -1,0 +1,46 @@
+<extend name="Public:base" />
+<block name="title"><title>发货</title></block>
+<block name="header">
+    <link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+    <!-- <include file="Public/agentHeader" /> -->
+</block>
+<block name="main">
+	<!-- 开始 -->
+	<div class="table-responsive stock">
+	    <table class="table table-bordered">
+	        <tr>
+	            <th>产品图片</th>
+	            <th>产品名称</th>
+	            <th>数量(盒)</th>
+	            <th>价格(U币)</th>
+	            <th></th>
+	        </tr>
+	        <if condition="$list">
+		        <volist name="list" id="vo" >
+			        <tr>
+			            <td><img class="pic_product" src="<{$vo.index_pic}>"/> </td>
+			            <td><{$vo.short_name}></td>
+			            <td><{$vo.goods_stock}></td>
+			            <td><{$vo.buy_total_money}></td>
+			            <td><a href="__APP__/StockManage/saleStuckLog.html"><i class="arrow-gray-right"></i></a></td>
+			        </tr>
+			 </volist>
+	       <else />
+	       		<tr>
+                    <td colspan="5">没有产品</td>
+                </tr>
+	       </if>
+
+	    </table>
+	</div>
+	<script type="text/javascript">
+	    
+    	$(function(){
+	    		
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <!-- <include file="Public/footer" /> -->
+</block>

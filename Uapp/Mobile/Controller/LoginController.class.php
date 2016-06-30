@@ -49,7 +49,8 @@ class LoginController extends Controller {
         }
         
         if($result['star'] == 4){
-            $return['msg'] = 'VIP级别暂时不支持登录,请在代理查询页面下载授权书,或者联系经销商升级处理!';
+            $MEMBER_LEVEL = C('MEMBER_LEVEL');
+            $return['msg'] = $MEMBER_LEVEL[4]['name'].'暂时不支持登录,请在代理查询页面下载授权书,或者联系经销商升级处理!';
             $this->ajaxReturn($return,'json');
         }
         
@@ -232,6 +233,7 @@ class LoginController extends Controller {
         $star = $code_info['star'];
         $code_top1_id = $code_info['top1_id'];
         $code_top2_id = $code_info['top2_id'];
+        $is_founder = $code_info['is_founder'];
         $stat = 1;
         
         //授权号
@@ -282,6 +284,8 @@ class LoginController extends Controller {
         $arData['is_cancel'] = 0;
         $arData['is_agent'] = 1;
         $arData['is_validate'] = $stat;
+        $arData['is_founder'] = $is_founder;
+        
         
         $result = $AgentRelation->addData($arData);
         

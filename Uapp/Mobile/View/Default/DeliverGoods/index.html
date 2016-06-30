@@ -1,0 +1,75 @@
+<extend name="Public:base" />
+<block name="title"><title>发货</title></block>
+<block name="header">
+    <link href="__PUBLIC__/Mobile/css/deliver.css" rel="stylesheet"/>
+    <!-- <include file="Public/agentHeader" /> -->
+</block>
+<block name="main">
+	<!-- 开始 -->
+	<div class="container">
+	    <div class="form-group">
+	    	<form id="myForm" class="form-horizontal" method="post" action="__APP__/DeliverGoods/index.html">
+		        <div class="row searchBox">
+		            <div class="input-group searchInputBox mb10">
+		                <input type="text" class="form-control" placeholder="姓名或微信号查询" name="name" value="<{$name}>" >
+		                <span class="input-group-btn">
+				            <button class="btn" type="submit">搜索</button>
+			          	</span>
+		            </div>
+		        </div>
+		    </form>
+	        <div class="searchResult">
+	            <h4>选择我的下级代理:</h4>
+	            <div class="table-responsive">
+	                <table class="table table-bordered">
+
+	                    <tr>
+	                        <th></th>
+	                        <th>微信号</th>
+	                        <th>代理名称</th>
+	                        <th>代理级别</th>
+	                        <!-- <th>代理产品</th> -->
+	                    </tr>
+	                    <if condition="$list">
+							<volist name="list" id="vo" empty="$empty" key="k">
+			                    <tr>
+			                    	<td><i class="radioIcon <if condition='$k eq 1'>active</if>" aid="<{$vo.agentid}>"></i></td>
+			                        <td><{$vo.weixin}></td>
+			                        <td><{$vo.name}></td>
+			                        <td><{$vo.agent_lv_name}></td>
+			                        <!-- <td>蜜舒宝</td> -->
+			                    </tr>
+			                </volist>
+		                <else />
+		                	<tr>
+			                    <td colspan="4">没有代理</td>
+			                </tr>
+		            	</if>
+	                </table>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<div class="footer">
+	    <button class="btn btn-submit btn-block" >下一步</button>
+	</div>
+	<script type="text/javascript">
+	    
+    	$(function(){
+    		$('.container').on('click','.radioIcon',function(){
+		        $('.radioIcon').removeClass('active');
+		        $(this).addClass('active');
+		    })
+
+			$('.footer').on('click','.btn-submit',function(){
+		        var aid = $('.table-bordered').find('.active').attr('aid');
+		        location.href = '__APP__/DeliverGoods/deliverView.html?aid='+aid;
+		    })
+
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <!-- <include file="Public/footer" /> -->
+</block>

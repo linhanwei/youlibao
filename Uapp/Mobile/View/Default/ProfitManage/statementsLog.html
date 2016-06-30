@@ -1,0 +1,126 @@
+<extend name="Public:base" />
+<block name="title"><title>发货</title></block>
+<block name="header">
+    <link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+    <!-- <include file="Public/agentHeader" /> -->
+</block>
+<block name="main">
+	<p class="chartTitle">点击柱状图可查看分润明细</p>
+	<div id="record" style="height: 300px;"></div>
+	<script>
+	    //图表
+	    var chart = echarts.init(document.getElementById('record'), null, {
+	        renderer: 'canvas'
+	    });
+	    var sampling = 'none';
+	    chart.setOption({
+	       // tooltip : {
+	           // trigger: 'axis'
+	       // },
+
+	        calculable : true,
+	        xAxis : [
+	            {
+	                name :'<{$year}>年',
+	               // nameLocation:'start',
+	                nameGap:5,
+
+	                type : 'category',
+	                data : function (){
+	                    var list = [];
+	                    for (var i = 1; i <= 12; i++) {
+	                        list.push(i + '月');
+	                    }
+	                    return list;
+	                }(),
+	                splitLine: {
+	                    show: false
+	                },
+	                axisTick: {
+	                    show: true,
+	                    interval: 'auto',
+	                    inside: false,
+	                    length: 5,
+	                    lineStyle: {
+	                        color: '#7c7c7c'
+	                    }
+	                },
+	                axisLabel: {
+	                    textStyle: {
+	                        color: '#7c7c7c'
+	                    }
+	                },
+	                axisLine: {
+	                    lineStyle: {
+	                        color: '#7c7c7c'
+	                    }
+	                }
+	            }
+	        ],
+	        yAxis : [
+	            {
+	                name:'U币',
+	                type : 'value',
+	                splitLine: {
+	                    show: false
+	                },
+	                axisTick: {
+	                    show: true,
+	                    length: 5,
+	                    lineStyle: {
+	                        color: '#7c7c7c'
+	                    }
+	                },
+	                axisLabel: {
+	                    textStyle: {
+	                        color: '#7c7c7c'
+
+	                    }
+	                },
+	                axisLine: {
+	                    lineStyle: {
+	                        color: '#7c7c7c',
+	                        width: 1,
+	                        type: 'solid'
+
+	                    }
+	                }
+	            }
+	        ],
+	        series : [
+	            {
+	                type:'bar',
+	                label: {
+	                    normal: {
+	                        show: true,
+	                        position: 'top'
+	                    }
+	                },
+	                lineStyle: {
+	                    normal: {
+	                        color: '#7c7c7c',
+	                        width: 1,
+	                        type: 'solid'
+	                    }
+	                },
+	                itemStyle: {
+	                    normal: {
+	                        barBorderColor: '#54a5ff',
+	                        color: '#54a5ff'
+	                    }
+	                },
+	                data:[<{$new_list}>]
+	            }
+	        ]
+	    });
+
+
+	    // 处理点击事件并且条状到相应的百度搜索页面
+	    chart.on('click', function (params) {
+	        window.open('__APP__/ProfitManage/statementsLogList.html?month=' + encodeURIComponent(params.name));
+	    });
+	</script>
+</block>
+<block name="footer">
+  <!-- <include file="Public/footer" /> -->
+</block>

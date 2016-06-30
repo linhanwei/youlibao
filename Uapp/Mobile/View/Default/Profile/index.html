@@ -1,101 +1,35 @@
 <extend name="Public:base" />
 <block name="title"><title>我的资料</title></block>
 <block name="header">
-    <header>
-		<p>
-			<div>
-				<span>KUDOUYS</span>
-				酷兜云商
-			</div>
-			<span class="m-logout"><a href="__APP__/Login/logout.html">退出</a></span>
-		</p>
-
-	</header>
+	<link href="__PUBLIC__/Mobile/css/userCenter.css" rel="stylesheet"/>
+    <header class="grid">
+        <div class="user-photo">
+        	<if condition="$member_info['head_img']">
+        		<img src="$member_info['head_img']"/>
+        	<else/>
+        		<img src="__PUBLIC__/Mobile/images/home_pic.png"/>
+    		</if>
+        	<p><{$member_info.name}></p> 
+    	</div>
+        <ul class="rowA">
+            <li class="col"><span class="level icon">等级</span><{$member_info['agent_lv_name']}></li>
+            <li class="col"><span class="team icon">团队</span><{$member_info['team_name']}></li>
+            <li class="col"><span class="superior icon">上级</span><{$member_info['parent_name']}></li>
+        </ul>
+    </header>
 </block>
 <block name="main">
-	<div class="container juniorAgentEdit" style="margin-bottom: 80px;">
-		<form id="myForm" class="form-horizontal" method="post" action="__APP__/Profile/editPassword.html">
-    		<input type="hidden" name="agentid"  value="<{$member_info.agentid}>">
-    		<fieldset disabled>
-		        <div class="input-group ">
-		            <span class="input-group-btn">
-		                   <label  class="control-label">代理姓名:</label>
-		                </span>
-		            <input type="text" class="form-control"  value="<{$member_info.name}>">
-		        </div>
-		        <div class="input-group ">
-		            <span class="input-group-btn">
-		                   <label  class="control-label">代理微信:</label>
-		                </span>
-		            <input type="text" class="form-control"  value="<{$member_info.weixin}>">
-		        </div>
-		        <div class="input-group ">
-		            <span class="input-group-btn">
-		                   <label  class="control-label">代理星级:</label>
-		                </span>
-		            <input type="text" class="form-control"  value="<{$member_info.agent_lv_name}>">
-		        </div>
-		        <div class="input-group ">
-		            <span class="input-group-btn">
-		                   <label  class="control-label">开始时间:</label>
-		                </span>
-		            <input type="text" class="form-control"  value="<{$member_info.start_date_time}>">
-		        </div>
-		        <div class="input-group ">
-		            <span class="input-group-btn">
-		                   <label  class="control-label">结束时间:</label>
-		                </span>
-		            <input type="text" class="form-control"  value="<{$member_info.end_date_time}>">
-		        </div>
-		    </fieldset>
-	        <div class="input-group ">
-	            <span class="input-group-btn">
-	                   <label  class="control-label">修改密码:</label>
-	                </span>
-	            <input type="password" class="form-control password" name="password"  placeholder="输入新密码">
-	        </div>
-	        <div class="input-group ">
-	            <span class="input-group-btn">
-	                   <label  class="control-label">确认密码:</label>
-	                </span>
-	            <input type="password" class="form-control password2" name="confir_password"  placeholder="再次输入新密码">
-	        </div>
-
-	        <div class="row-default">
-	            <button type="submit" class="btn  btn-block">确定修改</button>
-	        </div>
-	    </form>
-	</div>
-    <script type="text/javascript">
-    	$(function(){
-    		$('.container').on('click','.btn',function(){
-    			$('#myForm').submit(function() {
-    				var password = $('.password').val();
-    				var password2 = $('.password2').val();
-			  		if(password == '' || password2 == ''){
-			            showMsg('请输入密码');
-			            return false;
-			        }if(password != password2){
-			            showMsg('两次输入的密码不一致，请重新输入');
-			            return false;
-			        }
-
-
-			  		$(this).ajaxSubmit(function(data){
-		                showMsg(data.msg);
-		                console.log(data);
-			  		}); 
-
-				    //防止页面刷新
-				    return false;
-			  		
-			   	});
-		        
-		    })
-    	});
-
-    </script>
+	<section class="grid">
+	    <dl class="list">
+	    	<!-- 只有官方才能看到推荐 -->
+	    	<if condition="$member_info['agent_grade'] eq 1">
+		        <dd class="rowA" onclick="location.href='__APP__/Profile/directRecommon.html'"><div class="col">关联推荐</div><div class="col-5 fb fvc arrow-gray-right"></div></dd>
+		    </if>
+	        <dd class="rowA" onclick="location.href='__APP__/Profile/editPasswordView.html'"><div class="col">帐号密码</div><div class="col-5 fb fvc arrow-gray-right"></div></dd>
+	        <dd class="rowA" onclick="location.href='__APP__/Login/logout.html'"><div class="col">退出帐号</div><div class="col-5 fb fvc arrow-gray-right"></div></dd>
+	    </dl>
+	</section>
 </block>
 <block name="footer">
-  <include file="Public/footer" />
+  <!-- <include file="Public/footer" /> -->
 </block>

@@ -1,0 +1,46 @@
+<extend name="Public:base" />
+<block name="title"><title>发货详情</title></block>
+<block name="header">
+</block>
+<block name="main">
+	<!-- 开始 -->
+		<div class="myRevenue">
+		    <div class="form-group">
+	            <div class="table-responsive">
+	                <table class="table table-bordered">
+	                    <tr>
+	                        <th>订单号</th>
+	                        <th>收货人</th>
+	                        <th>产品</th>
+	                        <th>数量(盒)</th>
+	                        <th>营收(U币)</th>
+	                    </tr>
+						<volist name="list" id="vo">
+		                   <tr>
+		                       <td><{$order_info.order_sn}></td>
+		                       <td><{$order_info.consignee}></td>
+		                       <td><{$vo.goods_name}></td>
+		                       <td><{$vo.goods_number}></td>
+		                       <td><{$vo['goods_number']*$vo['member_price']}></td>
+		                   </tr>
+		               	</volist>
+	                </table>
+	            </div>
+		    </div>
+		</div>
+
+		<footer >
+		    <p>合计数量：<span class="minus"><{$order_info.goods_total_stock}></span></p>
+		</footer>
+	<!-- 结束 -->
+	
+    <script type="text/javascript">
+    	$(function(){
+    		
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <!-- <include file="Public/footer" /> -->
+</block>

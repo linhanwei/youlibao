@@ -128,7 +128,7 @@ class CommonController extends Controller {
         if(!$info){
             $Encourage = D('Encourage');
             $info = $Encourage->getDetail(array('is_select'=>$is_select));
-            $info['show_time'] = date('Y-m-d',$info['edit_time']);
+            $info['show_time'] = date('Y-m-d',  strtotime($info['edit_time']));
             S($cacheKey,  serialize($info)); //缓存半个小时
         }else{
             $info = unserialize($info);
@@ -136,5 +136,83 @@ class CommonController extends Controller {
        
         return $info;
     }
+    
+    
+    //获取代理商
+    public function getAgent($agent_id) {
+        if(empty($agent_id)){
+            return FALSE; 
+        }
+        
+        $agent_info = S(C('AGENT_INFO').$agent_id);
+        
+        if(empty($agent_info)){
+            $Agent = D('Agent');
+            $agent_where['agentId'] = $agent_id;
+            $agent_info = $Agent->getDetail($agent_where,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
+            if($agent_info){
+                S(C('AGENT_INFO').$agent_id,  serialize($agent_info),2*60);
+            }
+        }else{
+            $agent_info = unserialize($agent_info);
+        }
+        
+        return $agent_info;
+    }
+    
+    
+    //获取商品
+    public function getGoods($goods_id) {
+        if(empty($goods_id)){
+            return false;
+        }
+        
+        $cacheKey = md5(C('GOODS_INFO').$goods_id);
+        $goods_info = S($cacheKey);
+        
+        if(empty($goods_info)){
+            $where['id'] = $goods_id;
+            $Goods = D('Goods');
+            $goods_info = $Goods->getDetail($where,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
+            if($goods_info){
+                S($cacheKey,  serialize($goods_info));
+            }
+        }else{
+            $goods_info = unserialize($goods_info);
+        }
+        
+        return $goods_info;
+    }
+    
+    //获取代理等级商品价格与利润
+    public function getAgentGoodsProfit($goods_id,$agent_lv) {
+        
+        if(empty($goods_id)){
+            return false;
+        }
+        
+        if(empty($agent_lv)){
+            return false;
+        }
+        
+        $cacheKey = md5(C('AGENT_GOODS_PROFIT').$goods_id.'_'.$agent_lv);
+        $goods_profit = S($cacheKey);
+        
+        if(empty($goods_profit)){
+            $where['goods_id'] = $goods_id;
+            $where['agent_lv'] = $agent_lv;
+            $AgentGoodsProfitRale = D('AgentGoodsProfitRale');
+            $goods_profit = $AgentGoodsProfitRale->getDetail($where,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
+           
+            if($goods_profit){
+                S($cacheKey,  serialize($goods_profit));
+            }
+        }else{
+            $goods_profit = unserialize($goods_profit);
+        }
+        
+        return $goods_profit;
+    }
+    
 
 }

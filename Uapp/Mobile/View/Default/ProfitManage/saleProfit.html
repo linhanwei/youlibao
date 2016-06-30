@@ -1,0 +1,56 @@
+<extend name="Public:base" />
+<block name="title"><title>发货</title></block>
+<block name="header">
+    <link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+    <!-- <include file="Public/agentHeader" /> -->
+</block>
+<block name="main">
+	<div class="myRevenue">
+	    <div class="form-group">
+	        <div class="searchBox">
+	            <div class="input-group searchInputBox mb10">
+	            	<form id="myForm" class="form-horizontal" method="post" action="__APP__/ProfitManage/saleProfit.html">
+		                <input type="text" class="form-control" name="name" placeholder="请输入收货人" value="<{$name}>">
+		                <span class="input-group-btn">
+				            <button class="btn" type="button">搜索</button>
+			          	</span>
+		          	</form>
+	            </div>
+	        </div>
+	            <div class="table-responsive">
+	                <table class="table table-bordered">
+	                    <tr>
+	                        <th>订单号</th>
+	                        <th>收货人</th>
+	                        <th>营收(U币)</th>
+	                    </tr>
+						<if condition="$list">
+		        			<volist name="list" id="vo" >
+			                   <tr>
+			                       <td>
+			                       		<a href="__APP__/DeliverGoods/showOrderInfo.html?order_id=<{$vo.order_id}>">
+			                       			<{$vo.order_sn}>
+			                       		</a>
+		                       		</td>
+			                       <td><{$vo.member_name}></td>
+			                       <td><{$vo.goods_total_profit}></td>
+			                   </tr>
+	                    	</volist>
+				       	<else />
+				       		<tr>
+					            <td colspan="3">没有订单</td>
+					        </tr>
+				       	</if>
+	                </table>
+	            </div>
+	    </div>
+	</div>
+
+	<footer >
+	    <p>合计数量：<span class=""><{$count}></span></p>
+	</footer>
+
+</block>
+<block name="footer">
+  <!-- <include file="Public/footer" /> -->
+</block>

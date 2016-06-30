@@ -1,47 +1,84 @@
 <extend name="Public:base" />
 <block name="title"><title>代理后台</title></block>
 <block name="header">
+    
+    <link href="__PUBLIC__/Mobile/css/index.css" rel="stylesheet"/>
     <include file="Public/index_head" />
 </block>
 <block name="main">
   
 <section class="main">
-    <div class="notice grid" href="https://www.hao123.com/"><div class="rowA"><span>2016-06-26</span><p class="col">世界上只有一种成功，就是永不放弃！</p></div></div>
+    <div class="notice grid" href="https://www.hao123.com/"><div class="rowA"><span><{$encourage_info.show_time}></span><p class="col"><{$encourage_info.title}></p></div></div>
     <div class="my-income">
-        <div class="title grid"><div class="rowA"><div class="month">我的收入(6月)</div><div class="col incomeDet"><div class="rowA"><div class="col"><span class="price">0</span>今日收入</div><div class="col"><span class="price">0</span>本月收入</div><div class="col"><span class="price">0</span>累计收入</div> </div> </div> </div> </div>
+        <div class="title grid">
+            <div class="rowA">
+                <div class="month">我的收入(<{$month}>月)</div>
+                <div class="col incomeDet">
+                    <div class="rowA">
+                        <div class="col">
+                            <span class="price"><{$day_total_profit}></span>今日收入
+                        </div>
+                        <div class="col">
+                            <span class="price"><{$month_total_profit}></span>本月收入
+                        </div>
+                        <div class="col">
+                            <span class="price"><{$all_total_profit}></span>累计收入
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div>
         <div id="my-income"></div>
     </div>
     <div class="tool grid">
         <div class="rowA"><div class="col all-tool itemIcon">常用功能</div> </div>
         <div class="rowA">
-            <div class="col my-stock itemIcon">我的库存
-                <div class="right arrow-gray-right"></div>
+            <div class="col my-stock itemIcon">
+                <a href="__APP__/StockManage/index.html">
+                    我的库存
+                    <div class="right arrow-gray-right"></div>
+                </a>
             </div>
-            <div class="col my-stockRecord itemIcon">库存记录
-                <div class="right arrow-gray-right"></div>
-            </div>
-        </div>
-        <div class="rowA">
-            <div class="col my-profit itemIcon">裂变分润
-                <div class=" right arrow-gray-right"></div>
-            </div>
-            <div class="col my-newAgency itemIcon">新增代理
-                <div class="right arrow-gray-right"></div>
+            <div class="col my-stockRecord itemIcon">
+                <a href="__APP__/ProfitManage/saleProfit.html">
+                    我的营收
+                    <div class="right arrow-gray-right"></div>
+                </a>
             </div>
         </div>
         <div class="rowA">
-            <div class="col my-balanceRecord itemIcon">结算记录
-                <div class="right arrow-gray-right"></div>
+            <div class="col my-profit itemIcon">
+                <a href="__APP__/ProfitManage/index.html?type=1">
+                    裂变分润
+                    <div class=" right arrow-gray-right"></div>
+                </a>
             </div>
-            <div class="col my-delivery itemIcon">扫码发货
-                <div class="right arrow-gray-right"></div>
+            <div class="col my-newAgency itemIcon">
+                <a href="__APP__/AgentManage/makeInviteView.html">
+                    新增代理
+                    <div class="right arrow-gray-right"></div>
+                </a>
+            </div>
+        </div>
+        <div class="rowA">
+            <div class="col my-balanceRecord itemIcon">
+                <a href="__APP__/ProfitManage/statementsLog.html">
+                    结算记录
+                    <div class="right arrow-gray-right"></div>
+                </a>
+            </div>
+            <div class="col my-delivery itemIcon">
+                <a href="__APP__/DeliverGoods/index.html">
+                    扫码发货
+                    <div class="right arrow-gray-right"></div>
+                </a>
             </div>
         </div>
     </div>
-    <div class="teamManage grid">
-        <div class="title rowA"><div class="col teamIcon">团队管理</div><div class="col fb fvc far teamNum">团队人数：1000</div></div>
+     <div class="teamManage grid">
+        <div class="title rowA"><div class="col teamIcon">团队管理</div><div class="col fb fvc far teamNum">团队人数：<{$team_count}></div></div>
         <div class="table-responsive">
-            <div class="table-title">我的大区合伙人（10）</div>
+            <div class="table-title">我的<{$member_info.next_lv_name}>（<{$next_count}>）</div>
             <table class="table">
                 <thead>
                 <tr>
@@ -50,82 +87,50 @@
                     <th>微信号</th>
                     <th>团队人数</th>
                     <th>出库数量</th>
-                    <th></th>
+                    <if condition="$member_info['agent_grade'] eq 1">
+                        <!-- 只有官方才能看下级信息 -->
+                        <th></th>
+                    </if>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td><span class="circle first">1</span></td>
-                    <td>王小丫</td>
-                    <td>600</td>
-                    <td>500</td>
-                    <td>17500</td>
-                    <td><i class="arrow-gray-right"></i></td>
-                </tr>
-                <tr>
-                    <td><span class="circle second">2</span></td>
-                    <td>王小丫</td>
-                    <td>600</td>
-                    <td>500</td>
-                    <td>17500</td>
-                    <td><i class="arrow-gray-right"></i></td>
-                </tr>
-                <tr>
-                    <td><span class="circle third">3</span></td>
-                    <td>王小丫</td>
-                    <td>600</td>
-                    <td>500</td>
-                    <td>17500</td>
-                    <td><i class="arrow-gray-right"></i></td>
-                </tr>
-                <tr>
-                    <td><span class="circle">4</span></td>
-                    <td>王小丫</td>
-                    <td>600</td>
-                    <td>500</td>
-                    <td>17500</td>
-                    <td><i class="arrow-gray-right"></i></td>
-                </tr>
-                <tr>
-                    <td><span class="circle">5</span></td>
-                    <td>王小丫</td>
-                    <td>600</td>
-                    <td>500</td>
-                    <td>17500</td>
-                    <td><i class="arrow-gray-right"></i></td>
-                </tr>
-                <tr>
-                    <td><span class="circle">6</span></td>
-                    <td>王小丫</td>
-                    <td>600</td>
-                    <td>500</td>
-                    <td>17500</td>
-                    <td><i class="arrow-gray-right"></i></td>
-                </tr>
-                <tr>
-                    <td><span class="circle">7</span></td>
-                    <td>王小丫</td>
-                    <td>600</td>
-                    <td>500</td>
-                    <td>17500</td>
-                    <td><i class="arrow-gray-right"></i></td>
-                </tr>
-                <tr>
-                    <td><span class="circle">8</span></td>
-                    <td>王小丫</td>
-                    <td>600</td>
-                    <td>500</td>
-                    <td>17500</td>
-                    <td><i class="arrow-gray-right"></i></td>
-                </tr>
-                <tr>
-                    <td><span class="circle">9</span></td>
-                    <td>王小丫</td>
-                    <td>600</td>
-                    <td>500</td>
-                    <td>17500</td>
-                    <td><i class="arrow-gray-right"></i></td>
-                </tr>
+                    <if condition="$next_list">
+                        <volist name="next_list" id="agent" key="k" >
+                            <tr>
+                                <td>
+                                    
+                                    <switch name="k">    
+                                        <case value="1"><span class="circle first"></case>    
+                                        <case value="2"><span class="circle second"></case> 
+                                        <case value="3"><span class="circle third"></case>    
+                                        <default />
+                                            <span class="circle">
+                                    </switch>       
+                                        <{$k}>
+                                    </span>
+                                </td>
+                                <td <if condition="$agent['is_validate'] neq 1">style="color:red;"</if> ><{$agent.name}></td>
+                                <td><{$agent.weixin}></td>
+                                <td>
+                                    <{$agent.next_count}>
+                                    <if condition="$agent['next_count'] eq $next_agent_count"><i class="hasFull"></i></if>
+                                </td>
+                                <td><{$agent.all_buy_total_stock}></td>
+
+                                <if condition="$member_info['agent_grade'] eq 1">
+                                    <td>
+                                        <a href="__APP__/AgentManage/showMyAgent.html?pid=<{$agent.agentid}>">
+                                            <i class="arrow-gray-right"></i>
+                                        </a>
+                                    </td>
+                                </if>
+                            </tr>
+                        </volist>
+                    <else />
+                        <tr>
+                            <td colspan="5">没有代理</td>
+                        </tr>
+                    </if>
                 </tbody>
             </table>
         </div>
@@ -138,6 +143,7 @@
     });
     var sampling = 'none';
     var timeData = [
+
         '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'
     ];
     chart.setOption({
@@ -157,7 +163,7 @@
             }
         },
         legend: {
-            data:['我的收入(6月)'],
+            data:['我的收入(<{$month}>月)'],
             x: 'left'
         },
         textStyle: {
@@ -259,7 +265,8 @@
                     }
                 },
                 data:[
-                    10,14,16,10,5,19,61,50,70,104,50,43,95,50,4,5,17,19,18,20,55,196,50,400,25,16,18,188,200,150,34
+                    <{$month_day_list}>
+                    // 10,14,16,10,5,19,61,50,70,104,50,43,95,50,4,5,17,19,18,20,55,196,50,400,25,16,18,188,200,150,34
                 ]
             }
         ]

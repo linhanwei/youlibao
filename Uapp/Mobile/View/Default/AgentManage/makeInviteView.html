@@ -1,135 +1,69 @@
 <extend name="Public:base" />
 <block name="title"><title>新增代理</title></block>
 <block name="header">
-    <include file="Public/agentHeader" />
+	<style type="text/css">
+        .container{
+            padding: 5% 0;
+            width: 85%;
+        }
+    </style>
+    <link href="__PUBLIC__/Mobile/css/newAgent.css" rel="stylesheet"/>
+    <!-- <include file="Public/agentHeader" /> -->
 </block>
 <block name="main">
-	<div class="container p40">
-		<form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/makeInvite.html">
-			
+	<form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/makeInvite.html">	
+		<div class="container">
 		    <div class="form-group">
-		    	<fieldset disabled>
-			        <div class="row">
-			            <p class="label-tit"><span class="foreColor">*</span>申请级别:</p>
-			            <select class="form-control">
-			                <option value="<{$lv_name}>"><{$lv_name}></option>
-			            </select>
-			        </div>
-			    </fieldset>
-		        <div class="row">
-		            <p class="label-tit"><span class="foreColor">*</span>代理姓名:</p>
-		            <input type="text" class="form-control" name="name" id="name" placeholder="姓名"/>
-		        </div>
-		        <!-- <div id="hidden-content">
-					<div class="row"><center><p>邀请码在使用一次后失效</p></center></div>
-					<div class="form-group row">
-				      <label for="invite-url">1.邀请网址</label>
-				      <input type="text" id="invite-url" class="form-control" >
-				      <label for="invite-url">点击文本框选定后复制</label>
-				    </div>
-					<div class="form-group row">
-				      <label for="invite-code">2.邀请码</label>
-				      <input type="text" id="invite-code" class="form-control" >
-				      <label for="invite-code">点击文本框选定后复制</label>
-				    </div>
-				    <div class="form-group row">
-				      <label for="invite-code">3.点击打开连接分享</label>
-				    </div>
-				</div> -->
-		        <div class="row">
-		            <button type="submit" class="btn  btn-block">下一步</button>
-		        </div>
+				
+		            <p class="label-tit">申请级别:</p>
+		            <select class="form-control" disabled="">
+		                <option value="<{$lv_name}>"><{$lv_name}></option>
+		            </select>
+
+		            <p class="label-tit">代理姓名:</p>
+		            <input type="text" class="form-control agentName" name="name" id="name" placeholder="请输入代理姓名"/>
+		       
 		    </div>
-		</form>
-		
-	</div>
-	<div class="invitation-list">
-		<table class="table invitationCodeManage">
-		    <tr>
-		        <td>编号</td>
-		        <td>可用邀请码</td>
-		        <td>级别</td>
-		        <td>姓名</td>
-		        <td>操作</td>
-		    </tr>
-		    <volist name="list" id="vo">
-			    <tr>
-			        <td><{$vo.inviteid}></td>
-			        <td><{$vo.invitecode}><span class="colorLighter btn-block">（长按复制）</span></td>
-			        <td><{$vo.lv_name}></td>
-			        <td><{$vo.name}></td>
-			        <td><a href="<{$vo.url}>"><i class="iconM share-icon"></i></a><i class="iconM delete-icon" inid="<{$vo.inviteid}>" ></i></td>
-			    </tr>
-			</volist>
-		</table>
-		<ul class="pagination">
-			<{$page}>
-		</ul>
-		<if condition="!$list">
-	    	<center><{$empty}></center>
-	    </if>
-    </div>
+		</div>
+		<div class="footer">
+		    <button type="submit" class="btn btn-submit btn-block">下一步</button>
+		</div>
+	 </form>
+	
     <script type="text/javascript">
     	$(function(){
 
-    		$('.btn-block').click(function(event) {
-    			$('#myForm').submit(function() {
-			  		var name = is_empty('#name');
-			  		
-			  		if(name === false){
-			  			showMsg('请输入姓名!');
-			  			return false;
-			  		}
+			$('#myForm').submit(function() {
+		  		var name = is_empty('#name');
+		  		
+		  		if(name === false){
+		  			showMsg('请输入姓名!');
+		  			return false;
+		  		}
 
-			  		$(this).ajaxSubmit(function(data){
-			  			if(data.status == 1){
-			  				// $('#hidden-content').show();
-			  				// $('#invite-url').val(data.result.url);
-			  				// $('#invite-code').val(data.result.code);
-			  				location.href = data.result.url;
+		  		$(this).ajaxSubmit(function(data){
+		  			if(data.status == 1){
+		  				// $('#hidden-content').show();
+		  				// $('#invite-url').val(data.result.url);
+		  				// $('#invite-code').val(data.result.code);
+		  				location.href = data.result.url;
 
-			  			}else{
-			  				showMsg(data.msg);
-			  			}
-		                
-		                console.log(data);
-			  		}); 
+		  			}else{
+		  				showMsg(data.msg);
+		  			}
+	                
+	                console.log(data);
+		  		}); 
 
-				    //防止页面刷新
-				    return false;
-			  		
-			   	});
-    		});
+			    //防止页面刷新
+			    return false;
+		  		
+		   	});
+		});
 
-    		//分页
-    		LoadPage('__APP__/AgentManage/inviteManage.html',{p:1},'.invitation-list');
-		    $('.pagination li').click(function(){
-		        var page = $(this).children('a').attr('page');
-		        var class_name = $(this).attr('class');
-
-		        if(class_name != 'active'){
-		        	// location.href = '__APP__/AgentManage/inviteManage.html?p='+page;
-		        	LoadPage('__APP__/AgentManage/inviteManage.html',{p:page},'.invitation-list');
-			        
-		        }
-		        
-		    });
-
-		    //删除邀请码
-		    $('.delete-icon').click(function(event) {
-		    	var inid = $(this).attr('inid');
-		    	console.log(inid);
-		    	$.post('__APP__/AgentManage/delInvite.html', {inid: inid}, function(data) {
-		    		showMsg(data.msg);
-		    		if(data.status == 1){
-		    			location.href = location.href;
-		    		}
-		    	});
-		    });
-    	});
 
     </script>
 </block>
 <block name="footer">
-  <include file="Public/footer" />
+  <!-- <include file="Public/footer" /> -->
 </block>

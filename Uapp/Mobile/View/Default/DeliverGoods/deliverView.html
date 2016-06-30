@@ -1,60 +1,93 @@
 <extend name="Public:base" />
 <block name="header">
+	<style type="text/css">
+        .container{
+            padding:0;
+        }
+        .table{
+            padding:0 15px;
+        }
+        .searchGoods dd{
+        	border-color: transparent;
+		    border-bottom: 1px solid #e5e5e5;
+		    border-top: 1px solid #e5e5e5;
+		    line-height: 30px;
+		    height: 30px;
+		    margin-top: 10px;
+        }
+    </style>
+	<link href="__PUBLIC__/Mobile/css/deliver.css" rel="stylesheet"/>
 	<script src="__PUBLIC__/plug/zepto/1.1.6/zepto.js"></script>
-    <include file="Public/agentHeader" />
+    <!-- <include file="Public/agentHeader" /> -->
 </block>
 <block name="main">
-	<div class="container p40">
-		
-	    <div class="form-group">
-	    	<div class="row">
-	            <p class="label-tit">收货人:<{$agent_info.name}></p>
-	         </div>
-	    	<if condition="$is_agent neq 1">
-		         <div class="row">
-		            <p class="label-tit">商品名称:</p>
-		            <input type="text" class="form-control" placeholder="关键字搜索" name="goods_name" id="goods_name" goods_id="0"/>
-		             <div class="searchBox hide">
-		                 <dl>
-		                    
-		                 </dl>
-		                 <div class="close">×</div>
-		             </div>
-		         </div>
-		     </if>
-	        <!-- <div class="row">
-	            <p class="label-tit">下级代理:</p>
-	            <input type="text" class="form-control" placeholder="--选择我的下级代理--"/>
-	            <div class="searchBox hide">
-	                <dl>
-	                    <dd>下级代理1</dd>
-	                    <dd>下级代理2</dd>
-	                    <dd>下级代理3</dd>
-	                    <dd>下级代理4</dd>
-	                </dl>
-	                <div class="close">×</div>
+	
+	<!-- 开始 -->
+		<div  class="container grid" "<{$total =0}>" >
+	        <div class="searchResult">
+	            <p class="receiveName">收货人:<{$agent_info['name']}></p>
+	          		<if condition="$is_agent neq 1">
+			            <div class="row searchBox">
+				            <div class="input-group searchInputBox mb10">
+				                <input type="text" class="form-control" placeholder="输入商品名称" name="goods_name" id="goods_name" goods_id="0">
+				                <span class="input-group-btn">
+						            <button class="btn" type="submit">搜索</button>
+					          	</span>
+				            </div>
+				            <div class="searchGoods hide">
+								<dl>
+									
+								</dl>
+			                 	<i class="delete close"></i>
+				            </div>
+				        </div>
+				    </if>
+	            <div class="rowA state">
+	                <div class="col">状态：</div>
+	                <div class="col fb far serialScan">连扫</div>
 	            </div>
-	        </div> -->
-	        <div class="row">
-	            <p class="label-tit">点击扫一扫防串货码</p>
-	            <img class="pic_code wx_scanning" src="__PUBLIC__/Mobile/images/pic_code.png" />
+	            <div class="table-responsive">
+	                <table class="table table-bordered">
+						<thead>
+		                    <tr>
+		                        <th></th>
+		                        <th>条码</th>
+		                        <th>产品名称</th>
+		                        <th>数量</th>
+		                        <th>价格</th>
+		                        <th>操作</th>
+		                    </tr>
+		                </thead>
+		                <tbody id="deliver_goods">
+							<volist name="goods_list" id="vo" key="k">
+			                    <tr class="goodsList">
+			                        <td><{$k}></td>
+			                        <td><{$vo.code}></td>
+			                        <td><{$vo.goods_name}></td>
+			                        <td "<{$total = $total+$vo['goods_number']}>" ><{$vo.goods_number}></td>
+			                        <td><{$vo.member_price}></td>
+			                        <td><i class="delete del-goods" code="<{$vo.code}>" card_id="<{$vo.id}>"></i></td>
+			                    </tr>
+			                </volist>
+			            </tbody>
+	                </table>
+	            </div>
 	        </div>
-	    </div>
-	    <form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/deliverGoods.html" >
-	    	<div class="row goodsList">
-			  <div class="col-xs-4 col-sm-3">条码</div>
-			  <div class="col-xs-6 col-sm-3">产品名称</div>
-			  <div class="col-xs-2 col-sm-3 ">操作</div>
+		</div>
+
+		<form id="myForm" class="form-horizontal" method="post" action="__APP__/DeliverGoods/deliverGoods.html" >
+			<input type="hidden" name="agent_id" value="<{$agent_id}>">
+			<div class="footer grid deliverFooter">
+			    <div class="totalNum" number="<{$total}>">合计数量：<{$total}></div>
+			    <div class="rowA">
+			        <button type="button" class="col btn btn-submit btn-block wx_scanning">扫码</button>
+			        <button type="submit" class="col btn btn-deliver btn-block">发货</button>
+			    </div>
 			</div>
-	    	<input type="hidden" name="agent_id" value="<{$agent_id}>">
-		    <div class="deliver" id="deliver_goods">
-		    	<volist name="goods_list" id="vo">
-		          	<div class="row goodsList"><div class="col-xs-4 col-sm-3"><{$vo.code}></div><div class="col-xs-6 col-sm-3"><{$vo.goods_name}></div><div class="col-xs-2 col-sm-3 del-goods" code="<{$vo.code}>" card_id="<{$vo.id}>">删除</div></div>
-	          	</volist>
-		    </div>
-		    <div class="row" style="margin-bottom: 80px;"><button type="submit" class="btn   btn-block">发货</button></div>
 		</form>
-	</div>
+	
+	<!-- 结束 -->
+
     <if condition="$is_weixin">
 		<script src="__PUBLIC__/plug/weixin/js/jweixin-1.js"></script>
 	    <script type="text/javascript">
@@ -133,6 +166,11 @@
 		} 
 
     	$(function(){
+		 	$('.container').on('click','.serialScan',function(){
+		        //$('.radioIcon').removeClass('active');
+		        $(this).toggleClass('active');
+		    })
+
     		$('.wx_scanning').click(function(event) {
     			// 9.1.2 扫描二维码并返回结果
     			scanning();
@@ -146,10 +184,15 @@
 			    	var id = _this.attr('card_id');
 			    	var aid = '<{$agent_id}>';
 			    	
-    				$.post('__APP__/AgentManage/delCardGoods.html', {id:id,aid:aid}, function(data) {
+    				$.post('__APP__/DeliverGoods/delCardGoods.html', {id:id,aid:aid}, function(data) {
     					showMsg(data.msg);
     					if(data.status == 1){
+    						var goods_total_number = parseInt($('.totalNum').attr('number'));
+    						var goods_number = parseInt(data.result.goods_number);
+			  				goods_total_number = goods_total_number-goods_number;
+			  				$('.totalNum').html('合计数量：'+goods_total_number);
 							_this.parents('.goodsList').remove();	
+
     					}
     				});
     			}
@@ -186,34 +229,53 @@
 					  		}
 
 
-					  		$.post('__APP__/AgentManage/verifyCode.html', {code: min_code,goods_id:goods_id,is_agent:is_agent,agent_id:agent_id}, function(data) {
+					  		$.post('__APP__/DeliverGoods/verifyCode.html', {code: min_code,goods_id:goods_id,is_agent:is_agent,agent_id:agent_id}, function(data) {
 					  			if(data.status == 1){
-
+				  					var goods_count = $('#deliver_goods .goodsList').length+1;
 					  				var goods_name = $('#goods_name').val();
 					  				var card_id = 0;
+					  				var goods_total_number = parseInt($('.totalNum').attr('number'));
+					  				var goods_number = 0;
+					  				var member_price = 0;
 							  		// var goods_pic = $('#goods_name').attr('pic');
 							  		
 							  		// alert(JSON.stringify(data.result));
 							  		if(data.result){
 						  				goods_id = data.result.id;
 						  				goods_pic = data.result.index_pic;
-						  				goods_name = data.result.title;
+						  				goods_name = data.result.goods_name;
 						  				card_id = data.result.card_id;
+						  				member_price = data.result.member_price;
+						  				goods_number = parseInt(data.result.goods_number);
+						  				goods_total_number = goods_total_number+goods_number;
+						  				$('.totalNum').html('合计数量：'+goods_total_number);
 							  		}
 							  
-							  		if(!goods_id){
-							  			showMsg('请先选择商品!');
-							  			return false;
-							  		}
-							  	
-							  		var goods_html = '<div class="row goodsList"><div class="col-xs-4 col-sm-3">'+min_code+'</div><div class="col-xs-6 col-sm-3">'+goods_name+'</div><div class="col-xs-2 col-sm-3 del-goods" card_id="'+card_id+'" >删除</div></div>';
-						  			
+							  		// if(!goods_id){
+							  		// 	showMsg('请先选择商品!');
+							  		// 	return false;
+							  		// }
+							  		
+							  		var goods_html = '<tr class="goodsList">';
+				                        goods_html += '<td>'+goods_count+'</td>';
+				                        goods_html += '<td>'+min_code+'</td>';
+				                        goods_html += '<td>'+goods_name+'</td>';
+				                        goods_html += '<td>'+goods_number+'</td>';
+				                        goods_html += '<td>'+member_price+'</td>';
+				                        goods_html += '<td><i class="delete del-goods" code="'+min_code+'" card_id="'+card_id+'"></i></td>';
+				                    	goods_html += '</tr>';
+		                    		
 							  		$('#deliver_goods').append(goods_html);
 							  		
 							  		//1.5秒后再调用
-							  		setTimeout(function(){
-							  			scanning();
-							  		},1500);
+						  			var is_continuity = $('.serialScan').hasClass('active'); //判断是否选择连续扫码
+						  			
+						  			if(is_continuity){
+						  				setTimeout(function(){
+								  			scanning();
+								  		},1500);
+							  		
+						  			}
 							  		
 					  			}else{
 					  				showMsg(data.msg);
@@ -246,7 +308,7 @@
 		                showMsg(data.msg);
 		                console.log(data);
 		                if(data.status == 1){
-		                	location.href = '__APP__/AgentManage/showOrderInfo.html?order_sn='+data.result.order_sn;
+		                	location.href = '__APP__/DeliverGoods/showOrderInfo.html?order_id='+data.result.order_id;
 		                }
 			  		}); 
 			  	}
@@ -254,15 +316,16 @@
 			    return false;
 		   	});
 
+    		//搜索商品
     		$('.container').on('input','.form-control',function(){
-    			var _this = $(this).parent('.row');
-		        _this.find('.searchBox').addClass('show').removeClass('hide');
+    			var _this = $(this).parents('.searchBox');
+		        _this.find('.searchGoods').addClass('show').removeClass('hide');
 		        var goods_name = $(this).val();
 		        if(goods_name == ''){
-		            _this.find('.searchBox').addClass('hide').removeClass('show');
+		            _this.find('.searchGoods').addClass('hide').removeClass('show');
 		        }else{
 		        	
-		        	$.post('__APP__/AgentManage/searchGoods.html', {goods_name: goods_name}, function(data) {
+		        	$.post('__APP__/DeliverGoods/searchGoods.html', {goods_name: goods_name}, function(data) {
 		        		var html = '';
 		        		if(data.status == 0){
 		        			html = '<dd>'+data.msg+'</dd>';
@@ -272,24 +335,25 @@
 		        				html += '<dd goods_id="'+data.result[k].id+'" pic="'+data.result[k].index_pic+'">'+data.result[k].title+'</dd>'
 		        			}
 		        		}
+		        		console.log(html);
 		        		_this.find('dl').html(html);
 		        		
 		        	});
 		        }
-		    }).on('click','.searchBox dl dd',function(){
+		    }).on('click','.searchGoods dl dd',function(){
 		        $(this).parents('.form-group').find('.form-control').val($(this).text());
 		        $(this).parents('.searchBox').addClass('hide').removeClass('show');
 		        var goods_id = $(this).attr('goods_id');
 		        var pic = $(this).attr('pic');
 		        $('#goods_name').attr('goods_id', goods_id);
 		        $('#goods_name').attr('pic', pic);
-		    }).on('click','.searchBox .close',function(){
-		        $(this).parent('.searchBox').addClass('hide').removeClass('show');
+		    }).on('click','.searchGoods .close',function(){
+		        $(this).parent('.searchGoods').addClass('hide').removeClass('show');
 		    })
     	});
 
     </script>
 </block>
 <block name="footer">
-  <include file="Public/footer" />
+  <!-- <include file="Public/footer" /> -->
 </block>

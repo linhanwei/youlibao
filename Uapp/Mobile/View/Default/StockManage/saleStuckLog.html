@@ -1,0 +1,58 @@
+<extend name="Public:base" />
+<block name="title"><title>库存记录</title></block>
+<block name="header">
+    <link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+    <!-- <include file="Public/agentHeader" /> -->
+</block>
+<block name="main">
+	<div class="table-responsive recommend">
+	    <div class="grid">
+	    	<div class="rowA recommend-title">
+	    		<div class="col active">
+	    			<a href="__APP__/StockManage/saleStuckLog.html">出库记录</a> 
+    			</div>
+    			<div class="col">
+    				<a  href="__APP__/StockManage/buyStuckLog.html">进库记录</a> 
+				</div> 
+			</div>
+		</div>
+	    <table class="table table-bordered">
+	        <tr>
+	            <th>时间</th>
+	            <th>条形码</th>
+	            <th>产品名称</th>
+	            <th>出库数量</th>
+	            <th>收货人</th>
+	        </tr>
+	        <if condition="$list">
+		        <volist name="list" id="vo" >
+			        <tr>
+			            <td><{$vo.add_time}></td>
+			            <td><{$vo.code}></td>
+			            <td><{$vo.goods_name}></td>
+			            <td><{$vo.goods_number}></td>
+			            <td><{$vo.name}></td>
+			        </tr>
+			    </volist>
+	       <else />
+	       		<tr>
+		            <td colspan="5">没有记录</td>
+		        </tr>
+	       </if>
+	    </table>
+	</div>
+	<!-- <footer>
+	    <p>预计分润：<span><{$count}></span></p>
+	</footer> -->
+	<script type="text/javascript">
+	    
+    	$(function(){
+    		
+
+    	});
+
+    </script>
+</block>
+<block name="footer">
+  <!-- <include file="Public/footer" /> -->
+</block>

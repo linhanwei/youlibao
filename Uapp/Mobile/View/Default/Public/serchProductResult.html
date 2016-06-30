@@ -1,31 +1,120 @@
 <extend name="Public:base" />
-<block name="title"><title>产品名片查询</title></block>
+<block name="title"><title>正品查询</title></block>
 <block name="header">
-    <include file="Public/agentHeader" />
+    <link href="__PUBLIC__/Mobile/css/genuineInquiry.css" rel="stylesheet"/>
+	<script src="__PUBLIC__/Mobile/js/slider.js"></script>
 </block>
 <block name="main">
-	<div class="container productCardSearchDetail">
-		<if condition="$goods_info">
-			<ul>
-			    <li><label>代理名称:</label><span><{$agent_info.name}></span></li>
-			    <li><label>代理微信:</label><span><{$agent_info.weixin}></span></li>
-			    <li><label>授权编号:</label><span><{$agent_info.agentno}></span></li>
-			    <!-- <li><label>代理电话:</label><span><{$agent_info.tel}></span></li> -->
-			    <li class="row-default"><label>产品名称:</label><span class="ellipsis"><{$goods_info.title}></span></li>
-			    <li><div class="thumb"><img src="<{$goods_info.index_pic}>" /> </div> </li>
-			    <li><label>全国统一零售价:</label><span><{$goods_info.mark_price}>元</span></li>
-			</ul>
-		<else />
-			<h3>没有查询到结果</h3>
-		</if>
-	</div>
-    <script type="text/javascript">
-    	$(function(){
+	<if condition="$goods_info">
+		<header class="grid">
+		    <div id="banner" class="banner">
+		        <div class="slider-outer">
+		            <ul>
+		            	<volist name="goods_info['pic_list']" id="img" >
+			                <li><img src="<{$img}>" /> </li>
+			            </volist>
+		            </ul>
+		        </div>
+		        <div class="carousel-status">
+		            <ul></ul>
+		        </div>
+		    </div>
+		    <div class="rowA product"><div class="product_Name col col-15"><{$goods_info['title']}></div><div class="col col-10"><span class="price"><{$goods_info['mark_price']}></span></div> </div>
+		    <div class="moreDetail">
+		        <div class="showMore"><span>展开产品详细信息</span></div>
+		        <div class="messageBox hide">
+		           <{$goods_info['descs']}>
+		        </div>
+		    </div>
+		</header>
+	</if>
+	<section class="grid main">
+	    <h3><{$goods_info['title']}>正品查询</h3>
+	    <div class="rowA showTrue">
+	        <div class="col"><p>表面效果</p><img src="__PUBLIC__/Mobile/images/pic1.png"/> </div>
+	        <div class="col"><p>刮开效果</p><img src="__PUBLIC__/Mobile/images/pic2.png"/> </div>
+	    </div>
+	    <div class="tips">
+	        消费者防伪查询
+	        <p>(请刮开涂层输入完整的防伪码)</p>
+	    </div>
+	    <form class="search" id="myForm" method="post" action="__APP__/Public/searchSecurityResult.html" >
+	        <input type="text" placeholder="请输入防伪码" class="code" name="code" id="code" />
+	        <button type="submit" class="btn btn-submit  btn-block">查询</button>
+	    </form>
 
-    	});
+	    <!--查询结果-->
+	    <div class="searchResult hide" >
+	        <p class="result-title">你所查询的防伪码已被查询过<span id="log_count">2次</span></p>
+	        <p>最近被查询时间</p>
+	        <ul id="log_list">
+	           
+	        </ul>
+	    </div>
+	</section>
 
-    </script>
+	<script>
+		$(function(){
+			$('#myForm').submit(function() {
+    				
+			  		var code = is_empty('#code');
+			  		if(code === false){
+			  			showMsg('请输入防伪码!');
+			  			return false;
+			  		}
+
+			  		
+
+			  		$(this).ajaxSubmit(function(data){
+		  				showMsg(data.msg);
+		  				if(data.status == 1){
+	  						var html= '',
+	  							count = data.result.log_count,
+	  							list = data.result.list;
+
+							for (var i = 0; i < list.length; i++) {
+								
+								html += '<li>'+list[i]['add_time']+'</li>';
+							}
+
+							$('#log_count').html(count+'次');
+							$('#log_list').html(html);
+		  					$('.searchResult').show();
+		  				}
+		                console.log(data);
+			  		}); 
+
+				    //防止页面刷新
+				    return false;
+			  		
+			   	});
+		});
+
+	    //轮播
+	    Slide({
+	        slideCell: "#banner",
+	        titCell: ".carousel-status ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+	        mainCell: ".slider-outer ul",
+	        effect: "leftLoop",
+	        autoPlay: true,//自动播放
+	        autoPage: true, //自动分页
+	        interTime:5000,
+	        switchLoad: "_src" //切换加载，真实图片路径为"_src"
+	    });
+
+	    $('.showMore').on('click',function(event){
+	            event.preventDefault();
+	            if($(this).children('span').hasClass('active')){
+	                $(this).children('span').text('展开产品详细信息').removeClass('active');
+	                $(this).parent('.moreDetail').find('.messageBox').addClass('hide');
+	            }else{
+	                $(this).children('span').text('收起产品详细信息').addClass('active');
+	                $(this).parent('.moreDetail').find('.messageBox').removeClass('hide');
+	            }
+	    })
+
+	</script>
 </block>
 <block name="footer">
-  <include file="Public/footer" />
+  <!-- <include file="Public/footer" /> -->
 </block>
