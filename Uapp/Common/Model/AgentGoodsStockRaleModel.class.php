@@ -1,16 +1,17 @@
 <?php
 namespace Common\Model;
 use Think\Model;
-
+//use Think\Model\RelationModel;
 /**
  * 代理库存表
  */
-class AgentGoodsStockRaleModel extends Model {
+class AgentGoodsStockRaleModel extends Model{
 	//定义数据表字段
 //	protected $fields = array();
         
         //数据表
         protected $trueTableName = 'agent_goods_stock_rale'; 
+        
         
 	//调用配置文件中的数据库配置    
 	//protected $connection = 'DB_CONFIG1';
@@ -50,12 +51,29 @@ class AgentGoodsStockRaleModel extends Model {
          * $field 查询字段
          * $cache 缓存设置
          */
-        public function getDetail($where=array(),$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null),$order_by=''){
+        public function getDetail($where=array(),$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null),$order_by='',$join =''){
             $info = $this->where($where)
                         ->order($order_by)
+                        ->join($join)
                         ->cache($cache['key'],$cache['expire'],$cache['cache_type'])
                         ->field($field['field'],$field['is_opposite'])
                         ->find();
+            
+            if($info){
+                $info['descs'] = htmlspecialchars_decode($info['descs']);
+                
+                if($info['pic']){
+                    $pic_list = explode(';', $info['pic']);
+                    if(is_array($pic_list)){
+                        foreach ($pic_list as $pk => $pv) {
+                            $new_pic_list[$pk] = C('WEB_URL').'/'.'Uploads/'.$pv; 
+                        }
+                        $info['pic_list'] = $new_pic_list;
+                        $info['index_pic'] = $new_pic_list[0];
+                        $info['y_pic_list'] = $pic_list;
+                    }
+                }
+            }
             
             return $info;
         }
@@ -69,7 +87,7 @@ class AgentGoodsStockRaleModel extends Model {
          * $field 字段
          * $cache 缓存
          */
-        public function getList($where=array(),$limit=10,$page=1,$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null),$join=''){
+        public function getList($where=array(),$limit=10,$page=1,$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null),$join =''){
             $list = $this->where($where)
                         ->limit($limit)
                         ->page($page)
@@ -78,6 +96,21 @@ class AgentGoodsStockRaleModel extends Model {
                         ->order($order)
                         ->join($join)
                         ->select();
+            
+            if($list){
+                foreach ($list as $k => $v) {
+                    if($v['pic']){
+                        $pic_list = explode(';', $v['pic']);
+                        if(is_array($pic_list)){
+                            foreach ($pic_list as $pk => $pv) {
+                                $pic_list[$pk] = C('WEB_URL').'/'.'Uploads/'.$pv; 
+                            }
+                            $list[$k]['pic_list'] = $pic_list;
+                            $list[$k]['index_pic'] = $pic_list[0];
+                        }
+                    }
+                }
+            }
             
             return $list;
         }
@@ -91,13 +124,28 @@ class AgentGoodsStockRaleModel extends Model {
          * $field 字段
          * $cache 缓存
          */
-        public function getAllList($where=array(),$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null),$join=''){
+        public function getAllList($where=array(),$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null),$join =''){
             $list = $this->where($where)
                         ->cache($cache['key'],$cache['expire'],$cache['cache_type'])
                         ->field($field['field'],$field['is_opposite'])
                         ->join($join)
                         ->order($order)
                         ->select();
+            
+            if($list){
+                foreach ($list as $k => $v) {
+                    if($v['pic']){
+                        $pic_list = explode(';', $v['pic']);
+                        if(is_array($pic_list)){
+                            foreach ($pic_list as $pk => $pv) {
+                                $pic_list[$pk] = C('WEB_URL').'/'.'Uploads/'.$pv; 
+                            }
+                            $list[$k]['pic_list'] = $pic_list;
+                            $list[$k]['index_pic'] = $pic_list[0];
+                        }
+                    }
+                }
+            }
             
             return $list;
         }

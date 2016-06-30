@@ -64,10 +64,11 @@ class OrderGoodsModel extends Model {
          * $field 字段
          * $cache 缓存
          */
-        public function getList($where=array(),$limit=10,$page=1,$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null)){
+        public function getList($where=array(),$limit=10,$page=1,$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null),$join=''){
             $list = $this->where($where)
                         ->limit($limit)
                         ->page($page)
+                        ->join($join)
                         ->cache($cache['key'],$cache['expire'],$cache['cache_type'])
                         ->field($field['field'],$field['is_opposite'])
                         ->order($order)
@@ -85,8 +86,9 @@ class OrderGoodsModel extends Model {
          * $field 字段
          * $cache 缓存
          */
-        public function getAllList($where=array(),$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null)){
+        public function getAllList($where=array(),$order='',$field=array('field'=>array(),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null),$join=''){
             $list = $this->where($where)
+                        ->join($join)
                         ->cache($cache['key'],$cache['expire'],$cache['cache_type'])
                         ->field($field['field'],$field['is_opposite'])
                         ->order($order)
