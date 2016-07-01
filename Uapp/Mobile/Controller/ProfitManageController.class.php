@@ -129,7 +129,7 @@ class ProfitManageController extends CommonController {
         
         $count = $OrderInfo->getSum($where,'goods_total_stock');
         $this->assign('count',$count ? $count : 0);
-        
+       
         $this->assign('list',$list);
         $this->assign('name',$name);
         $this->display('saleProfit');

@@ -67,6 +67,7 @@ class AgentModel extends Model {
                     $info['is_cancel'] = $agent_info['is_cancel'];
                     $info['is_agent'] = $agent_info['is_agent'];
                     $info['is_validate'] = $agent_info['is_validate'];
+                    $info['is_founder'] = $agent_info['is_founder'];
                     $info['top1_id'] = $agent_info['top1_id'];
                     $info['top2_id'] = $agent_info['top2_id'];
                     $info['agent1_id'] = $agent_info['agent1_id'];

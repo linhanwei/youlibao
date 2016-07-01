@@ -14,7 +14,7 @@ class AgentManageController extends CommonController {
     
     //首页
     public function index(){
-        
+       
         //下级限制总人数
         $next_agent_count = C('NEXT_AGENT_COUNT');
         $this->assign('next_agent_count',$next_agent_count);

@@ -1,5 +1,5 @@
 <extend name="Public:base" />
-<block name="title"><title>代理后台</title></block>
+<block name="title"><title>__WEBNAME__-裂变系统</title></block>
 <block name="header">
     
     <link href="__PUBLIC__/Mobile/css/index.css" rel="stylesheet"/>
@@ -115,7 +115,7 @@
                                     <{$agent.next_count}>
                                     <if condition="$agent['next_count'] eq $next_agent_count"><i class="hasFull"></i></if>
                                 </td>
-                                <td><{$agent.all_buy_total_stock}></td>
+                                <td><{$agent.all_sale_total_stock}></td>
 
                                 <if condition="$member_info['agent_grade'] eq 1">
                                     <td>

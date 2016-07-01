@@ -23,7 +23,7 @@ class StockManageController extends CommonController {
         
         
         $list = $AgentGoodsStockRale->getList($where,$limit,$page,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),$join);
-        
+       
         $this->assign('list',$list);
         $this->display();
     }
