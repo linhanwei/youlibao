@@ -61,6 +61,7 @@ class EncourageManageController extends CommonController {
         
         $Encourage = D('Encourage');
         
+        $editData['edit_time'] = date('Y-m-d H:i;s');
         $editData['title'] = $title;
         $editData['is_select'] = $is_select;
         

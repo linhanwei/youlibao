@@ -26,7 +26,7 @@
           <td><{$vo.code}></td>
 					<td><img src="<{$vo.index_pic}>"  class="img-rounded" style="width: 80px;"></td>
           <td>
-            <button type="button" aid="<{$vo.order_sn}>" code="<{$vo.code}>" web_type="" class="btn btn-danger del_agent">删除</button>
+            <button type="button" aid="<{$vo.order_id}>" code="<{$vo.code}>" web_type="" class="btn btn-danger del_agent">删除</button>
           </td>
 				</tr>
 			</volist>
@@ -57,7 +57,7 @@
         }
 
         if (confirm("是否确定删除"))  {  
-          $.post('__APP__/DeliverGoods/delOrderGoods.html', {order_sn: aid,code:code}, function(data) {
+          $.post('__APP__/DeliverGoods/delOrderGoods.html', {order_id: aid,code:code}, function(data) {
             alert(data.msg);
             if(data.status == 1){
               LoadPage("__APP__/DeliverGoods/showDetail.html",{aid:aid});

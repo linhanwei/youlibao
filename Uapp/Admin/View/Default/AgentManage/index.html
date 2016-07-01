@@ -32,6 +32,7 @@
 	<table class="table">
         <thead>
           <tr>
+          	<th>ID</th>
             <th>姓名</th>
             <th>手机</th>
             <th>级别</th>
@@ -43,6 +44,7 @@
         <tbody>
         	<volist name="list" id="vo">
 				<tr>
+					<th scope="row"><{$vo.agentid}></th>
 					<th scope="row"><{$vo.name}></th>
 					<td><{$vo.tel}></td>
 					<td><{$vo.lv_name}></td>

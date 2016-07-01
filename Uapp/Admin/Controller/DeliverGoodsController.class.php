@@ -273,10 +273,10 @@ class DeliverGoodsController extends CommonController {
     //删除单个商品
     public function delOrderGoods() {
         $return = array('status'=>0,'msg'=>'删除失败','result'=>'');
-        $order_sn = I('order_sn');
+        $order_id = I('order_id');
         $code = I('code');
        
-        if(empty($order_sn)){
+        if(empty($order_id)){
             $return['msg'] = '请选择订单';
             $this->ajaxReturn($return,'json');
         }
@@ -289,7 +289,7 @@ class DeliverGoodsController extends CommonController {
         $OrderGoods = D('OrderGoods');
         $DeliverGoods = D('DeliverGoods');
         
-        $where['order_sn'] = $order_sn;
+        $where['order_id'] = $order_id;
         $where['code'] = $code;
         
         //如果下级已经发货,就不能再删除
