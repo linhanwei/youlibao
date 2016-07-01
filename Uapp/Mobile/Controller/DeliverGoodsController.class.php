@@ -278,13 +278,13 @@ class DeliverGoodsController extends CommonController {
                 $add_order_goods[$k]['admin_price'] = $admin_price;
                 $add_order_goods[$k]['member_price'] = $member_price;
                 $add_order_goods[$k]['goods_profit'] = $goods_profit;
-                $add_order_goods[$k]['goods_total_profit'] = $sale_total_money;
+                $add_order_goods[$k]['goods_total_profit'] = $sale_total_profit;
                 $add_order_goods[$k]['is_gift'] = 0;
                 $add_order_goods[$k]['admin_id'] = $admin_id;
                 $add_order_goods[$k]['member_id'] = $agent_id;
-                $add_order_goods[$k]['year'] = $agent_id;
-                $add_order_goods[$k]['month'] = $agent_id;
-                $add_order_goods[$k]['day'] = $agent_id;
+                $add_order_goods[$k]['year'] = $year;
+                $add_order_goods[$k]['month'] = $month;
+                $add_order_goods[$k]['day'] = $day;
                 
                 //统计订单总金额与销售总利润
                 $order_total_money += $sale_total_money;
@@ -321,24 +321,24 @@ class DeliverGoodsController extends CommonController {
                     $sale_where['agent_id'] = $admin_id;
                     $sale_where['goods_id'] = $goods_id;
 
-                    $AgentGoodsStockRale->editDec($sale_where,'goods_stock',$goods_number,1); //减少库存
-                    $AgentGoodsStockRale->editInc($sale_where,'sale_total_stock',$goods_number,1); //增加出库总数量
-                    $AgentGoodsStockRale->editInc($sale_where,'sale_total_money',$sale_total_money,1); //增加出库总金额
+                    $AgentGoodsStockRale->editDec($sale_where,'goods_stock',$goods_number,0); //减少库存
+                    $AgentGoodsStockRale->editInc($sale_where,'sale_total_stock',$goods_number,0); //增加出库总数量
+                    $AgentGoodsStockRale->editInc($sale_where,'sale_total_money',$sale_total_money,0); //增加出库总金额
                    
                     //每月统计
                     $month_sale_where['year'] = $year;
                     $month_sale_where['month'] = $month;
                     $month_sale_where['agent_id'] = $admin_id;
                    
-                    $AgentMonthProfit->editInc($month_sale_where,'sale_total_stock',$goods_number,1);//增加出库总数量
-                    $AgentMonthProfit->editInc($month_sale_where,'sale_profit',$sale_total_profit,1);//增加销售利润总金额
-                    $AgentMonthProfit->editInc($month_sale_where,'sale_total_money',$sale_total_money,1); //增加出库总金额
+                    $AgentMonthProfit->editInc($month_sale_where,'sale_total_stock',$goods_number,0);//增加出库总数量
+                    $AgentMonthProfit->editInc($month_sale_where,'sale_profit',$sale_total_profit,0);//增加销售利润总金额
+                    $AgentMonthProfit->editInc($month_sale_where,'sale_total_money',$sale_total_money,0); //增加出库总金额
                    
                     //代理总的统计
                     $agent_where['agentId'] = $admin_id;
-                    $Agent->editInc($agent_where,'all_sale_total_money',$sale_total_money,1); //增加代理出货总金额
-                    $Agent->editInc($agent_where,'all_sale_total_profit',$sale_total_profit,1); //增加代理销售额总利润
-                    $Agent->editInc($agent_where,'all_buy_total_stock',$goods_number,1); //增加出库总库存
+                    $Agent->editInc($agent_where,'all_sale_total_money',$sale_total_money,0); //增加代理出货总金额
+                    $Agent->editInc($agent_where,'all_sale_total_profit',$sale_total_profit,0); //增加代理销售额总利润
+                    $Agent->editInc($agent_where,'all_sale_total_stock',$goods_number,0); //增加出库总库存
                     
                     //公司返利的统计: 目前只有大区与总代发货才有返利  开始
                       
@@ -685,15 +685,16 @@ class DeliverGoodsController extends CommonController {
 
                     $buy_count = $AgentGoodsStockRale->getCount($buy_where,array('key'=>false,'expire'=>null,'cache_type'=>null));
                     if($buy_count > 0){
-                        $AgentGoodsStockRale->editInc($buy_where,'goods_stock',$goods_number,1); //增加库存
-                        $AgentGoodsStockRale->editInc($buy_where,'buy_total_stock',$goods_number,1); //增加进库总数量
-                        $AgentGoodsStockRale->editInc($buy_where,'buy_total_money',$sale_total_money,1); //增加进库总金额
+                        $AgentGoodsStockRale->editInc($buy_where,'goods_stock',$goods_number,0); //增加库存
+                        $AgentGoodsStockRale->editInc($buy_where,'buy_total_stock',$goods_number,0); //增加进库总数量
+                        $AgentGoodsStockRale->editInc($buy_where,'buy_total_money',$sale_total_money,0); //增加进库总金额
                     }else{
                         $stockData['agent_id'] = $agent_info['agentid'];
                         $stockData['goods_id'] = $goods_id;
                         $stockData['goods_stock'] = $goods_number;
                         $stockData['buy_total_stock'] = $goods_number; //进库总数量
                         $stockData['buy_total_money'] = $sale_total_money; //进库总金额
+                        $stockData['agent_price'] = $member_price; //代理价格
                         
                         $AgentGoodsStockRale->addData($stockData);
                     }
@@ -705,8 +706,8 @@ class DeliverGoodsController extends CommonController {
                     $month_buy_count = $AgentMonthProfit->getCount($month_buy_where,array('key'=>false,'expire'=>null,'cache_type'=>null));
                     
                     if($month_buy_count > 0){
-                        $AgentMonthProfit->editInc($month_buy_where,'buy_total_stock',$goods_number,1);//增加出库总数量
-                        $AgentMonthProfit->editInc($month_buy_where,'buy_total_money',$sale_total_money,1); //增加出库总金额
+                        $AgentMonthProfit->editInc($month_buy_where,'buy_total_stock',$goods_number,0);//增加出库总数量
+                        $AgentMonthProfit->editInc($month_buy_where,'buy_total_money',$sale_total_money,0); //增加出库总金额
                     }else{
                         $monthSaleData['agent_id'] = $agent_id;
                         $monthSaleData['year'] = $year;
@@ -720,8 +721,8 @@ class DeliverGoodsController extends CommonController {
                     
                     //代理总的统计
                     $agent_where['agentId'] = $agent_id;
-                    $Agent->editInc($agent_where,'all_buy_total_money',$sale_total_money,1); //增加代理进货总金额
-                    $Agent->editInc($agent_where,'all_sale_total_stock',$goods_number,1); //增加进库总库存
+                    $Agent->editInc($agent_where,'all_buy_total_money',$sale_total_money,0); //增加代理进货总金额
+                    $Agent->editInc($agent_where,'all_buy_total_stock',$goods_number,0); //增加进库总库存
                     
                 }
                 
@@ -874,7 +875,7 @@ class DeliverGoodsController extends CommonController {
         }else{
             $cache_info = unserialize($cache_info);
         }
-        
+       
         $this->assign('empty','<span class="empty">没有查询到订单</span>');
         $this->assign('list',$cache_info['list']);
         $this->assign('order_info',$cache_info['order_info']);

@@ -23,13 +23,14 @@ class AgentManageController extends CommonController {
         $member_info = $this->memberInfo();
         $member_id = $member_info['agentid'];
         $agent_grade = $member_info['agent_grade'];
+        $is_agent = $member_info['is_agent'];
         
         //获取团队名称
         if(!$member_info['team_name']){
             $agent1_info = $this->getAgent($member_info['agent1_id']);
             $member_info['team_name'] = $agent1_info['team_name'];
         }
-
+       
         //上级名称
         $MEMBER_LEVEL = C('MEMBER_LEVEL');
         $parent_info = $this->getAgent($member_info['pid']);
@@ -60,17 +61,30 @@ class AgentManageController extends CommonController {
         
         $OrderGoods = D('OrderGoods');
         $AgentMonthProfit = D('AgentMonthProfit');
+        $AgentProfitLog = D('AgentProfitLog');
         
-        //今日收入
-        $day_profit_where['og.year'] = $year;
-        $day_profit_where['og.month'] = $month;
-        $day_profit_where['og.day'] = $day;
-        $day_profit_where['og.is_refund'] = 1; //是否退货:1:否,2:是
-        $day_profit_where['og.admin_id'] = $member_id;
-        
-        $day_info = $OrderGoods->where($day_profit_where)->field('SUM(og.goods_total_profit+apl.profit_total_money) AS day_total_profit')->join(' og LEFT JOIN agent_profit_log apl ON og.code=apl.code')->find();
-        $this->assign('day_total_profit',$day_info['day_total_profit'] ? $day_info['day_total_profit'] : 0);
-        
+        //今日收入: 
+            //销售收入
+            $sale_day_where['year'] = $year;
+            $sale_day_where['month'] = $month;
+            $sale_day_where['day'] = $day;
+            $sale_day_where['is_refund'] = 1;//是否退货:1:否,2:是
+            $sale_day_where['admin_id'] = $member_id;
+            $sale_day_total = $OrderGoods->getSum($sale_day_where,'goods_total_profit');
+            $sale_day_total = $sale_day_total ? $sale_day_total : 0;
+            
+            //返利收入
+            $profit_day_where['year'] = $year;
+            $profit_day_where['month'] = $month;
+            $profit_day_where['day'] = $day;
+            $profit_day_where['profit_agent_id'] = $member_id;
+            $profit_day_where['is_refund'] = 1; //是否退货:1:否,2:是
+            
+            $profit_day_total = $AgentProfitLog->getSum($profit_day_where,'profit_total_money');
+            $profit_day_total = $profit_day_total ? $profit_day_total : 0;
+            
+            $this->assign('day_total_profit',$sale_day_total+$profit_day_total);
+            
         //本月收入
         $month_profit_where['year'] = $year;
         $month_profit_where['month'] = $month;
@@ -84,68 +98,115 @@ class AgentManageController extends CommonController {
         $this->assign('all_total_profit', $all_info['all_total_profit'] ? $all_info['all_total_profit'] : 0);
         
         //本月每日收入统计
-        $month_day_profit_where['og.year'] = $year;
-        $month_day_profit_where['og.month'] = $month;
-        $month_day_profit_where['og.is_refund'] = 1; //是否退货:1:否,2:是
-        $month_day_profit_where['og.admin_id'] = $member_id;
-        
-        $month_day_list = $OrderGoods->where($month_day_profit_where)->field('og.day,og.goods_total_profit+apl.profit_total_money AS day_total_profit')->order('day')->join(' og LEFT JOIN agent_profit_log apl ON og.code=apl.code')->select();
-        $new_month_day_list = array();
-        $new_month_day = array();
-        
-        if($month_day_list){
-            for($d=1;$d<=$month_last_day;$d++){
-                $day_total_profit = $month_day_list[$d-1]['day_total_profit'];
-                $day_total_profit = $day_total_profit ? $day_total_profit : 0;
-                $new_month_day_list[] = $day_total_profit;
-                $new_month_day[] = $d;
+            //销售收入
+            $new_sale_one_day_list = array();
+            $sale_one_day_where['year'] = $year;
+            $sale_one_day_where['month'] = $month;
+            $sale_one_day_where['is_refund'] = 1;//是否退货:1:否,2:是
+            $sale_one_day_where['admin_id'] = $member_id;
+            $sale_one_day_list = $OrderGoods->where($sale_one_day_where)->field('day,SUM(goods_total_profit) as sale_day_total')->group('day')->order('day')->select();
+            if($sale_one_day_list){
+                foreach ($sale_one_day_list as $sv) {
+                    $new_sale_one_day_list[$sv['day']] = $sv['sale_day_total'];
+                }
             }
-        }else{
-            for($d=1;$d<=$month_last_day;$d++){
-                $new_month_day_list[] = 0;
-                $new_month_day[] = $d;
+         
+            //返利收入
+            $new_profit_one_day_list = array();
+            $profit_one_day_where['year'] = $year;
+            $profit_one_day_where['month'] = $month;
+            $profit_one_day_where['profit_agent_id'] = $member_id;
+            $profit_one_day_where['is_refund'] = 1; //是否退货:1:否,2:是
+          
+            $profit_one_day_list = $AgentProfitLog->where($profit_one_day_where)->field('day,SUM(profit_total_money) as profit_day_total')->group('day')->order('day')->select();
+
+            if($profit_one_day_list){
+                foreach ($profit_one_day_list as $pv) {
+                    $new_profit_one_day_list[$pv['day']] = $pv['profit_day_total'];
+                }
             }
-        }
         
-        $new_month_day_list = implode(',', $new_month_day_list);
-        $this->assign('month_day_list',$new_month_day_list);
-        $new_month_day = implode(',', $new_month_day);
-        $this->assign('new_month_day',$new_month_day);
+            $new_month_day_list = array();
+            $new_month_day = array();
+            
+            if(empty($new_sale_one_day_list) && empty($new_profit_one_day_list)){
+                for($d=1;$d<=$month_last_day;$d++){
+                    
+                    $new_month_day_list[] = 0;
+                    $new_month_day[] = $d;
+                }
+            }else{
+                for($d=1;$d<=$month_last_day;$d++){
+                    $sale_one_day_total = $new_sale_one_day_list[$d] ? $new_sale_one_day_list[$d] : 0;
+                    $profit_one_day_total = $new_profit_one_day_list[$d] ? $new_profit_one_day_list[$d] : 0;
+                
+                    $new_month_day_list[] = $sale_one_day_total + $profit_one_day_total;
+                    $new_month_day[] = $d;
+                }
+            }
+            
+            if($new_sale_one_day_list || $profit_one_day_list){
+                
+            }else{
+                
+            }
+
+            $new_month_day_list = implode(',', $new_month_day_list);
+            $this->assign('month_day_list',$new_month_day_list);
+            $new_month_day = implode(',', $new_month_day);
+            $this->assign('new_month_day',$new_month_day);
         
         //收入:公司返利收入与销售收入 结束
-        
-        $AgentRelation = D('AgentRelation');
-        
-        //团队总人数
-        $team_where['agent'.$agent_grade.'_id'] = $member_id;
-        $team_count = $AgentRelation->getCount($team_where);
-        $this->assign('team_count', $team_count);
-        
-        //直接下线总人数
-        $next_where['pid'] = $member_id;
-        $next_where['agent_grade'] = $agent_grade+1;
-        $next_count = $AgentRelation->getCount($next_where);
-        $this->assign('next_count', $next_count);
-       
-        //下线列表
-        $list_where['ar.pid'] = $member_id;
-        $list_where['ar.agent_grade'] = $agent_grade+1;
-        $join = ' ar LEFT JOIN agent a on ar.member_id = a.agentId';
-        $order = 'all_buy_total_stock DESC';
-        $next_list = $AgentRelation->getAllList($list_where,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),$join);
-        
-        if($next_list){
-            foreach ($next_list as $ak => $av) {
+            
+        //代理下线统计
+            $AgentRelation = D('AgentRelation');
+
+            if($is_agent == 1){ //代理
+                //团队总人数
+                $team_where['agent'.$agent_grade.'_id'] = $member_id;
+                
+                //直接下线总人数
                 $next_where['pid'] = $member_id;
-                $next_where['agent_grade'] = $$av['agent_grade']+1;
-                $next_count = $AgentRelation->getCount($next_where);
-                $next_list[$ak]['next_count'] = $next_count;
+                $next_where['agent_grade'] = $agent_grade+1;
+                
+                //下线列表
+                $list_where['ar.pid'] = $member_id;
+                $list_where['ar.agent_grade'] = $agent_grade+1;
+            }else{ //工厂
+                //团队总人数
+                $team_where['agent_grade'] = 1;
+                
+                //直接下线总人数
+                $next_where['agent_grade'] = 1;
+                
+                //下线列表
+                $list_where['ar.agent_grade'] = 1;
             }
-        }
-        
-        $this->assign('next_list', $next_list);
-        $this->assign('empty','<span class="empty">没有代理</span>');
-        
+            
+            //团队总人数
+            $team_count = $AgentRelation->getCount($team_where);
+            $this->assign('team_count', $team_count);
+            
+            //直接下线总人数
+            $next_count = $AgentRelation->getCount($next_where);
+            $this->assign('next_count', $next_count);
+            
+            //下线列表
+            $join = ' ar LEFT JOIN agent a on ar.member_id = a.agentId';
+            $order = 'all_buy_total_stock DESC';
+            $next_list = $AgentRelation->getAllList($list_where,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),$join);
+
+            if($next_list){
+                foreach ($next_list as $ak => $av) {
+                    $next_where['pid'] = $member_id;
+                    $next_where['agent_grade'] = $$av['agent_grade']+1;
+                    $next_count = $AgentRelation->getCount($next_where);
+                    $next_list[$ak]['next_count'] = $next_count;
+                }
+            }
+            
+            $this->assign('next_list', $next_list);
+          
         $this->display();
     }
     
@@ -479,13 +540,15 @@ class AgentManageController extends CommonController {
         
         $member_info = $this->memberInfo();
         $member_id = $member_info['agentid'];
-        $star = $member_info['star'] + 1;
+        $agent_grade = $member_info['agent_grade'];
+        $star = $agent_grade + 1;
         
         //限制人数: 每个等级只能有10个人 ,官方发展大区: 如果大区满10人的情况,必须要等下面的所有人全部发展完才能发展第二条线
         $AgentRelation = D('AgentRelation');
         
         //获取直接下级总人数
-        $direct_where['pid'] = $member_id;
+        $direct_where['agent'.$agent_grade.'_id'] = $member_id;
+        $direct_where['agent_grade'] = $star;
         $direct_next_agent_count = $AgentRelation->getCount($direct_where,array('key'=>false,'expire'=>null,'cache_type'=>null));
         
         //如果是大区,算下下面有没1110满人,不然就不能发展下级
@@ -495,6 +558,7 @@ class AgentManageController extends CommonController {
             $num_where['agent1_id'] = $member_id;
             $num_where['agent1_id'] = $member_id;
             $line_number = $AgentRelation->where($num_where)->order('line_number DESC')->getField('line_number');
+            $line_number = $line_number ? $line_number : 1;
             
             //间接总人数
             $indirect_where['agent1_id'] = $member_id;

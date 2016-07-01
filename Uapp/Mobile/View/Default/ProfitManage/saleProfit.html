@@ -1,22 +1,25 @@
 <extend name="Public:base" />
-<block name="title"><title>发货</title></block>
+<block name="title"><title>我的营收</title></block>
 <block name="header">
     <link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+	<include file="Public/header" />
     <!-- <include file="Public/agentHeader" /> -->
 </block>
 <block name="main">
 	<div class="myRevenue">
 	    <div class="form-group">
+			<form id="myForm" class="form-horizontal" method="post" action="__APP__/ProfitManage/saleProfit.html">
 	        <div class="searchBox">
 	            <div class="input-group searchInputBox mb10">
-	            	<form id="myForm" class="form-horizontal" method="post" action="__APP__/ProfitManage/saleProfit.html">
+
 		                <input type="text" class="form-control" name="name" placeholder="请输入收货人" value="<{$name}>">
 		                <span class="input-group-btn">
 				            <button class="btn" type="button">搜索</button>
 			          	</span>
-		          	</form>
+
 	            </div>
 	        </div>
+			</form>
 	            <div class="table-responsive">
 	                <table class="table table-bordered">
 	                    <tr>
@@ -33,7 +36,7 @@
 			                       		</a>
 		                       		</td>
 			                       <td><{$vo.member_name}></td>
-			                       <td><{$vo.goods_total_profit}></td>
+			                       <td><{$vo.order_total_profit}></td>
 			                   </tr>
 	                    	</volist>
 				       	<else />

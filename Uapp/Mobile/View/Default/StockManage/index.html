@@ -1,7 +1,8 @@
 <extend name="Public:base" />
-<block name="title"><title>发货</title></block>
+<block name="title"><title>我的库存</title></block>
 <block name="header">
     <link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+	<include file="Public/header" />
     <!-- <include file="Public/agentHeader" /> -->
 </block>
 <block name="main">
@@ -21,7 +22,7 @@
 			            <td><img class="pic_product" src="<{$vo.index_pic}>"/> </td>
 			            <td><{$vo.short_name}></td>
 			            <td><{$vo.goods_stock}></td>
-			            <td><{$vo.buy_total_money}></td>
+			            <td><{$vo.agent_price}></td>
 			            <td><a href="__APP__/StockManage/saleStuckLog.html"><i class="arrow-gray-right"></i></a></td>
 			        </tr>
 			 </volist>

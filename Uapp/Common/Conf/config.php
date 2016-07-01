@@ -24,7 +24,7 @@ return array(
     
         //会员等级
         'MEMBER_LEVEL'=>array(
-            0=>array('lv'=>0,'name'=>'优理氏'),
+            0=>array('lv'=>0,'name'=>'蜜舒宝公司'),
             1=>array('lv'=>1,'name'=>'官方合伙人'),
             2=>array('lv'=>2,'name'=>'大区合伙人'),
             3=>array('lv'=>3,'name'=>'总代合伙人'),
@@ -40,7 +40,7 @@ return array(
             -3=>array('lv'=>-3,'name'=>'驳回修改'),
         ),
     
-        //标签区间 type: 1:大标,2:中标,3:小标:4:防伪标,
+        //标签区间 type: 1:大标,2:小标,3:防伪标:4:中标,
         'LABEL_CODE_SECTION'=>array(
             array('start'=>1200001,'end'=>2200000,'type'=>1),
             array('start'=>2800001,'end'=>3800000,'type'=>2),
@@ -56,7 +56,7 @@ return array(
 //            '__APP__' => 'http://'.$_SERVER['HTTP_HOST'].'/index.php/', // 更改默认的/Public 替换规则     
 //            '__JS__'     => '/Public/JS/', // 增加新的JS类库路径替换规则     
 //            '__UPLOAD__' => '/Uploads', // 增加新的上传路径替换规则
-            '__WEBNAME__'=>'蜜舒宝',  //网站名称
+            '__WEBNAME__'=>'优利宝',  //网站名称
         ),
         'WEB_URL'=>'http://'.$_SERVER['HTTP_HOST'],
 	'DEFAULT_THEME'    =>    'Default', //默认主题

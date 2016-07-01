@@ -1,5 +1,5 @@
 <extend name="Public:base" />
-<block name="title"><title>裂变分润</title></block>
+<block name="title"><title>库存记录</title></block>
 <block name="header">
     <link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
 	<include file="Public/header" />
@@ -10,19 +10,19 @@
 	    <div class="grid">
 	    	<div class="rowA recommend-title">
 	    		<div class="col <if condition='$type eq 1'>active</if>">
-	    			<a href="__APP__/ProfitManage/index.html?type=1">出库分润</a> 
+	    			<a href="__APP__/StockManage/stockLog.html?type=1">出库记录</a> 
     			</div>
     			<div class="col <if condition='$type eq 2'>active</if>">
-    				<a  href="__APP__/ProfitManage/index.html?type=2">推荐分润</a> 
+    				<a  href="__APP__/StockManage/stockLog.html?type=2">进库记录</a> 
 				</div> 
 			</div>
 		</div>
 	    <table class="table table-bordered">
 	        <tr>
 	            <th>时间</th>
-	            <th>级别</th>
-	            <th>姓名</th>
+	            <th>产品名称</th>
 	            <th>出库数量</th>
+	            <th>姓名</th>
 	            <th>分润</th>
 	        </tr>
 	        <if condition="$list">
@@ -44,14 +44,14 @@
 			    </volist>
 	       <else />
 	       		<tr>
-		            <td colspan="5">没有分润</td>
+		            <td colspan="5">没有记录</td>
 		        </tr>
 	       </if>
 	    </table>
 	</div>
-	<footer>
+	<!-- <footer>
 	    <p>预计分润：<span><{$count}></span></p>
-	</footer>
+	</footer> -->
 	<script type="text/javascript">
 	    
     	$(function(){

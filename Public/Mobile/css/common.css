@@ -381,6 +381,37 @@ select {
 body {
   color: #2e2e2e; }
 
+a:focus, a:hover {
+  text-underline: none;
+  color: #2e2e2e; }
+
+/*头部*/
+.head-title {
+  background-color: #54a5ff;
+  height: 45px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  margin-bottom: 45px;
+  z-index: 11; }
+  .head-title .icon {
+    position: absolute;
+    top: 0;
+    background-size: 100%; }
+  .head-title .icon-back {
+    width: 45px;
+    height: 45px;
+    background-image: url("../images/icon_back.png");
+    left: 0; }
+  .head-title .icon-home {
+    width: 45px;
+    height: 45px;
+    background-image: url("../images/icon_home.png");
+    right: 0; }
+
+.mt45 {
+  margin-top: 45px; }
+
 .table-responsive {
   border-width: 0; }
 
@@ -401,7 +432,7 @@ body {
   background-color: #54a5ff;
   color: #fff;
   font-size: 16px;
-  padding: 3% 0;
+  padding: 2% 0;
   width: 90%;
   margin: 0 auto; }
   .btn-submit:focus {
@@ -409,7 +440,7 @@ body {
 
 /**/
 .table tr td, .table tr th {
-  padding: 4% 0 !important; }
+  padding: 4% 2% !important; }
 
 /*搜索*/
 .searchInputBox {

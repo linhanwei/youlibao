@@ -2,11 +2,12 @@
 <block name="title"><title>我的代理</title></block>
 <block name="header">
 	<link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+
     <!-- <include file="Public/agentHeader" /> -->
 </block>
 <block name="main">
 	<div class="table-responsive partner">
-	    <div class="table-title"><{$agent_info['name']}>的<{$MEMBER_LEVEL[$agent_info['agent_grade']+1]['name']}>（<{$count}>）</div>
+		<div class="table-title head-title"><a class="icon-back icon" href="javascript:history.go(-1);"></a><a class="icon-home icon" href="__APP__/AgentManage/index.html"></a><{$agent_info['name']}>的<{$MEMBER_LEVEL[$agent_info['agent_grade']+1]['name']}>（<{$count}>）</div>
 	    <table class="table table-bordered">
 
 	        <tr>

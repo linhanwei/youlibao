@@ -48,38 +48,40 @@ class LoginController extends Controller {
             $this->ajaxReturn($return,'json');
         }
         
-        if($result['star'] == 4){
-            $MEMBER_LEVEL = C('MEMBER_LEVEL');
-            $return['msg'] = $MEMBER_LEVEL[4]['name'].'暂时不支持登录,请在代理查询页面下载授权书,或者联系经销商升级处理!';
-            $this->ajaxReturn($return,'json');
-        }
-        
-        $time = time();
-        $end_time = $result['endtime'];
-        if($time > $end_time){
-            $return['msg'] = '您的授权时间已经到期,请重新授权';
-            $this->ajaxReturn($return,'json');
-        }
-        
-        $stat = $result['stat'];
-        if($stat != 1){
-            switch ($stat) {
-                case 0:
-                    $return['msg'] = '待总部审核';
-                    break;
-                case -1:
-                    $return['msg'] = '您已经被列入黑名单';
-                    break;
-                case -2:
-                    $return['msg'] = '等待审核';
-                    break;
-                case -3:
-                    $return['msg'] = '资料不正确,等待修改!';
-                    break;
-
+        if($result['is_agent'] != 0 ){
+            if($result['star'] == 4){
+                $MEMBER_LEVEL = C('MEMBER_LEVEL');
+                $return['msg'] = $MEMBER_LEVEL[4]['name'].'暂时不支持登录,请在代理查询页面下载授权书,或者联系经销商升级处理!';
+                $this->ajaxReturn($return,'json');
             }
-            
-            $this->ajaxReturn($return,'json');
+
+            $time = time();
+            $end_time = $result['endtime'];
+            if($time > $end_time){
+                $return['msg'] = '您的授权时间已经到期,请重新授权';
+                $this->ajaxReturn($return,'json');
+            }
+
+            $stat = $result['stat'];
+            if($stat != 1){
+                switch ($stat) {
+                    case 0:
+                        $return['msg'] = '待总部审核';
+                        break;
+                    case -1:
+                        $return['msg'] = '您已经被列入黑名单';
+                        break;
+                    case -2:
+                        $return['msg'] = '等待审核';
+                        break;
+                    case -3:
+                        $return['msg'] = '资料不正确,等待修改!';
+                        break;
+
+                }
+
+                $this->ajaxReturn($return,'json');
+            }
         }
         
         session('member_id',$result['agentid']);
@@ -227,6 +229,13 @@ class LoginController extends Controller {
             $this->ajaxReturn($return,'json');
         }
         
+        $tel_where['cardNo'] = $cardno;
+        $is_count = $Agent->getCount($tel_where,array('key'=>false,'expire'=>null,'cache_type'=>null));
+        if($is_count > 0){
+            $return['msg'] = '身份证号码已经存在,请换一个!';
+            $this->ajaxReturn($return,'json');
+        }
+        
         $Agent->startTrans(); //开启事务
         
         $parent_id = $code_info['agentid'];
@@ -234,6 +243,7 @@ class LoginController extends Controller {
         $code_top1_id = $code_info['top1_id'];
         $code_top2_id = $code_info['top2_id'];
         $is_founder = $code_info['is_founder'];
+        $team_name = $code_info['team_name'];
         $stat = 1;
         
         //授权号
@@ -244,7 +254,7 @@ class LoginController extends Controller {
         $addData['name'] = $name;
         $addData['weixin'] = $weixin;
         $addData['password'] = md5($password);
-        $addData['add_time'] = $time;
+        $addData['add_time'] = date('Y-m-d H:i:s');
         $addData['qq'] = $qq;
         $addData['agentNo'] = $agentNo;
         $addData['cardNo'] = $cardno;
@@ -256,6 +266,7 @@ class LoginController extends Controller {
         $addData['address'] = $address;
         $addData['startime'] = time();
         $addData['endtime'] = strtotime("+1 year -1 day");
+        $addData['team_name'] = $team_name;
         
         $member_id = $Agent->addData($addData);
         

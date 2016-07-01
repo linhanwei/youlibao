@@ -20,7 +20,10 @@ header {
     width: 80%; }
   header .user-name {
     font-size: 16px;
-    line-height: 30px; }
+    line-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
   header .user-info {
     padding: 1% 2%; }
     header .user-info .rank {
@@ -121,7 +124,7 @@ header {
       margin: -2% 2% 0 0; }
   .main .tool .all-tool {
     border-right-width: 0 !important;
-    padding: 3%  0 3%  5%; }
+    padding-left: 5%; }
     .main .tool .all-tool:before {
       width: 25px;
       height: 25px;
@@ -164,7 +167,7 @@ header {
     color: #7c7c7c; }
   .main .teamManage .table-responsive {
     border-width: 0;
-    margin-bottom: 0px; }
+    margin-bottom: 0; }
   .main .teamManage .table-title {
     background-color: #f6f6f6;
     padding: 2%;

@@ -23,7 +23,7 @@ class StockManageController extends CommonController {
         
         
         $list = $AgentGoodsStockRale->getList($where,$limit,$page,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),$join);
-      
+        
         $this->assign('list',$list);
         $this->display();
     }
@@ -41,7 +41,7 @@ class StockManageController extends CommonController {
      public function saleStuckLog() {
          
         $data = $this->stockLogList(1);
-        
+      
         $this->assign('list',$data['list']);
                
         $this->display('saleStuckLog');
@@ -73,7 +73,7 @@ class StockManageController extends CommonController {
         $OrderGoods = D('OrderGoods');
         
         
-        $return['list'] = $OrderGoods->getList($where,$limit,$page,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),$join);
+        $return['list'] = $OrderGoods->getList($where,$limit,$page,$order,array('field'=>array('og.add_time,og.code,og.goods_name,og.goods_number,a.name'),'is_opposite'=>FALSE),array('key'=>false,'expire'=>null,'cache_type'=>null),$join);
         
         return $return;
     }
