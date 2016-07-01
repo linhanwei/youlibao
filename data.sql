@@ -47,19 +47,20 @@ CREATE TABLE `agent` (
   `all_sale_total_money` bigint(20) unsigned DEFAULT '0' COMMENT '代理出货总金额\r\n',
   `all_buy_total_money` bigint(20) unsigned DEFAULT '0' COMMENT '代理进货总金额\r\n',
   `all_sale_total_profit` bigint(20) unsigned DEFAULT '0' COMMENT '代理销售额总利润\r\n',
-  `all_buy_total_stock` int(10) unsigned DEFAULT '0' COMMENT '出库总库存',
-  `all_sale_total_stock` int(10) unsigned DEFAULT '0' COMMENT '进库总库存',
+  `all_buy_total_stock` int(10) unsigned DEFAULT '0' COMMENT '进库总库存',
+  `all_sale_total_stock` int(10) unsigned DEFAULT '0' COMMENT '出库总库存',
   `use_integral` int(10) unsigned DEFAULT '0' COMMENT '代理可使用积分\r\n',
   `agent_true_name` varchar(50) DEFAULT NULL COMMENT '代理真实姓名\r\n',
   `bank_account` varchar(50) DEFAULT NULL COMMENT '代理银行账户\r\n',
   `bank_name` varchar(100) DEFAULT NULL COMMENT '代理账户银行名称\r\n',
   `team_name` varchar(50) DEFAULT NULL COMMENT '团队名称',
+  `head_img` varchar(255) DEFAULT NULL COMMENT '头像图片',
   PRIMARY KEY (`agentId`),
   KEY `name` (`name`),
   KEY `weixin` (`weixin`),
   KEY `star` (`star`),
   KEY `tel` (`tel`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `agent_goods_profit_rale` */
 
@@ -95,11 +96,12 @@ CREATE TABLE `agent_goods_stock_rale` (
   `sale_total_stock` bigint(20) unsigned DEFAULT '0' COMMENT '出库总数量\r\n',
   `buy_total_money` bigint(20) unsigned DEFAULT '0' COMMENT '进库总金额\r\n',
   `sale_total_money` bigint(20) unsigned DEFAULT '0' COMMENT '出库总金额\r\n',
+  `agent_price` int(10) unsigned DEFAULT '0' COMMENT '代理商品价格',
   `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '添加时间\r\n',
   PRIMARY KEY (`id`),
   KEY `goods_id` (`goods_id`),
   KEY `agent_id` (`agent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理与产品库存关系表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理与产品库存关系表';
 
 /*Table structure for table `agent_month_profit` */
 
@@ -124,7 +126,7 @@ CREATE TABLE `agent_month_profit` (
   KEY `month` (`month`),
   KEY `is_profit` (`is_profit`),
   KEY `agent_id` (`agent_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理每月销售与进货与分润总额报表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理每月销售与进货与分润总额报表';
 
 /*Table structure for table `agent_profit_log` */
 
@@ -166,7 +168,7 @@ CREATE TABLE `agent_profit_log` (
   KEY `is_refund` (`is_refund`),
   KEY `year` (`year`),
   KEY `month` (`month`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理分润记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理分润记录表';
 
 /*Table structure for table `agent_relation` */
 
@@ -186,6 +188,7 @@ CREATE TABLE `agent_relation` (
   `is_cancel` tinyint(1) unsigned DEFAULT '0' COMMENT '是否取消: 0:否,1:是',
   `is_agent` tinyint(1) DEFAULT '1' COMMENT '是否是代理: 0:否,1:是',
   `is_validate` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态: 1:已审核,0:待总部审核,-1:黑名单,-2:待上级审核,-3:驳回修改',
+  `is_founder` tinyint(1) DEFAULT '2' COMMENT '是否创始人: 1:是,2:否. 创始人才能看到间接官方与享受间接官方的分润',
   `line_number` tinyint(3) unsigned DEFAULT '1' COMMENT '代理下线数字',
   `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
   PRIMARY KEY (`id`),
@@ -200,7 +203,7 @@ CREATE TABLE `agent_relation` (
   KEY `top1_id` (`top1_id`),
   KEY `top2_id` (`top2_id`),
   KEY `line_number` (`line_number`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `auth_agent_relation` */
 
@@ -300,7 +303,7 @@ CREATE TABLE `cards` (
   PRIMARY KEY (`id`),
   KEY `admin_id` (`admin_id`),
   KEY `member_id` (`member_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='购物车';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='购物车';
 
 /*Table structure for table `code_prefix` */
 
@@ -387,8 +390,14 @@ CREATE TABLE `company_payment_agent_log` (
   `bank_account` varchar(50) DEFAULT NULL COMMENT '代理银行账户\r\n',
   `bank_name` varchar(100) DEFAULT NULL COMMENT '代理银行账户名称\r\n',
   `money` int(10) unsigned DEFAULT '0' COMMENT '转账金额\r\n',
+  `year` mediumint(4) unsigned DEFAULT '0' COMMENT '年',
+  `month` tinyint(2) DEFAULT '0' COMMENT '月',
   `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '转账时间\r\n',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `admin_id` (`admin_id`),
+  KEY `agent_id` (`agent_id`),
+  KEY `year` (`year`),
+  KEY `month` (`month`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='公司财务支付代理分润记录表';
 
 /*Table structure for table `company_reports_log` */
@@ -399,14 +408,20 @@ CREATE TABLE `company_reports_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `year` mediumint(4) unsigned DEFAULT '0' COMMENT '年\r\n',
   `month` tinyint(2) unsigned DEFAULT '0' COMMENT '月\r\n',
-  `total_profit` int(10) unsigned DEFAULT '0' COMMENT '总支出利润\r\n',
-  `real_profit` int(10) unsigned DEFAULT '0' COMMENT '实际支出利润\r\n',
-  `not_profit` int(10) unsigned DEFAULT '0' COMMENT '未支出利润\r\n',
-  `surplus_profit` int(10) unsigned DEFAULT '0' COMMENT '剩余总利润\r\n',
+  `total_profit` int(10) unsigned DEFAULT '0' COMMENT '每月总支出利润\r\n',
+  `real_profit` int(10) unsigned DEFAULT '0' COMMENT '每月实际支出利润\r\n',
+  `not_profit` int(10) DEFAULT '0' COMMENT '每月未支出利润\r\n',
+  `all_surplus_profit` bigint(20) unsigned DEFAULT '0' COMMENT '剩余总利润\r\n',
+  `all_total_profit` bigint(20) unsigned DEFAULT '0' COMMENT '总支出\r\n',
+  `all_real_profit` bigint(20) unsigned DEFAULT '0' COMMENT '实际总支出\r\n',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态:1:不可更改,2:可更改,3:最新',
   `edit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间\r\n',
   `add_time` datetime DEFAULT NULL COMMENT '添加时间\r\n',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='公司每月分润总额报表';
+  PRIMARY KEY (`id`),
+  KEY `year` (`year`),
+  KEY `month` (`month`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='公司每月分润总额报表';
 
 /*Table structure for table `configuration` */
 
@@ -513,7 +528,7 @@ CREATE TABLE `deliver_goods` (
   KEY `code` (`code`),
   KEY `web_type` (`web_type`),
   KEY `order_id` (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='发货表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='发货表';
 
 /*Table structure for table `encourage` */
 
@@ -692,11 +707,13 @@ CREATE TABLE `invitecode` (
   `line_number` tinyint(1) DEFAULT NULL COMMENT '代理线的数字',
   `top1_id` int(10) unsigned DEFAULT '0' COMMENT '官方上两级ID',
   `top2_id` int(10) unsigned DEFAULT '0' COMMENT '官方上级ID',
+  `is_founder` tinyint(1) DEFAULT '2' COMMENT '是否创始人: 1:是,2:否',
+  `team_name` varchar(100) DEFAULT NULL COMMENT '团队名称',
   `auth_lv_list` varchar(20) DEFAULT NULL COMMENT '授权证书列表',
   PRIMARY KEY (`inviteId`),
   UNIQUE KEY `code` (`inviteCode`),
   KEY `agentId` (`agentId`)
-) ENGINE=MyISAM AUTO_INCREMENT=11855 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=11865 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `label_code` */
 
@@ -756,7 +773,9 @@ CREATE TABLE `order_goods` (
   `admin_price` int(10) unsigned DEFAULT '0' COMMENT '发货人价格',
   `member_price` int(10) unsigned DEFAULT '0' COMMENT '收货人价格',
   `is_gift` tinyint(1) unsigned DEFAULT '1' COMMENT '是否赠品:0:否,1是',
+  `is_refund` tinyint(1) DEFAULT '1' COMMENT '是否退货:1:否,2:是',
   `goods_profit` mediumint(5) unsigned DEFAULT '0' COMMENT '产品利润',
+  `goods_total_profit` int(10) unsigned DEFAULT '0' COMMENT '产品总利润',
   `year` mediumint(4) unsigned DEFAULT NULL COMMENT '年',
   `month` tinyint(2) unsigned DEFAULT NULL COMMENT '月',
   `day` tinyint(2) DEFAULT NULL COMMENT '日',
@@ -764,11 +783,14 @@ CREATE TABLE `order_goods` (
   PRIMARY KEY (`id`),
   KEY `goods_id` (`goods_id`),
   KEY `code` (`code`),
-  KEY `code_type` (`code_type`),
   KEY `order_id` (`order_id`),
   KEY `admin_id` (`admin_id`),
-  KEY `member_id` (`member_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `member_id` (`member_id`),
+  KEY `is_refund` (`is_refund`),
+  KEY `year` (`year`),
+  KEY `month` (`month`),
+  KEY `day` (`day`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `order_info` */
 
@@ -811,7 +833,7 @@ CREATE TABLE `order_info` (
   `pay_account` varchar(100) DEFAULT NULL COMMENT '支付账户',
   `pay_sn` varchar(30) DEFAULT NULL COMMENT '第三方支付订单号',
   `third_pay` decimal(10,2) DEFAULT NULL COMMENT '第三方支付金额',
-  `goods_total_profit` int(11) DEFAULT NULL COMMENT '订单商品总利润',
+  `goods_total_stock` mediumint(9) DEFAULT '0' COMMENT '订单商品总数量',
   PRIMARY KEY (`order_id`),
   UNIQUE KEY `order_sn` (`order_sn`),
   KEY `order_status` (`order_status`),
@@ -822,7 +844,7 @@ CREATE TABLE `order_info` (
   KEY `collect_time` (`collect_time`),
   KEY `admin_id` (`admin_id`),
   KEY `member_id` (`member_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `security_check_log` */
 
@@ -834,7 +856,7 @@ CREATE TABLE `security_check_log` (
   `add_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '查询时间',
   PRIMARY KEY (`id`),
   KEY `code` (`code`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='防伪查询记录表';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='防伪查询记录表';
 
 /*Table structure for table `sessions` */
 
