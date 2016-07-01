@@ -96,8 +96,8 @@
 
         $Image->text($auth_num,$font_path.$font,16,'#000000',array(340,590),-100,0) //生成授权号
                 ->text($name,$font_path.$font,17,'#000000',array(450,405),-100,0) //生成名字
-                ->text($new_card_num,$font_path.$font,18,'#000000',array(750,410),-100,0) //生成身份证号
-                ->text($weixin,$font_path.$font,18,'#000000',array(328,436),-100,0) //生成微信号
+                ->text($new_card_num,$font_path.$font,18,'#000000',array(730,410),-100,0) //生成身份证号
+                ->text($weixin,$font_path.$font,18,'#000000',array(328,448),-100,0) //生成微信号
 //                ->text($lv_name,$font_path.$font,17,'#000000',array(308,560),-100,0) //生成代理级别
                 ->text($start_time[0],$font_path.$font,13,'#000000',array(335,625),-100,0) //生成开始年
                 ->text($start_time[1],$font_path.$font,13,'#000000',array(405,625),-100,0) //生成开始月
