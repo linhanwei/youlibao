@@ -123,9 +123,9 @@ class PublicController extends Controller {
            
         $agent_info = $Agent->getDetail($where,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
         $admin_info = $UserCom->getDetail('',array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
-          
+       
         if($agent_info){
-            if($agent_info['star'] > 1){
+           
                 switch ($agent_info['stat']) {
                     case 1: //
                         $notice_msg = $admin_info['agent_notice'];
@@ -147,9 +147,7 @@ class PublicController extends Controller {
                 }
 
                 $this->assign('agent_info',$agent_info);
-            }else{
-                $notice_msg = '您所查询的代理不存在!'; 
-            }
+           
         }else{
             $notice_msg = $admin_info['agent_nors_notice']; //代理不存在
         }

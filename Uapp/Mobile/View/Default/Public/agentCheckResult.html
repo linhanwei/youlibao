@@ -1,30 +1,39 @@
 <extend name="Public:base" />
 <block name="title"><title>代理商查询</title></block>
 <block name="header">
-    <include file="Public/agentHeader" />
+	<link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+    <!-- <include file="Public/agentHeader" /> -->
 </block>
 <block name="main">
-	<div class="container noMargin accredit" style="margin-bottom: 100px;">
-		
-		    <div class="accreditImg">
-		    	<if condition="$auth_img">
-			        <img src="<{$auth_img}>">
-			        <p>(手机长按授权书保存)</p>
-			    </if>
-		    </div>
-		    <div class="result">
-		        <p>查询结果如下：</p>
-		        <if condition="$agent_info['stat'] eq 1">
-			        <ul>
-			            <li>代理人姓名：<span><{$agent_info.name}></span></li>
-			            <li>代理人微信：<span><{$agent_info.weixin}></span></li>
-			            <li>代理人级别：<span><{$agent_info.agent_lv_name}></span></li>
-			        </ul>
-			    </if>
-		        <p><{$notice_msg}></p>
-		    </div>
-	   
+	<div class="table-responsive partner">
+	    <div class="table-title">查询结果</div>
+	    <if condition="$agent_info['stat'] eq 1">
+		    <table class="table table-bordered">
+
+		        <tr>
+		            <td>代理人姓名：</td>
+		            <td><{$agent_info.name}></td>
+		        </tr>
+		         <tr>
+		            <td>代理人微信：</td>
+		            <td><{$agent_info.weixin}></td>
+		        </tr>
+		         <tr>
+		            <td>代理人级别：</td>
+		            <td><{$agent_info.agent_lv_name}></td>
+		        </tr>
+
+		    </table>
+		    <p class="text-center" style="width: 80%;margin: 0 auto;margin-top: 10px;margin-bottom: 10px;"><{$notice_msg}></p>
+		</if>
+     	<div class="accreditImg">
+	    	<if condition="$auth_img">
+		        <img src="<{$auth_img}>">
+		        <p class="text-center">(手机长按授权书保存)</p>
+		    </if>
+	    </div>
 	</div>
+	
     <script type="text/javascript">
     	$(function(){
     		
@@ -33,5 +42,5 @@
     </script>
 </block>
 <block name="footer">
-  <include file="Public/footer" />
+  <!-- <include file="Public/footer" /> -->
 </block>
