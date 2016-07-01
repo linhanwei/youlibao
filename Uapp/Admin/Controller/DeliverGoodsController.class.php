@@ -245,9 +245,9 @@ class DeliverGoodsController extends CommonController {
         
         $OrderGoods->startTrans();
         
-        $result1 = $OrderInfo->delData($where);
-        $result2 = $OrderGoods->delData($where);
-        $result3 = $DeliverGoods->delData($where);
+//        $result1 = $OrderInfo->delData($where);
+//        $result2 = $OrderGoods->delData($where);
+//        $result3 = $DeliverGoods->delData($where);
         
         if($result1 && $result2 && $result3){
             $return = array('status'=>1,'msg'=>'删除成功','result'=>'');
@@ -310,8 +310,8 @@ class DeliverGoodsController extends CommonController {
         
         $OrderGoods->startTrans();
         
-        $result2 = $OrderGoods->delData($where);
-        $result3 = $DeliverGoods->delData($where);
+//        $result2 = $OrderGoods->delData($where);
+//        $result3 = $DeliverGoods->delData($where);
         
         if($result2 && $result3){
             $return = array('status'=>1,'msg'=>'删除成功','result'=>array('order_sn'=>$order_sn));

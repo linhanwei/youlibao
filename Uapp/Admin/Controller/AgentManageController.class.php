@@ -260,7 +260,7 @@ class AgentManageController extends CommonController {
             $nextData['agent1_id'] = $parent_id;
             $nextData['agent2_id'] = $parent_id;
             $nextData['agent3_id'] = $parent_id;
-            $next_result = $AgentRelation->editData($next_agent_where,$nextData);
+//            $next_result = $AgentRelation->editData($next_agent_where,$nextData);
             
             $arData['pid'] = $parent_id;
 
@@ -277,7 +277,7 @@ class AgentManageController extends CommonController {
         if($ag_result || $result){
             $return = array('status'=>1,'msg'=>'修改成功','result'=>'');
             $Agent->commit();//提交事务
-            S('AGENT_INFO'.$agent_id,NULL);
+            S(C('AGENT_INFO').$agent_id,NULL);
         }else{
             $Agent->rollback(); //事务回滚
         }
