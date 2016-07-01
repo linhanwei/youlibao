@@ -52,6 +52,7 @@
 
         $member_id = $agent_info['agentid'];
         $name = $agent_info['name'];
+        $agent_grade = $agent_info['agent_grade'];
         $auth_num = $agent_info['agentno'];
         $card_num = $agent_info['cardno'];
         $weixin = $agent_info['weixin'];
@@ -87,23 +88,23 @@
             $new_card_num .= '*';
         }
         $new_card_num = $pre_card.$new_card_num.$hm_card;
-
+    
         $Image = new \Think\Image(); // 在图片右下角添加水印文字 ThinkPHP 并保存为new.jpg
-        $OpenImage = $Image->open($font_path.'kudouys.jpg');
+        $OpenImage = $Image->open($font_path.$agent_grade.'.jpg');
         $width = $Image->width(); // 返回图片的宽度
         $height = $Image->height(); // 返回图片的高度
 
-        $Image->text($auth_num,$font_path.$font,14,'#000000',array(370,380),-100,0) //生成授权号
-                ->text($name,$font_path.$font,17,'#000000',array(315,445),-100,0) //生成名字
-                ->text($new_card_num,$font_path.$font,12,'#000000',array(435,452),-100,0) //生成身份证号
-                ->text($weixin,$font_path.$font,17,'#000000',array(308,536),-100,0) //生成微信号
-                ->text($lv_name,$font_path.$font,17,'#000000',array(308,560),-100,0) //生成代理级别
-                ->text($start_time[0],$font_path.$font,13,'#000000',array(305,592),-100,0) //生成开始年
-                ->text($start_time[1],$font_path.$font,13,'#000000',array(365,592),-100,0) //生成开始月
-                ->text($start_time[2],$font_path.$font,13,'#000000',array(410,592),-100,0) //生成开始月
-                ->text($end_time[0],$font_path.$font,13,'#000000',array(470,592),-100,0) //生成结束年
-                ->text($end_time[1],$font_path.$font,13,'#000000',array(530,592),-100,0) //生成结束月
-                ->text($end_time[2],$font_path.$font,13,'#000000',array(575,592),-100,0) //生成结束日
+        $Image->text($auth_num,$font_path.$font,16,'#000000',array(340,590),-100,0) //生成授权号
+                ->text($name,$font_path.$font,17,'#000000',array(450,405),-100,0) //生成名字
+                ->text($new_card_num,$font_path.$font,18,'#000000',array(750,410),-100,0) //生成身份证号
+                ->text($weixin,$font_path.$font,18,'#000000',array(328,436),-100,0) //生成微信号
+//                ->text($lv_name,$font_path.$font,17,'#000000',array(308,560),-100,0) //生成代理级别
+                ->text($start_time[0],$font_path.$font,13,'#000000',array(335,625),-100,0) //生成开始年
+                ->text($start_time[1],$font_path.$font,13,'#000000',array(405,625),-100,0) //生成开始月
+                ->text($start_time[2],$font_path.$font,13,'#000000',array(455,625),-100,0) //生成开始日
+                ->text($end_time[0],$font_path.$font,13,'#000000',array(525,625),-100,0) //生成结束年
+                ->text($end_time[1],$font_path.$font,13,'#000000',array(590,625),-100,0) //生成结束月
+                ->text($end_time[2],$font_path.$font,13,'#000000',array(635,625),-100,0) //生成结束日
                 ->save($new_img_path); 
 
         return $save_img_path;

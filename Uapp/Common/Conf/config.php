@@ -18,6 +18,9 @@ return array(
         //下级限制总人数
         'NEXT_AGENT_COUNT'=>20,
     
+        //授权书号码前缀
+        'AGENT_NO_PRE'=>'MSB',
+    
         //会员表信息
         'M_TABLE_NAME'=>'Member',
         'MID_FIELD_NAME'=>'ID',

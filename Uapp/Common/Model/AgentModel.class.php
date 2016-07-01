@@ -234,7 +234,7 @@ class AgentModel extends Model {
             $agent_count = $this->getCount();
             $time = time();
             $agentNo = $time+200000000+$str+$agent_count;
-            $agentNo = 'KUDOU'.$agentNo;
+            $agentNo = C('AGENT_NO_PRE').$agentNo;
             
             return $agentNo;
         }
