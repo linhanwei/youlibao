@@ -240,6 +240,7 @@ class DeliverGoodsController extends CommonController {
             $Agent = D('Agent');
             $AgentProfitLog = D('AgentProfitLog');
             $CompanyReportsLog = D('CompanyReportsLog');
+            $LabelCode = D('LabelCode');
             
             //初始化订单总金额与销售利润金额
             $order_total_money = 0;

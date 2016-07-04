@@ -80,7 +80,7 @@ class AgentManageController extends CommonController {
             $profit_day_where['profit_agent_id'] = $member_id;
             $profit_day_where['is_refund'] = 1; //是否退货:1:否,2:是
             
-            $profit_day_total = $AgentProfitLog->getSum($profit_day_where,'profit_total_money');
+            $profit_day_total = $AgentProfitLog->getSum($profit_day_where,'profit_money');
             $profit_day_total = $profit_day_total ? $profit_day_total : 0;
             
             $this->assign('day_total_profit',$sale_day_total+$profit_day_total);
@@ -190,7 +190,7 @@ class AgentManageController extends CommonController {
             //直接下线总人数
             $next_count = $AgentRelation->getCount($next_where);
             $this->assign('next_count', $next_count);
-            
+           
             //下线列表
             $join = ' ar LEFT JOIN agent a on ar.member_id = a.agentId';
             $order = 'all_buy_total_stock DESC';
@@ -198,10 +198,11 @@ class AgentManageController extends CommonController {
 
             if($next_list){
                 foreach ($next_list as $ak => $av) {
-                    $next_where['pid'] = $member_id;
-                    $next_where['agent_grade'] = $$av['agent_grade']+1;
-                    $next_count = $AgentRelation->getCount($next_where);
-                    $next_list[$ak]['next_count'] = $next_count;
+                    $next_all_where['pid'] = $av['member_id'];
+                    $next_all_where['agent_grade'] = $av['agent_grade']+1;
+                    $next_all_count = $AgentRelation->getCount($next_all_where);
+                    
+                    $next_list[$ak]['next_count'] = $next_all_count;
                 }
             }
             

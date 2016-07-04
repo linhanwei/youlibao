@@ -82,7 +82,7 @@ class ProfileController extends CommonController {
     //直接推荐
     public function directRecommon() {
         
-        $data = $this->recommonList(1);
+        $data = $this->recommonList(2);
         
         $this->assign('list',$data['list']);
                 
@@ -92,7 +92,7 @@ class ProfileController extends CommonController {
     //间接推荐
     public function indirectRecommon() {
         
-        $data = $this->recommonList(2);
+        $data = $this->recommonList(1);
         
         $this->assign('list',$data['list']);
         

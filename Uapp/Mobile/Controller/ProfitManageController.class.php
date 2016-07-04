@@ -31,7 +31,7 @@ class ProfitManageController extends CommonController {
         $list = $AgentProfitLog->getList($where,$limit,$page,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
         
         $where['is_refund'] = 1; //是否退货: 1:否,2:是
-        $count = $AgentProfitLog->getSum($where,'profit_total_money');
+        $count = $AgentProfitLog->getSum($where,'profit_money');
         $this->assign('count',$count ? $count : 0);
         
         $this->assign('list',$list);

@@ -28,7 +28,7 @@ return array(
         //会员等级
         'MEMBER_LEVEL'=>array(
             0=>array('lv'=>0,'name'=>'蜜舒宝公司'),
-            1=>array('lv'=>1,'name'=>'官方合伙人'),
+            1=>array('lv'=>1,'name'=>'联合创始人'),
             2=>array('lv'=>2,'name'=>'大区合伙人'),
             3=>array('lv'=>3,'name'=>'总代合伙人'),
             4=>array('lv'=>4,'name'=>'特约合伙人'),
