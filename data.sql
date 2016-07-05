@@ -60,7 +60,7 @@ CREATE TABLE `agent` (
   KEY `weixin` (`weixin`),
   KEY `star` (`star`),
   KEY `tel` (`tel`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=696 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `agent_goods_profit_rale` */
 
@@ -101,7 +101,7 @@ CREATE TABLE `agent_goods_stock_rale` (
   PRIMARY KEY (`id`),
   KEY `goods_id` (`goods_id`),
   KEY `agent_id` (`agent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理与产品库存关系表';
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理与产品库存关系表';
 
 /*Table structure for table `agent_month_profit` */
 
@@ -126,7 +126,7 @@ CREATE TABLE `agent_month_profit` (
   KEY `month` (`month`),
   KEY `is_profit` (`is_profit`),
   KEY `agent_id` (`agent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理每月销售与进货与分润总额报表';
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理每月销售与进货与分润总额报表';
 
 /*Table structure for table `agent_profit_log` */
 
@@ -168,7 +168,7 @@ CREATE TABLE `agent_profit_log` (
   KEY `is_refund` (`is_refund`),
   KEY `year` (`year`),
   KEY `month` (`month`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理分润记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='代理分润记录表';
 
 /*Table structure for table `agent_relation` */
 
@@ -203,7 +203,7 @@ CREATE TABLE `agent_relation` (
   KEY `top1_id` (`top1_id`),
   KEY `top2_id` (`top2_id`),
   KEY `line_number` (`line_number`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=696 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Table structure for table `auth_agent_relation` */
 
@@ -304,6 +304,23 @@ CREATE TABLE `cards` (
   KEY `admin_id` (`admin_id`),
   KEY `member_id` (`member_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='购物车';
+
+/*Table structure for table `cash_prize_log` */
+
+DROP TABLE IF EXISTS `cash_prize_log`;
+
+CREATE TABLE `cash_prize_log` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `agent_id` int(10) unsigned DEFAULT '0',
+  `prize_code` varchar(16) DEFAULT '0' COMMENT '兑奖码',
+  `is_prize` tinyint(1) DEFAULT '2' COMMENT '是否兑奖(1:已兑奖,2:未兑奖)\r\n',
+  `get_time` date DEFAULT NULL COMMENT '获取时间\r\n',
+  `out_time` date DEFAULT NULL COMMENT '过期时间\r\n',
+  `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '添加时间\r\n',
+  PRIMARY KEY (`id`),
+  KEY `agent_id` (`agent_id`),
+  KEY `prize_code` (`prize_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='特约扫码兑换奖品';
 
 /*Table structure for table `code_prefix` */
 
@@ -790,7 +807,7 @@ CREATE TABLE `order_goods` (
   KEY `year` (`year`),
   KEY `month` (`month`),
   KEY `day` (`day`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `order_info` */
 
@@ -844,7 +861,7 @@ CREATE TABLE `order_info` (
   KEY `collect_time` (`collect_time`),
   KEY `admin_id` (`admin_id`),
   KEY `member_id` (`member_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `security_check_log` */
 

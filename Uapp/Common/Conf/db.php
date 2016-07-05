@@ -15,10 +15,10 @@
 
 		//全局数据库
 		'DB_TYPE'   => 'mysql', // 数据库类型
-		'DB_HOST'   => '127.0.0.1', // 服务器地址  112.74.97.11
-		'DB_NAME'   => 'kudousmb', // 数据库名
-		'DB_USER'   => 'root', // 用户名
-		'DB_PWD'    => 'root', // 密码
+		'DB_HOST'   => '127.0.0.1', // 服务器地址  120.24.225.43
+		'DB_NAME'   => 'kudousmb', // 数据库名 msg  //  test_msb
+		'DB_USER'   => 'root', // 用户名  admin
+		'DB_PWD'    => 'root', // 密码  iA7CCVDpBpx
 		'DB_PORT'   => 3306, // 端口
 		'DB_PREFIX' => '', // 数据库表前缀 
 		'DB_CHARSET'=> 'utf8', // 字符集

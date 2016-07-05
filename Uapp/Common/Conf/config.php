@@ -14,9 +14,13 @@ return array(
         'LOG_RECORD' => true, // 开启日志记录
         'LOG_LEVEL'  =>'EMERG,ALERT,CRIT,ERR', // 只记录EMERG ALERT CRIT ERR 错误
         'LOG_TYPE'              =>  'File', // 日志记录类型 默认为文件方式
+        
+        //特约兑奖信息
+        'CASH_PRIZE_NUMBER'=>10,//兑奖比例 10:1
+        'GET_CASH_PRIZE_CODE_URL'=>'http://wechat.unesmall.com/api/m/1.0/createScanCodeCash.json',//获取兑奖码url
     
         //下级限制总人数
-        'NEXT_AGENT_COUNT'=>20,
+        'NEXT_AGENT_COUNT'=>10,
     
         //授权书号码前缀
         'AGENT_NO_PRE'=>'MSB',
@@ -94,8 +98,8 @@ return array(
 	'DEFAULT_MODULE'       =>    'Mobile',						//设置默认模块
 	'APP_SUB_DOMAIN_DEPLOY'   =>    1, // 开启子域名配置
 	'APP_SUB_DOMAIN_RULES'    =>    array( 
-		'adminmsb'   => 'Admin',   // api.domain.com域名指向Test模块),
-		'msb'   => 'Mobile',  // m.domain.com域名指向Test模块),
+		'msb2'   => 'Admin',   // api.domain.com域名指向Test模块),
+		'msb1'   => 'Mobile',  // m.domain.com域名指向Test模块),
              
 	),
 );

@@ -49,11 +49,11 @@ class LoginController extends Controller {
         }
         
         if($result['is_agent'] != 0 ){
-            if($result['star'] == 4){
-                $MEMBER_LEVEL = C('MEMBER_LEVEL');
-                $return['msg'] = $MEMBER_LEVEL[4]['name'].'暂时不支持登录,请在代理查询页面下载授权书,或者联系经销商升级处理!';
-                $this->ajaxReturn($return,'json');
-            }
+//            if($result['star'] == 4){
+//                $MEMBER_LEVEL = C('MEMBER_LEVEL');
+//                $return['msg'] = $MEMBER_LEVEL[4]['name'].'暂时不支持登录,请在代理查询页面下载授权书,或者联系经销商升级处理!';
+//                $this->ajaxReturn($return,'json');
+//            }
 
             $time = time();
             $end_time = $result['endtime'];

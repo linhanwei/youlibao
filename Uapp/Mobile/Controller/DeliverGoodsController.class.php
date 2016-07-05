@@ -146,10 +146,11 @@ class DeliverGoodsController extends CommonController {
     //发货页面
     public function deliverView() {
         
-        $agent_id = I('aid');
+        $agent_id = I('aid',0);
         
         $member_info = $this->memberInfo();
         $admin_id = $member_info['agentid'];
+        $admin_lv = $member_info['agent_grade'];
         
         //获取微信JS_SDK配置信息
         $weixin_js_sdk_info = A('Public')->getWxJsInfo();
@@ -167,9 +168,10 @@ class DeliverGoodsController extends CommonController {
         $card_where['member_id'] = $agent_id;
         $goods_list = $Cards->getAllList($card_where,'',array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
         $this->assign('goods_list',$goods_list);
-        
+     
         $this->assign('is_agent',$member_info['is_agent']);
         $this->assign('agent_id',$agent_id);
+        $this->assign('admin_lv',$admin_lv);
         $this->display('deliverView');
       
     }
@@ -181,22 +183,24 @@ class DeliverGoodsController extends CommonController {
         
         $member_info = $this->memberInfo();
         $return = array('status'=>0,'msg'=>'发货失败,请重新发货','result'=>'');
-        $agent_id = I('agent_id'); //收货人ID
+        $agent_id = I('agent_id',0); //收货人ID
         $admin_id = $member_info['agentid']; //发货人ID
         $admin_name = $member_info['name']; //发货人
         $admin_lv = $member_info['agent_grade'] ? $member_info['agent_grade'] : 0; //发货人代理等级
         $admin_is_agent = $member_info['is_agent'];
         $is_add_success = TRUE; //是否添加成功
         
-        if(empty($agent_id)){
-            $return['msg'] = '请选择代理商!';
-            $this->ajaxReturn($return,'json');
-        }
-       
-        $agent_info = $this->getAgent($agent_id);
-        if(empty($agent_info)){
-            $return['msg'] = '请选择正确的代理商!';
-            $this->ajaxReturn($return,'json');
+        if($admin_lv != 4){
+            if(empty($agent_id)){
+                $return['msg'] = '请选择代理商!';
+                $this->ajaxReturn($return,'json');
+            }
+
+            $agent_info = $this->getAgent($agent_id);
+            if(empty($agent_info)){
+                $return['msg'] = '请选择正确的代理商!';
+                $this->ajaxReturn($return,'json');
+            }
         }
         
         $Cards = D('Cards');
@@ -209,17 +213,18 @@ class DeliverGoodsController extends CommonController {
             $this->ajaxReturn($return,'json');
         }
       
-        $agent_name = $agent_info['name'];
-        $agent_lv = $agent_info['agent_grade'];
+        $agent_name = $agent_info ? $agent_info['name'] : '会员' ;
+        $agent_lv = $agent_info ? $agent_info['agent_grade'] : 5;
        
         $time = time();
+        $dataTime = date('Y-m-d H:i:s');
         $OrderInfo = D('OrderInfo');
         
         $OrderInfo->startTrans(); //开启事务
         
         //添加订单
         $order_sn = $this->makeOrderSn();
-        $add_order_data['add_time'] = date('Y-m-d H:i:s');
+        $add_order_data['add_time'] = $dataTime;
         $add_order_data['order_sn'] = $order_sn;
         $add_order_data['admin_id'] = $admin_id;
         $add_order_data['admin_name'] = $admin_name;
@@ -247,7 +252,6 @@ class DeliverGoodsController extends CommonController {
             $order_total_profit = 0;
             $order_total_stock = 0;
             
-            $dataTime = date('Y-m-d H:i:s');
             $year = date('Y');
             $month = date('m');
             $day = date('d');
@@ -263,7 +267,7 @@ class DeliverGoodsController extends CommonController {
                 $goods_id = $v['goods_id'];
                 $goods_name = $v['goods_name'];
                 $goods_number = $v['goods_number'];
-                $admin_price = $v['admin_price'];
+                $admin_price = $v['admin_price'] ? $v['admin_price'] : 0;
                 $member_price = $v['member_price'];
                 $goods_profit = $v['goods_profit'];
                 $sale_total_profit = $goods_profit*$goods_number;
@@ -832,6 +836,7 @@ class DeliverGoodsController extends CommonController {
             //修改订单总金额与订单总利润
             $order_edit_result = $OrderInfo->editData(array('order_id'=>$order_id),array('order_total_money'=>$order_total_money,'order_total_profit'=>$order_total_profit,'goods_total_stock'=>$order_total_stock));
             
+            
             //添加发货商品
             $order_goods_result = $OrderGoods->addAll($add_order_goods);
 
@@ -848,8 +853,68 @@ class DeliverGoodsController extends CommonController {
             
             $result_data['order_id'] = $order_id;
             $result_data['order_sn'] = $order_sn;
-            $return = array('status'=>1,'msg'=>'发货成功','result'=>$result_data);
+            
             $OrderInfo->commit(); //提交事务
+            
+            //清除会员缓存
+            S(C('AGENT_INFO').$admin_id,  NULL);
+            S(C('AGENT_INFO').$agent_id,  NULL);
+            
+            //特约添加兑奖记录 开始
+            $result_data['prize_code_sucess'] = 2; //是否返回兑奖码成功: 1:是,2:否
+            
+            if($admin_lv == 4){
+              
+                $CashPrizeLog = D('CashPrizeLog');
+                $prize_count = $CashPrizeLog->getCount(array('agent_id'=>$admin_id),array('key'=>false,'expire'=>null,'cache_type'=>null));
+                
+                $CASH_PRIZE_NUMBER = C('CASH_PRIZE_NUMBER');
+                $agent_info = $this->getAgent($admin_id);
+                
+                $all_sale_total_stock = $agent_info['all_sale_total_stock']; //出库总库存
+                $code_number = floor(($all_sale_total_stock - $prize_count*$CASH_PRIZE_NUMBER)/$CASH_PRIZE_NUMBER);
+                
+                if($code_number > 0){
+                    $url = C('GET_CASH_PRIZE_CODE_URL');
+                    $url_params = array('num'=>$code_number);
+                    $url_method = 'GET';
+
+                    $return_data = http($url, $url_params, $url_method);
+
+                    if($return_data !== FALSE){
+                        $json_data = json_decode($return_data);
+                        $return_result = $json_data->result->list;
+                        
+                        if($json_data->status == 1 && !empty($return_result)){
+                           
+                            foreach ($return_result as $rk => $rv) {
+                                $prize_code = $rv->number;
+                                
+                                if($prize_code){
+                                    $addResultData[$rk]['agent_id'] = $admin_id;
+                                    $addResultData[$rk]['prize_code'] = $prize_code;
+                                    $addResultData[$rk]['is_prize'] = 2; //是否兑奖(1:已兑奖,2:未兑奖)
+                                    $addResultData[$rk]['get_time'] = date('Y-m-d');
+                                    $addResultData[$rk]['out_time'] = date('Y-m-d',strtotime(' +3 day'));
+                                    $addResultData[$rk]['add_time'] = $dataTime;
+                                }
+                            }
+                            
+                            $addCashResult = $CashPrizeLog->addAll($addResultData);
+
+                            if($addCashResult){
+                                $result_data['prize_code_sucess'] = 1;
+                            }
+                            
+                        }
+                    }
+                }
+                
+            }
+            //特约添加兑奖记录 结束
+            
+            $return = array('status'=>1,'msg'=>'发货成功','result'=>$result_data);
+            
         }else{
             $OrderInfo->rollback(); //事务回滚
             
@@ -953,14 +1018,14 @@ class DeliverGoodsController extends CommonController {
             $this->ajaxReturn($return,'json');
         }
         
-        if(empty($member_id)){
+        if(empty($member_id) && $admin_lv != 4){
             $return['msg'] = '请选择代理';
             $this->ajaxReturn($return,'json');
         }
         
         //收货人信息
         $member_info = $this->getAgent($member_id);
-        $member_lv = $member_info['agent_grade']; //收货人等级
+        $member_lv = $member_info['agent_grade'] ? $member_info['agent_grade'] : 5; //收货人等级
         
         $Cards = D('Cards');
         
@@ -1130,11 +1195,19 @@ class DeliverGoodsController extends CommonController {
             $this->ajaxReturn($return,'json');
         }
         
-        $buy_profit = $this->getAgentGoodsProfit($goods_id,$member_lv); //收货人的商品价格信息
+        $mark_price = $goods_info['mark_price'];
         
-        if(empty($buy_profit)){
-            $return['msg'] = '没有收货人金额!';
-            $this->ajaxReturn($return,'json');
+        if($admin_lv != 4){
+            $buy_profit = $this->getAgentGoodsProfit($goods_id,$member_lv); //收货人的商品价格信息
+
+            if(empty($buy_profit)){
+                $return['msg'] = '没有收货人金额!';
+                $this->ajaxReturn($return,'json');
+            }
+            
+            $buy_profit = $buy_profit['agent_price'];
+        }else{
+            $buy_profit = $mark_price;
         }
 
         //获取商品的价格与利润
@@ -1145,8 +1218,9 @@ class DeliverGoodsController extends CommonController {
                 $return['msg'] = '没有发货人金额!';
                 $this->ajaxReturn($return,'json');
             }
-
-            $goods_profit = $buy_profit['agent_price'] - $sale_profit['agent_price']; //商品利润
+            
+            $sale_profit = $sale_profit['agent_price'] ? $sale_profit['agent_price'] : 0;
+            $goods_profit = $buy_profit - $sale_profit; //商品利润
         }else{
             $goods_profit = 0;
         }
@@ -1159,9 +1233,9 @@ class DeliverGoodsController extends CommonController {
         $addData['goods_id'] = $goods_id;
         $addData['goods_name'] = $goods_info['short_name'];
         $addData['goods_number'] = $label_count;
-        $addData['market_price'] = $goods_info['mark_price'];
-        $addData['admin_price'] = $sale_profit['agent_price'] ? $sale_profit['agent_price'] : 0;
-        $addData['member_price'] = $buy_profit['agent_price'];
+        $addData['market_price'] = $mark_price;
+        $addData['admin_price'] = $sale_profit;
+        $addData['member_price'] = $buy_profit;
         $addData['goods_profit'] = $goods_profit;
        
         //添加到购物车

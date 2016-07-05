@@ -23,6 +23,16 @@ class PublicController extends Controller {
         $this->assign('action_name',$action_name);
     }
     
+    public function test() {
+        $url = 'http://msb.kudouys.me/Public/searchSecurityResult.html';
+        $url_params = array();
+        $url_method = 'GET';
+        
+        $return_data = http($url, $url_params, $url_method);
+        dump(date('Y-m-d',strtotime(' +3 day')));
+        dump(json_decode($return_data));
+    }
+    
     public function clearAllCache() {
 //      
 //        $LabelCode = D('LabelCode');
@@ -167,7 +177,7 @@ class PublicController extends Controller {
     public function searchSecurityResult() {
         $code = I('code');
         
-        $return = array('status'=>0,'msg'=>'没有改防伪码','result'=>'');
+        $return = array('status'=>0,'msg'=>'没有该防伪码','result'=>'');
                 
         if(empty($code)){
             $$return['msg'] = '请输入防伪码';

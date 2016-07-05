@@ -26,23 +26,25 @@
 	<!-- 开始 -->
 		<div  class="container grid" "<{$total =0}>" >
 	        <div class="searchResult">
-	            <p class="receiveName">收货人:<{$agent_info['name']}></p>
-	          		<if condition="$is_agent neq 1">
-			            <div class="row searchBox">
-				            <div class="input-group searchInputBox mb10">
-				                <input type="text" class="form-control" placeholder="输入商品名称" name="goods_name" id="goods_name" goods_id="0">
-				                <span class="input-group-btn">
-						            <button class="btn" type="submit">搜索</button>
-					          	</span>
-				            </div>
-				            <div class="searchGoods hide">
-								<dl>
-									
-								</dl>
-			                 	<i class="delete close"></i>
-				            </div>
-				        </div>
-				    </if>
+	        	<if condition="$admin_lv neq 4">
+		            <p class="receiveName">收货人:<{$agent_info['name']}></p>
+		        </if>
+          		<if condition="$is_agent neq 1">
+		            <div class="row searchBox">
+			            <div class="input-group searchInputBox mb10">
+			                <input type="text" class="form-control" placeholder="输入商品名称" name="goods_name" id="goods_name" goods_id="0">
+			                <span class="input-group-btn">
+					            <button class="btn" type="submit">搜索</button>
+				          	</span>
+			            </div>
+			            <div class="searchGoods hide">
+							<dl>
+								
+							</dl>
+		                 	<i class="delete close"></i>
+			            </div>
+			        </div>
+			    </if>
 	            <div class="rowA state">
 	                <div class="col">状态：</div>
 	                <div class="col fb far serialScan">连扫</div>
@@ -309,7 +311,12 @@
 		                showMsg(data.msg);
 		                console.log(data);
 		                if(data.status == 1){
-		                	location.href = '__APP__/DeliverGoods/showOrderInfo.html?order_id='+data.result.order_id;
+		                	if(data.result.prize_code_sucess == 1){
+		                		location.href = '__APP__/AgentManage/cashPrizeList.html';
+		                	}else{
+	                			location.href = '__APP__/DeliverGoods/showOrderInfo.html?order_id='+data.result.order_id;
+		                	}
+		                	
 		                }
 			  		}); 
 			  	}

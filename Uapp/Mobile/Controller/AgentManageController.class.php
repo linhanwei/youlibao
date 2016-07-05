@@ -80,10 +80,19 @@ class AgentManageController extends CommonController {
             $profit_day_where['profit_agent_id'] = $member_id;
             $profit_day_where['is_refund'] = 1; //是否退货:1:否,2:是
             
-            $profit_day_total = $AgentProfitLog->getSum($profit_day_where,'profit_money');
-            $profit_day_total = $profit_day_total ? $profit_day_total : 0;
+            //下级分润
+            $profit_day_where2 = $profit_day_where;
+            $profit_day_where2['profit_type'] = 1;
+            $profit_day_total2 = $AgentProfitLog->getSum($profit_day_where2,'profit_total_money');
+            $profit_day_total2 = $profit_day_total2 ? $profit_day_total2 : 0;
             
-            $this->assign('day_total_profit',$sale_day_total+$profit_day_total);
+            //推荐分润
+            $profit_day_where1 = $profit_day_where;
+            $profit_day_where1['profit_type'] = 2;
+            $profit_day_total1 = $AgentProfitLog->getSum($profit_day_where1,'profit_money');
+            $profit_day_total1 = $profit_day_total1 ? $profit_day_total1 : 0;
+           
+            $this->assign('day_total_profit',$sale_day_total+$profit_day_total1+$profit_day_total2);
             
         //本月收入
         $month_profit_where['year'] = $year;
@@ -91,7 +100,7 @@ class AgentManageController extends CommonController {
         $month_profit_where['agent_id'] = $member_id;
         $month_info = $AgentMonthProfit->where($month_profit_where)->field('company_profit+sale_profit as month_total_profit')->find();
         $this->assign('month_total_profit', $month_info ? $month_info['month_total_profit'] : 0);
-        
+       
         //累计收入
         $all_profit_where['agent_id'] = $member_id;
         $all_info = $AgentMonthProfit->where($all_profit_where)->field('SUM(company_profit+sale_profit) as all_total_profit')->find();
@@ -111,25 +120,40 @@ class AgentManageController extends CommonController {
                 }
             }
          
-            //返利收入
-            $new_profit_one_day_list = array();
+            //下级返利收入
             $profit_one_day_where['year'] = $year;
             $profit_one_day_where['month'] = $month;
             $profit_one_day_where['profit_agent_id'] = $member_id;
             $profit_one_day_where['is_refund'] = 1; //是否退货:1:否,2:是
-          
-            $profit_one_day_list = $AgentProfitLog->where($profit_one_day_where)->field('day,SUM(profit_total_money) as profit_day_total')->group('day')->order('day')->select();
+            
+            $new_profit_one_day_list2 = array();
+            $profit_one_day_where2 = $profit_one_day_where;
+            $profit_one_day_where2['profit_type'] = 1;
+            $profit_one_day_list = $AgentProfitLog->where($profit_one_day_where2)->field('day,SUM(profit_total_money) as profit_day_total')->group('day')->order('day')->select();
 
             if($profit_one_day_list){
                 foreach ($profit_one_day_list as $pv) {
-                    $new_profit_one_day_list[$pv['day']] = $pv['profit_day_total'];
+                    $new_profit_one_day_list2[$pv['day']] = $pv['profit_day_total'];
+                }
+            }
+            
+            //推荐返利收入
+            $new_profit_one_day_list1 = array();
+           
+            $profit_one_day_where1 = $profit_one_day_where;
+            $profit_one_day_where1['profit_type'] = 2;
+            $profit_one_day_list = $AgentProfitLog->where($profit_one_day_where1)->field('day,SUM(profit_money) as profit_day_total')->group('day')->order('day')->select();
+
+            if($profit_one_day_list){
+                foreach ($profit_one_day_list as $pv) {
+                    $new_profit_one_day_list1[$pv['day']] = $pv['profit_day_total'];
                 }
             }
         
             $new_month_day_list = array();
             $new_month_day = array();
             
-            if(empty($new_sale_one_day_list) && empty($new_profit_one_day_list)){
+            if(empty($new_sale_one_day_list) && empty($profit_one_day_total1) && empty($profit_one_day_total2)){
                 for($d=1;$d<=$month_last_day;$d++){
                     
                     $new_month_day_list[] = 0;
@@ -138,9 +162,10 @@ class AgentManageController extends CommonController {
             }else{
                 for($d=1;$d<=$month_last_day;$d++){
                     $sale_one_day_total = $new_sale_one_day_list[$d] ? $new_sale_one_day_list[$d] : 0;
-                    $profit_one_day_total = $new_profit_one_day_list[$d] ? $new_profit_one_day_list[$d] : 0;
+                    $profit_one_day_total1 = $new_profit_one_day_list1[$d] ? $new_profit_one_day_list1[$d] : 0;
+                    $profit_one_day_total2 = $new_profit_one_day_list2[$d] ? $new_profit_one_day_list2[$d] : 0;
                 
-                    $new_month_day_list[] = $sale_one_day_total + $profit_one_day_total;
+                    $new_month_day_list[] = $sale_one_day_total + $profit_one_day_total1 + $profit_one_day_total2;
                     $new_month_day[] = $d;
                 }
             }
@@ -798,6 +823,23 @@ class AgentManageController extends CommonController {
             $sy = $all_count - $result_data;
             dump('vip代还有:'.$sy.'没添加');
         }
+   }
+   
+   /*
+    * 特约扫码兑奖记录列表
+    */
+   public function cashPrizeList() {
+        $member_info = $this->memberInfo();
+        $member_id = $member_info['agentid'];
+        
+        $where['agent_id'] = $member_id;
+        $order='add_time DESC';
+        
+        $CashPrizeLog = D('CashPrizeLog');
+        $list = $CashPrizeLog->getAllList($where,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
+        
+        $this->assign('list', $list);
+        $this->display('cashPrizeList');
    }
     
 }

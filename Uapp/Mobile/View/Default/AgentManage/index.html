@@ -46,95 +46,114 @@
                 </a>
             </div>
         </div>
-        <div class="rowA">
-            <div class="col my-profit itemIcon">
-                <a href="__APP__/ProfitManage/index.html?type=1">
-                    裂变分润
-                    <div class=" right arrow-gray-right"></div>
-                </a>
+        <if condition="$member_info['agent_grade'] eq 4">
+             <div class="rowA">
+                <div class="col my-ticket itemIcon">
+                    <a href="__APP__/AgentManage/cashPrizeList.html">
+                        兑奖记录
+                        <div class="right arrow-gray-right"></div>
+                    </a>
+                </div>
+                <div class="col my-delivery itemIcon">
+                    <a href="__APP__/DeliverGoods/deliverView.html">
+                        扫码兑奖
+                        <div class="right arrow-gray-right"></div>
+                    </a>
+                </div>
             </div>
-            <div class="col my-newAgency itemIcon">
-                <a href="__APP__/AgentManage/makeInviteView.html">
-                    新增代理
-                    <div class="right arrow-gray-right"></div>
-                </a>
+        <else />
+            <div class="rowA">
+                <div class="col my-profit itemIcon">
+                    <a href="__APP__/ProfitManage/index.html?type=1">
+                        裂变分润
+                        <div class=" right arrow-gray-right"></div>
+                    </a>
+                </div>
+                <div class="col my-newAgency itemIcon">
+                    <a href="__APP__/AgentManage/makeInviteView.html">
+                        新增代理
+                        <div class="right arrow-gray-right"></div>
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="rowA">
-            <div class="col my-balanceRecord itemIcon">
-                <a href="__APP__/ProfitManage/statementsLog.html">
-                    结算记录
-                    <div class="right arrow-gray-right"></div>
-                </a>
+            <div class="rowA">
+                <div class="col my-balanceRecord itemIcon">
+                    <a href="__APP__/ProfitManage/statementsLog.html">
+                        结算记录
+                        <div class="right arrow-gray-right"></div>
+                    </a>
+                </div>
+                <div class="col my-delivery itemIcon">
+                    <a href="__APP__/DeliverGoods/index.html">
+                        扫码发货
+                        <div class="right arrow-gray-right"></div>
+                    </a>
+                </div>
             </div>
-            <div class="col my-delivery itemIcon">
-                <a href="__APP__/DeliverGoods/index.html">
-                    扫码发货
-                    <div class="right arrow-gray-right"></div>
-                </a>
-            </div>
-        </div>
+        </if>
     </div>
-     <div class="teamManage grid">
-        <div class="title rowA"><div class="col teamIcon">团队管理</div><div class="col fb fvc far teamNum">团队人数：<{$team_count}></div></div>
-        <div class="table-responsive">
-            <div class="table-title">我的<{$member_info.next_lv_name}>（<{$next_count}>）</div>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>排名</th>
-                    <th>姓名</th>
-                    <th>微信号</th>
-                    <th>团队人数</th>
-                    <th>出库数量</th>
-                    <if condition="$member_info['agent_grade'] eq 1">
-                        <!-- 只有官方才能看下级信息 -->
-                        <th></th>
-                    </if>
-                </tr>
-                </thead>
-                <tbody>
-                    <if condition="$next_list">
-                        <volist name="next_list" id="agent" key="k" >
-                            <tr>
-                                <td>
-                                    
-                                    <switch name="k">    
-                                        <case value="1"><span class="circle first"></case>    
-                                        <case value="2"><span class="circle second"></case> 
-                                        <case value="3"><span class="circle third"></case>    
-                                        <default />
-                                            <span class="circle">
-                                    </switch>       
-                                        <{$k}>
-                                    </span>
-                                </td>
-                                <td <if condition="$agent['is_validate'] neq 1">style="color:red;"</if> ><{$agent.name}></td>
-                                <td><{$agent.weixin}></td>
-                                <td>
-                                    <{$agent.next_count}>
-                                    <if condition="$agent['next_count'] eq $next_agent_count"><i class="hasFull"></i></if>
-                                </td>
-                                <td><{$agent.all_sale_total_stock}></td>
-
-                                <if condition="$member_info['agent_grade'] eq 1">
+    <if condition="$member_info['agent_grade'] neq 4">
+        <div class="teamManage grid">
+            <div class="title rowA"><div class="col teamIcon">团队管理</div><div class="col fb fvc far teamNum">团队人数：<{$team_count}></div></div>
+            <div class="table-responsive">
+                <div class="table-title">我的<{$member_info.next_lv_name}>（<{$next_count}>）</div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>姓名</th>
+                        <th>微信号</th>
+                        <th>团队人数</th>
+                        <th>出库数量</th>
+                        <if condition="$member_info['agent_grade'] eq 1">
+                            <!-- 只有官方才能看下级信息 -->
+                            <th></th>
+                        </if>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <if condition="$next_list">
+                            <volist name="next_list" id="agent" key="k" >
+                                <tr>
                                     <td>
-                                        <a href="__APP__/AgentManage/showMyAgent.html?pid=<{$agent.agentid}>">
-                                            <i class="arrow-gray-right"></i>
-                                        </a>
+                                        
+                                        <switch name="k">    
+                                            <case value="1"><span class="circle first"></case>    
+                                            <case value="2"><span class="circle second"></case> 
+                                            <case value="3"><span class="circle third"></case>    
+                                            <default />
+                                                <span class="circle">
+                                        </switch>       
+                                            <{$k}>
+                                        </span>
                                     </td>
-                                </if>
+                                    <td <if condition="$agent['is_validate'] neq 1">style="color:red;"</if> ><{$agent.name}></td>
+                                    <td><{$agent.weixin}></td>
+                                    <td>
+                                        <{$agent.next_count}>
+                                        <if condition="$agent['next_count'] eq $next_agent_count"><i class="hasFull"></i></if>
+                                    </td>
+                                    <td><{$agent.all_sale_total_stock}></td>
+
+                                    <if condition="$member_info['agent_grade'] eq 1">
+                                        <td>
+                                            <a href="__APP__/AgentManage/showMyAgent.html?pid=<{$agent.agentid}>">
+                                                <i class="arrow-gray-right"></i>
+                                            </a>
+                                        </td>
+                                    </if>
+                                </tr>
+                            </volist>
+                        <else />
+                            <tr>
+                                <td colspan="5">没有代理</td>
                             </tr>
-                        </volist>
-                    <else />
-                        <tr>
-                            <td colspan="5">没有代理</td>
-                        </tr>
-                    </if>
-                </tbody>
-            </table>
+                        </if>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </if>
 </section>
 <script>
     //图表

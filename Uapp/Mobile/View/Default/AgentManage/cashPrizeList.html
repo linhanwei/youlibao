@@ -1,0 +1,43 @@
+<extend name="Public:base" />
+<block name="title"><title>兑奖信息</title></block>
+<block name="header">
+	<link href="__PUBLIC__/Mobile/css/balanceRecord.css" rel="stylesheet"/>
+
+    <!-- <include file="Public/agentHeader" /> -->
+</block>
+<block name="main">
+	<div class="table-responsive">
+	    <table class="table table-bordered">
+	        <tr>
+	            <th>兑奖码</th>
+	            <th>获奖时间</th>
+	            <th>过期时间</th>
+	            <!-- <th></th> -->
+	        </tr>
+	        <if condition="$list">
+		        <volist name="list" id="vo" >
+			        <tr>
+			            <td><{$vo.prize_code}></td>
+			            <td><{$vo.get_time}></td>
+			            <td><{$vo.out_time}></td>
+			            <!-- <td><a href="">立即兑奖</a></td> -->
+			        </tr>
+		        </volist>
+	        <else />
+	       		<tr>
+		            <td colspan="5">没有兑奖记录</td>
+		        </tr>
+	       	</if>
+	    </table>
+	</div>
+
+    <script type="text/javascript">
+    	$(function(){
+    		
+    	});
+
+    </script>
+</block>
+<block name="footer">
+	<!-- <include file="Public/footer" /> -->
+</block>
