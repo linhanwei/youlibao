@@ -675,8 +675,8 @@ class DeliverGoodsController extends CommonController {
                             $profitLogData['profit_agent_id'] = $agent_top2_id;
                             $profitLogData['profit_agent_name'] = $agent_top2_info['name'];
                             $profitLogData['profit_agent_lv'] = $agent_top2_info['agent_grade'];
-                            $profitLogData['profit_total_money'] = $top2_profit;
-                            $profitLogData['profit_money'] = $top2_profit_total_money;
+                            $profitLogData['profit_total_money'] = $top2_profit_total_money;
+                            $profitLogData['profit_money'] = $top2_profit;
 
                             $profit_result = $AgentProfitLog->addData($profitLogData);
                             
