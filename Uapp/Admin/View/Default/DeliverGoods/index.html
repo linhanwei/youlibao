@@ -16,10 +16,10 @@
   	<div class="form-group">
 	    <label for="search_field">
 		    <select class="form-control" name="search_field" id="search_field">
-		    	<option value="code">条形码</option>
-		  		<option value="order_sn">发货单号</option>
-		  		<option value="consignee">收货人</option>
-		  		<option value="admin_name">发货人</option>
+		    	<option value="code" <if condition="$search['search_field'] eq 'code'">selected=""</if> >条形码</option>
+		  		<option value="order_sn" <if condition="$search['search_field'] eq 'order_sn'">selected=""</if> >发货单号</option>
+		  		<option value="member_name" <if condition="$search['search_field'] eq 'member_name'">selected=""</if> >收货人</option>
+		  		<option value="admin_name" <if condition="$search['search_field'] eq 'admin_name'">selected=""</if> >发货人</option>
 			</select>
 		</label>
 		<input type="text" class="form-control" id="search_value" name="search_value" value="<{$search.search_value}>">
@@ -39,6 +39,7 @@
             <th>收货人</th>
             <th>发货人</th>
             <th>发货时间</th>
+            <th>是否已退货</th>
             <th>操作</th>
           </tr>
         </thead>
@@ -50,8 +51,19 @@
 					<td><{$vo.admin_name}></td>
 					<td><{$vo.add_time}></td>
 					<td>
-						<button type="button" aid="<{$vo.order_sn}>" web_type="<{$search.web_type}>" class="btn btn-info show_detail">查看详情</button>
-						<button type="button" aid="<{$vo.order_sn}>" web_type="<{$search.web_type}>" class="btn btn-danger del_agent">删除</button>
+						
+						<if condition="$vo['order_status'] eq 2">
+							<i style="color: red;">是</i>
+						<else />
+							否
+						</if>
+					</td>
+					<td>
+						<button type="button" aid="<{$vo.order_id}>" web_type="<{$search.web_type}>" class="btn btn-info show_detail">查看详情</button>
+
+						<if condition="$vo['order_status'] eq 1">
+							<button type="button" aid="<{$vo.order_id}>" web_type="<{$search.web_type}>" class="btn btn-danger del_agent">删除</button>
+						</if>
 					</td>
 				</tr>
 			</volist>
@@ -107,7 +119,7 @@
 
 
 	    	if (confirm("是否确定删除"))  {  
-		    	$.post('__APP__/DeliverGoods/delOrder.html', {order_sn: aid,web_type:web_type}, function(data) {
+		    	$.post('__APP__/DeliverGoods/delOrder.html', {order_id: aid,web_type:web_type}, function(data) {
 		    		alert(data.msg);
 		    		if(data.status == 1){
 		    			LoadPage("__APP__/DeliverGoods/index.html");

@@ -13,8 +13,10 @@
           <tr>
             <th>商品编号</th>
             <th>商品名称</th>
+            <th>数量</th>
             <th>条形码</th>
             <th>商品图片</th>
+            <th>是否已经退货</th>
             <th>操作</th>
           </tr>
         </thead>
@@ -23,10 +25,20 @@
 				<tr>
 					<th scope="row"><{$vo.goods_id}></th>
 					<td><{$vo.goods_name}></td>
+          <td><{$vo.goods_number}></td>
           <td><{$vo.code}></td>
 					<td><img src="<{$vo.index_pic}>"  class="img-rounded" style="width: 80px;"></td>
           <td>
-            <button type="button" aid="<{$vo.order_id}>" code="<{$vo.code}>" web_type="" class="btn btn-danger del_agent">删除</button>
+              <if condition="$vo['is_refund'] eq 1">
+                否
+              <else />
+                <i style="color: red;">是</i>
+              </if>
+          </td>
+          <td>
+              <if condition="$vo['is_refund'] eq 1">
+                <button type="button" aid="<{$vo.order_id}>" code="<{$vo.code}>" web_type="" class="btn btn-danger del_agent">删除</button>
+              </if>
           </td>
 				</tr>
 			</volist>
