@@ -243,6 +243,18 @@ class DeliverGoodsController extends CommonController {
         $order_sale_all_money = $order_info['order_total_money'];//订单销售总金额
         $order_sale_all_profit = $order_info['order_total_profit'];//订单销售总利润
         $order_goods_total_stock = $order_info['goods_total_stock'];//订单销售总库存
+        
+        $OrderGoods = D('OrderGoods');
+        
+        //如果该订单中有商品已经退货,该订单就不能再退货
+        $get_order_goods_count_where['order_id'] = $order_id;
+        $get_order_goods_count_where['is_refund'] = 2;
+        $getOrderGoodsCount = $OrderGoods->getCount($get_order_goods_count_where,array('key'=>false,'expire'=>null,'cache_type'=>null));
+        
+        if($getOrderGoodsCount > 0){
+            $return['msg'] = '该订单已经有退货商品,不能再退货,您只能进去单个退货!';
+            $this->ajaxReturn($return,'json');
+        }
             
         //如果该订单代理已经分润,不能再退货
         $AgentMonthProfit = D('AgentMonthProfit');
@@ -257,8 +269,6 @@ class DeliverGoodsController extends CommonController {
             $return['msg'] = '该订单已经分润,不能再退货!';
             $this->ajaxReturn($return,'json');
         }
-        
-        $OrderGoods = D('OrderGoods');
         
         //查找出该订单所有没有退货的条形码
         $order_goods_where['order_id'] = $order_id;
@@ -330,9 +340,10 @@ class DeliverGoodsController extends CommonController {
                     case 2:
                             //检查小标签是否发货
                             $sql = 'SELECT COUNT(*) AS counts FROM deliver_goods WHERE CODE = "'.$code.'" AND admin_id ='.$member_id;
-
+                            
                             $label_code_retult = $DeliverGoods->query($sql);
                             $deliv_count = $label_code_retult[0]['counts'];
+                            
                             if($deliv_count > 0){
                                 $return['msg'] = '因为您已经发了标签:'.$code.'的商品,不能退货!';
                                 $is_vilid_success = FALSE;
