@@ -28,16 +28,30 @@ class PublicController extends Controller {
         $url_params = array();
         $url_method = 'GET';
         
-        $return_data = http($url, $url_params, $url_method);
-        dump(date('Y-m-d',strtotime(' +3 day')));
-        dump(json_decode($return_data));
+        $LabelCode = D('LabelCode');
+        $admin_id = 1;
+        $code = '10011247606';
+        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT min_code FROM label_code WHERE max_code = "'.$code.'" OR middle_code = "'.$code.'") AND admin_id ='.$admin_id; //发了小标签,不能再发中标或者大标
+        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT middle_code FROM label_code WHERE max_code = "'.$code.'") AND admin_id ='.$admin_id; //发了中标,不能再发大标
+        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT max_code FROM label_code WHERE middle_code = "'.$code.'") AND admin_id ='.$admin_id; //发了大标不能发中标
+        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT max_code FROM label_code WHERE min_code = "'.$code.'") AND admin_id ='.$admin_id; //发了大标不能发小标
+        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT middle_code FROM label_code WHERE min_code = "'.$code.'") AND admin_id ='.$admin_id; //发了中标不能发小标
+        $label_code_retult = $LabelCode->query($sql);
+        
+        dump($LabelCode->_sql());
+        dump($label_code_retult[0]['count']);
+//        $return_data = http($url, $url_params, $url_method);
+//        dump(date('Y-m-d',strtotime(' +3 day')));
+//        dump(json_decode($return_data));
     }
+    
     
     public function clearAllCache() {
 //      
 //        $LabelCode = D('LabelCode');
 //        dump($LabelCode->getDetail(array('id'=>790104)));die;
 //        
+        
         $Redis = new \Think\Cache\Driver\Redis();
         S('aa',111);
         dump(S('aa'));

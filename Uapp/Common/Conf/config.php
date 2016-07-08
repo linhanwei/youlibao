@@ -98,8 +98,8 @@ return array(
 	'DEFAULT_MODULE'       =>    'Mobile',						//设置默认模块
 	'APP_SUB_DOMAIN_DEPLOY'   =>    1, // 开启子域名配置
 	'APP_SUB_DOMAIN_RULES'    =>    array( 
-		'msb2'   => 'Admin',   // api.domain.com域名指向Test模块),
-		'msb1'   => 'Mobile',  // m.domain.com域名指向Test模块),
+		'adminmsb'   => 'Admin',   // api.domain.com域名指向Test模块),
+		'msb'   => 'Mobile',  // m.domain.com域名指向Test模块),
              
 	),
 );

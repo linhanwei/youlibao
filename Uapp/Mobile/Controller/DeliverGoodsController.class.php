@@ -325,6 +325,7 @@ class DeliverGoodsController extends CommonController {
                     //产品统计
                     $sale_where['agent_id'] = $admin_id;
                     $sale_where['goods_id'] = $goods_id;
+                    $sale_where['goods_stock'] = array('egt',$goods_number);
 //
 //                    $AgentGoodsStockRale->editDec($sale_where,'goods_stock',$goods_number,0); //减少库存
 //                    $AgentGoodsStockRale->editInc($sale_where,'sale_total_stock',$goods_number,0); //增加出库总数量
@@ -876,7 +877,7 @@ class DeliverGoodsController extends CommonController {
                 
                 if($code_number > 0){
                     $url = C('GET_CASH_PRIZE_CODE_URL');
-                    $url_params = array('num'=>$code_number);
+                    $url_params = array('num'=>$code_number,'pw'=>1);
                     $url_method = 'GET';
 
                     $return_data = http($url, $url_params, $url_method);
@@ -894,8 +895,8 @@ class DeliverGoodsController extends CommonController {
                                     $addResultData[$rk]['agent_id'] = $admin_id;
                                     $addResultData[$rk]['prize_code'] = $prize_code;
                                     $addResultData[$rk]['is_prize'] = 2; //是否兑奖(1:已兑奖,2:未兑奖)
-                                    $addResultData[$rk]['get_time'] = date('Y-m-d');
-                                    $addResultData[$rk]['out_time'] = date('Y-m-d',strtotime(' +3 day'));
+                                    $addResultData[$rk]['get_time'] = $dataTime;
+                                    $addResultData[$rk]['out_time'] = date('Y-m-d H:i:s',strtotime(' +3 day'));
                                     $addResultData[$rk]['add_time'] = $dataTime;
                                 }
                             }
@@ -1130,7 +1131,7 @@ class DeliverGoodsController extends CommonController {
             
             //如果是代理: 
             if(in_array($code_type, array(1,4))){
-                
+                /*
                 //获取大标或者中标对应小标的总数量
                 $new_min_code_list = S($laber_cache_key);
                 if(empty($new_min_code_list)){
@@ -1153,7 +1154,35 @@ class DeliverGoodsController extends CommonController {
                     $return['msg'] = '因为您已经拆分了大标的商品,不能再发大标的商品!';
                     $this->ajaxReturn($return,'json');
                 }
+                */
                 
+                $sql = 'SELECT COUNT(*) AS counts FROM deliver_goods WHERE CODE IN(SELECT min_code FROM label_code WHERE max_code = "'.$code.'" OR middle_code = "'.$code.'") AND admin_id ='.$admin_id; //发了小标签,不能再发中标或者大标
+                
+                $label_code_retult = $LabelCode->query($sql);
+                $deliv_count = $label_code_retult[0]['counts'];
+                if($deliv_count > 0){
+                    $return['msg'] = '因为您已经发了该标签中小标签的商品,不能再发中标或者大标的商品!';
+                    $this->ajaxReturn($return,'json');
+                }
+                
+                $sql = 'SELECT COUNT(*) AS counts FROM deliver_goods WHERE CODE IN(SELECT middle_code FROM label_code WHERE max_code = "'.$code.'") AND admin_id ='.$admin_id; //发了中标,不能再发大标
+                
+                $label_code_retult = $LabelCode->query($sql);
+                $deliv_count = $label_code_retult[0]['counts'];
+                if($deliv_count > 0){
+                    $return['msg'] = '因为您已经发了该标签中标签的商品,不能再发大标签的商品!';
+                    $this->ajaxReturn($return,'json');
+                }
+                
+                $sql = 'SELECT COUNT(*) AS counts FROM deliver_goods WHERE CODE IN(SELECT max_code FROM label_code WHERE middle_code = "'.$code.'") AND admin_id ='.$admin_id; //发了大标不能发中标
+                
+                $label_code_retult = $LabelCode->query($sql);
+                $deliv_count = $label_code_retult[0]['counts'];
+                if($deliv_count > 0){
+                    $return['msg'] = '因为您已经发了该标签大标签的商品,不能再发中标签的商品!';
+                    $this->ajaxReturn($return,'json');
+                }
+        
                 //判断上级是否已经发货,不然下级不能发货
                 $de_where['agent_id'] = $admin_id;
                 $de_where['code']  = array(array('eq',$label_info['max_code']),array('eq',$label_info['middle_code']),array('eq',$code),'or'); 
@@ -1167,6 +1196,24 @@ class DeliverGoodsController extends CommonController {
             
             //判断上级是否已经发货,不然下级不能发货
             if($code_type == 2){
+                
+                $sql = 'SELECT COUNT(*) AS counts FROM deliver_goods WHERE CODE IN(SELECT max_code FROM label_code WHERE min_code = "'.$code.'") AND admin_id ='.$admin_id; //发了大标不能发小标
+                
+                $label_code_retult = $LabelCode->query($sql);
+                $deliv_count = $label_code_retult[0]['counts'];
+                if($deliv_count > 0){
+                    $return['msg'] = '因为您已经发了该标签大标签的商品,不能再发小标签的商品!';
+                    $this->ajaxReturn($return,'json');
+                }
+                
+                $sql = 'SELECT COUNT(*) AS counts FROM deliver_goods WHERE CODE IN(SELECT middle_code FROM label_code WHERE min_code = "'.$code.'") AND admin_id ='.$admin_id; //发了中标不能发小标
+                
+                $label_code_retult = $LabelCode->query($sql);
+                $deliv_count = $label_code_retult[0]['counts'];
+                if($deliv_count > 0){
+                    $return['msg'] = '因为您已经发了该标签中标签的商品,不能再发小标签的商品!';
+                    $this->ajaxReturn($return,'json');
+                }
                 
                 $de_where['agent_id'] = $admin_id;
                 $de_where['code']  = array(array('eq',$label_info['max_code']),array('eq',$label_info['middle_code']),array('eq',$code),'or'); 
