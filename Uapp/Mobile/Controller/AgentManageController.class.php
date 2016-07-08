@@ -8,7 +8,7 @@ class AgentManageController extends CommonController {
     public function __construct() {
         parent::__construct();
         
-        $action_name = 'agentManage';
+        $action_name = 'agentManage'; 
         $this->assign('action_name',$action_name);
     }
     
