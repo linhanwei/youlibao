@@ -111,10 +111,6 @@ class DeliverGoodsController extends CommonController {
     public function delCardGoods() {
         $return = array('status'=>0,'msg'=>'删除失败','result'=>'');
         
-        $member_info = $this->memberInfo();
-        $admin_id = $member_info['agentid'];
-        $admin_lv = $member_info['agent_grade'];
-        
         $id = I('id');
         $agent_id = I('aid');
         
@@ -123,10 +119,13 @@ class DeliverGoodsController extends CommonController {
             $this->ajaxReturn($return,'json');
         }
         
-        if(empty($agent_id) && $admin_lv != 4){
+        if(empty($agent_id)){
             $return['msg'] = '请选择代理!';
             $this->ajaxReturn($return,'json');
         }
+        
+        $member_info = $this->memberInfo();
+        $admin_id = $member_info['agentid'];
         
         $Cards = D('Cards');
         $where['admin_id'] = $admin_id;
@@ -147,11 +146,10 @@ class DeliverGoodsController extends CommonController {
     //发货页面
     public function deliverView() {
         
-        $agent_id = I('aid',0);
+        $agent_id = I('aid');
         
         $member_info = $this->memberInfo();
         $admin_id = $member_info['agentid'];
-        $admin_lv = $member_info['agent_grade'];
         
         //获取微信JS_SDK配置信息
         $weixin_js_sdk_info = A('Public')->getWxJsInfo();
@@ -169,10 +167,9 @@ class DeliverGoodsController extends CommonController {
         $card_where['member_id'] = $agent_id;
         $goods_list = $Cards->getAllList($card_where,'',array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
         $this->assign('goods_list',$goods_list);
-     
+        
         $this->assign('is_agent',$member_info['is_agent']);
         $this->assign('agent_id',$agent_id);
-        $this->assign('admin_lv',$admin_lv);
         $this->display('deliverView');
       
     }
@@ -184,24 +181,22 @@ class DeliverGoodsController extends CommonController {
         
         $member_info = $this->memberInfo();
         $return = array('status'=>0,'msg'=>'发货失败,请重新发货','result'=>'');
-        $agent_id = I('agent_id',0); //收货人ID
+        $agent_id = I('agent_id'); //收货人ID
         $admin_id = $member_info['agentid']; //发货人ID
         $admin_name = $member_info['name']; //发货人
         $admin_lv = $member_info['agent_grade'] ? $member_info['agent_grade'] : 0; //发货人代理等级
         $admin_is_agent = $member_info['is_agent'];
         $is_add_success = TRUE; //是否添加成功
         
-        if($admin_lv != 4){
-            if(empty($agent_id)){
-                $return['msg'] = '请选择代理商!';
-                $this->ajaxReturn($return,'json');
-            }
-
-            $agent_info = $this->getAgent($agent_id);
-            if(empty($agent_info)){
-                $return['msg'] = '请选择正确的代理商!';
-                $this->ajaxReturn($return,'json');
-            }
+        if(empty($agent_id)){
+            $return['msg'] = '请选择代理商!';
+            $this->ajaxReturn($return,'json');
+        }
+       
+        $agent_info = $this->getAgent($agent_id);
+        if(empty($agent_info)){
+            $return['msg'] = '请选择正确的代理商!';
+            $this->ajaxReturn($return,'json');
         }
         
         $Cards = D('Cards');
@@ -214,18 +209,17 @@ class DeliverGoodsController extends CommonController {
             $this->ajaxReturn($return,'json');
         }
       
-        $agent_name = $agent_info ? $agent_info['name'] : '会员' ;
-        $agent_lv = $agent_info ? $agent_info['agent_grade'] : 5;
+        $agent_name = $agent_info['name'];
+        $agent_lv = $agent_info['agent_grade'];
        
         $time = time();
-        $dataTime = date('Y-m-d H:i:s');
         $OrderInfo = D('OrderInfo');
         
         $OrderInfo->startTrans(); //开启事务
         
         //添加订单
         $order_sn = $this->makeOrderSn();
-        $add_order_data['add_time'] = $dataTime;
+        $add_order_data['add_time'] = date('Y-m-d H:i:s');
         $add_order_data['order_sn'] = $order_sn;
         $add_order_data['admin_id'] = $admin_id;
         $add_order_data['admin_name'] = $admin_name;
@@ -253,6 +247,7 @@ class DeliverGoodsController extends CommonController {
             $order_total_profit = 0;
             $order_total_stock = 0;
             
+            $dataTime = date('Y-m-d H:i:s');
             $year = date('Y');
             $month = date('m');
             $day = date('d');
@@ -268,7 +263,7 @@ class DeliverGoodsController extends CommonController {
                 $goods_id = $v['goods_id'];
                 $goods_name = $v['goods_name'];
                 $goods_number = $v['goods_number'];
-                $admin_price = $v['admin_price'] ? $v['admin_price'] : 0;
+                $admin_price = $v['admin_price'];
                 $member_price = $v['member_price'];
                 $goods_profit = $v['goods_profit'];
                 $sale_total_profit = $goods_profit*$goods_number;
@@ -340,9 +335,6 @@ class DeliverGoodsController extends CommonController {
                     
                     if(!$saleEditResult){
                         $is_add_success = FALSE;
-                        $return['msg'] = '错误码:201';
-                        $OrderInfo->rollback(); //事务回滚
-                        $this->ajaxReturn($return,'json');
                     }
                    
                     //每月统计
@@ -362,9 +354,6 @@ class DeliverGoodsController extends CommonController {
                     
                     if(!$monthSaleEditResult){
                         $is_add_success = FALSE;
-                        $return['msg'] = '错误码:202';
-                        $OrderInfo->rollback(); //事务回滚
-                        $this->ajaxReturn($return,'json');
                     }
                    
                     //代理总的统计
@@ -381,9 +370,6 @@ class DeliverGoodsController extends CommonController {
                     
                     if(!$agentEditResult){
                         $is_add_success = FALSE;
-                        $return['msg'] = '错误码:203';
-                        $OrderInfo->rollback(); //事务回滚
-                        $this->ajaxReturn($return,'json');
                     }
                     
                     //公司返利的统计: 目前只有大区与总代发货才有返利  开始
@@ -412,21 +398,8 @@ class DeliverGoodsController extends CommonController {
 
                                         $agent_profit_result = $AgentProfitLog->addData($profitLogData);
                                         
-                                        if(!$agent_profit_result){
-                                            $is_add_success = FALSE;
-                                            $return['msg'] = '错误码:204';
-                                            $OrderInfo->rollback(); //事务回滚
-                                            $this->ajaxReturn($return,'json');
-                                        }
-                                        
                                         //添加该代理公司总返利
                                         $profit_total_result = $Agent->editInc(array('agentId'=>$profit_agent1_id),'company_total_profit',$agent1_total_profit,0); 
-                                        if(!$profit_total_result){
-                                            $is_add_success = FALSE;
-                                            $return['msg'] = '错误码:205';
-                                            $OrderInfo->rollback(); //事务回滚
-                                            $this->ajaxReturn($return,'json');
-                                        }
                                         
                                         //添加该代理公司月返利
                                         $month_profit_where['agent_id'] = $profit_agent1_id;
@@ -435,11 +408,8 @@ class DeliverGoodsController extends CommonController {
                                         
                                         $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$agent1_total_profit,0); 
                                         
-                                        if(!$profit_total_result){
+                                        if(!($agent_profit_result && $profit_total_result && $month_profit_total_result)){
                                             $is_add_success = FALSE;
-                                            $return['msg'] = '错误码:206';
-                                            $OrderInfo->rollback(); //事务回滚
-                                            $this->ajaxReturn($return,'json');
                                         }
                                        
                                     }
@@ -469,21 +439,9 @@ class DeliverGoodsController extends CommonController {
                                             $profitLogData['profit_money'] = $agent1_profit;
 
                                             $agent_profit_result = $AgentProfitLog->addData($profitLogData);
-                                            if(!$agent_profit_result){
-                                                $is_add_success = FALSE;
-                                                $return['msg'] = '错误码:207';
-                                                $OrderInfo->rollback(); //事务回滚
-                                                $this->ajaxReturn($return,'json');
-                                            }
 
                                             //添加该代理公司总返利
                                             $profit_total_result = $Agent->editInc(array('agentId'=>$profit_agent1_id),'company_total_profit',$agent1_total_profit,0); 
-                                            if(!$profit_total_result){
-                                                $is_add_success = FALSE;
-                                                $return['msg'] = '错误码:208';
-                                                $OrderInfo->rollback(); //事务回滚
-                                                $this->ajaxReturn($return,'json');
-                                            }
 
                                             //添加该代理公司月返利
                                             $month_profit_where['agent_id'] = $profit_agent1_id;
@@ -492,11 +450,8 @@ class DeliverGoodsController extends CommonController {
 
                                             $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$agent1_total_profit,0); 
 
-                                            if(!$month_profit_total_result){
+                                            if(!($agent_profit_result && $profit_total_result && $month_profit_total_result)){
                                                 $is_add_success = FALSE;
-                                                $return['msg'] = '错误码:209';
-                                                $OrderInfo->rollback(); //事务回滚
-                                                $this->ajaxReturn($return,'json');
                                             }
 
                                         }
@@ -522,21 +477,9 @@ class DeliverGoodsController extends CommonController {
                                             $profitLogData['profit_money'] = $agent2_profit;
 
                                             $agent_profit_result = $AgentProfitLog->addData($profitLogData);
-                                            if(!$agent_profit_result){
-                                                $is_add_success = FALSE;
-                                                $return['msg'] = '错误码:210';
-                                                $OrderInfo->rollback(); //事务回滚
-                                                $this->ajaxReturn($return,'json');
-                                            }
 
                                             //添加该代理公司总返利
                                             $profit_total_result = $Agent->editInc(array('agentId'=>$profit_agent2_id),'company_total_profit',$agent2_total_profit,0); 
-                                            if(!$profit_total_result){
-                                                $is_add_success = FALSE;
-                                                $return['msg'] = '错误码:211';
-                                                $OrderInfo->rollback(); //事务回滚
-                                                $this->ajaxReturn($return,'json');
-                                            }
 
                                             //添加该代理公司月返利
                                             $month_profit_where['agent_id'] = $profit_agent2_id;
@@ -545,11 +488,8 @@ class DeliverGoodsController extends CommonController {
 
                                             $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$agent2_total_profit,0); 
 
-                                            if(!$month_profit_total_result){
+                                            if(!($agent_profit_result && $profit_total_result && $month_profit_total_result)){
                                                 $is_add_success = FALSE;
-                                                $return['msg'] = '错误码:212';
-                                                $OrderInfo->rollback(); //事务回滚
-                                                $this->ajaxReturn($return,'json');
                                             }
 
                                         }
@@ -573,21 +513,9 @@ class DeliverGoodsController extends CommonController {
                                             $profitLogData['profit_money'] = $agent3_profit;
 
                                             $agent_profit_result = $AgentProfitLog->addData($profitLogData);
-                                            if(!$month_profit_total_result){
-                                                $is_add_success = FALSE;
-                                                $return['msg'] = '错误码:213';
-                                                $OrderInfo->rollback(); //事务回滚
-                                                $this->ajaxReturn($return,'json');
-                                            }
 
                                             //添加该代理公司总返利
                                             $profit_total_result = $Agent->editInc(array('agentId'=>$admin_id),'company_total_profit',$agent3_total_profit,0); 
-                                            if(!$profit_total_result){
-                                                $is_add_success = FALSE;
-                                                $return['msg'] = '错误码:214';
-                                                $OrderInfo->rollback(); //事务回滚
-                                                $this->ajaxReturn($return,'json');
-                                            }
 
                                             //添加该代理公司月返利
                                             $month_profit_where['agent_id'] = $admin_id;
@@ -596,11 +524,8 @@ class DeliverGoodsController extends CommonController {
 
                                             $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$agent3_total_profit,0); 
 
-                                            if(!$month_profit_total_result){
+                                            if(!($agent_profit_result && $profit_total_result && $month_profit_total_result)){
                                                 $is_add_success = FALSE;
-                                                $return['msg'] = '错误码:215';
-                                                $OrderInfo->rollback(); //事务回滚
-                                                $this->ajaxReturn($return,'json');
                                             }
 
                                         }
@@ -633,9 +558,6 @@ class DeliverGoodsController extends CommonController {
                         
                         if(!$companyReportsEditResult){
                             $is_add_success = FALSE;
-                            $return['msg'] = '错误码:216';
-                            $OrderInfo->rollback(); //事务回滚
-                            $this->ajaxReturn($return,'json');
                         }
                     }else{
                         //修改可修改的数据
@@ -650,9 +572,6 @@ class DeliverGoodsController extends CommonController {
                             
                             if(!$edit_company_log_result){
                                 $is_add_success = FALSE;
-                                $return['msg'] = '错误码:217';
-                                $OrderInfo->rollback(); //事务回滚
-                                $this->ajaxReturn($return,'json');
                             }
                         }
                         
@@ -666,9 +585,6 @@ class DeliverGoodsController extends CommonController {
                             
                             if(!$edit_company_log_result){
                                 $is_add_success = FALSE;
-                                $return['msg'] = '错误码:218';
-                                $OrderInfo->rollback(); //事务回滚
-                                $this->ajaxReturn($return,'json');
                             }
                         }
                         
@@ -685,9 +601,6 @@ class DeliverGoodsController extends CommonController {
                         
                         if(!$company_log_result){
                             $is_add_success = FALSE;
-                            $return['msg'] = '错误码:219';
-                            $OrderInfo->rollback(); //事务回滚
-                            $this->ajaxReturn($return,'json');
                         }
                     
                     }
@@ -723,24 +636,12 @@ class DeliverGoodsController extends CommonController {
                             
                             //添加该代理公司总返利
                             $profit_total_result = $Agent->editInc(array('agentId'=>$agent_top1_id),'company_total_profit',$top1_profit_total_money,0); 
-                            if(!$profit_total_result){
-                                $is_add_success = FALSE;
-                                $return['msg'] = '错误码:220';
-                                $OrderInfo->rollback(); //事务回滚
-                                $this->ajaxReturn($return,'json');
-                            }
                             
                             //添加该代理公司月返利
                             $month_profit_where['agent_id'] = $agent_top1_id;
                             $month_profit_where['year'] = $year;
                             $month_profit_where['month'] = $month;
                             $month_profit_total_count = $AgentMonthProfit->getCount($month_profit_where);
-                            if(!$month_profit_total_count){
-                                $is_add_success = FALSE;
-                                $return['msg'] = '错误码:221';
-                                $OrderInfo->rollback(); //事务回滚
-                                $this->ajaxReturn($return,'json');
-                            }
                             
                             if($month_profit_total_count > 0){
                                 $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$top1_profit_total_money,0); 
@@ -755,11 +656,8 @@ class DeliverGoodsController extends CommonController {
                                 $month_profit_total_result = $AgentMonthProfit->addData($monthProfitData);
                             }
                             
-                            if(!$month_profit_total_result){
+                            if(!($profit_result && $month_profit_total_result && $profit_total_result)){
                                 $is_add_success = FALSE;
-                                $return['msg'] = '错误码:222';
-                                $OrderInfo->rollback(); //事务回滚
-                                $this->ajaxReturn($return,'json');
                             }
                         }
                         
@@ -785,12 +683,6 @@ class DeliverGoodsController extends CommonController {
                             
                             //添加该代理公司总返利
                             $profit_total_result = $Agent->editInc(array('agentId'=>$agent_top2_id),'company_total_profit',$top2_profit_total_money,0); 
-                            if(!$profit_total_result){
-                                $is_add_success = FALSE;
-                                $return['msg'] = '错误码:223';
-                                $OrderInfo->rollback(); //事务回滚
-                                $this->ajaxReturn($return,'json');
-                            }
                             
                             //添加该代理公司月返利
                             $month_profit_where['agent_id'] = $agent_top2_id;
@@ -811,11 +703,8 @@ class DeliverGoodsController extends CommonController {
                                 $month_profit_total_result = $AgentMonthProfit->addData($monthProfitData);
                             }
                             
-                            if(!$month_profit_total_result){
+                            if(!($profit_result && $month_profit_total_result && $profit_total_result)){
                                 $is_add_success = FALSE;
-                                $return['msg'] = '错误码:224';
-                                $OrderInfo->rollback(); //事务回滚
-                                $this->ajaxReturn($return,'json');
                             }
                         }
                     }
@@ -823,7 +712,7 @@ class DeliverGoodsController extends CommonController {
                  }
                 
                 //增加收货人库存,增加进库总数量与进库总金额
-                 if($agent_lv >= 1 && $agent_id > 0){
+                 if($agent_lv >= 1){
                      
                     //产品统计
                     $buy_where['agent_id'] = $agent_id;
@@ -852,13 +741,6 @@ class DeliverGoodsController extends CommonController {
                         $buySaveResult = $AgentGoodsStockRale->addData($stockData);
                     }
                     
-                    if(!$buySaveResult){
-                        $is_add_success = FALSE;
-                        $return['msg'] = '错误码:225';
-                        $OrderInfo->rollback(); //事务回滚
-                        $this->ajaxReturn($return,'json');
-                    }
-                    
                     //每月统计
                     $month_buy_where['year'] = $year;
                     $month_buy_where['month'] = $month;
@@ -884,13 +766,6 @@ class DeliverGoodsController extends CommonController {
                         $monthBuySaveResult = $AgentMonthProfit->addData($monthSaleData);
                     }
                     
-                    if(!$monthBuySaveResult){
-                        $is_add_success = FALSE;
-                        $return['msg'] = '错误码:226';
-                        $OrderInfo->rollback(); //事务回滚
-                        $this->ajaxReturn($return,'json');
-                    }
-                    
                     //代理总的统计
                     $agent_where['agentId'] = $agent_id;
 //                    
@@ -902,11 +777,8 @@ class DeliverGoodsController extends CommonController {
                         
                     $agentStockResult = $Agent->editData($agent_where,$agentStockData);
                     
-                    if(!$agentStockResult){
+                    if(!($agentStockResult && $monthBuySaveResult && $buySaveResult)){
                         $is_add_success = FALSE;
-                        $return['msg'] = '错误码:227';
-                        $OrderInfo->rollback(); //事务回滚
-                        $this->ajaxReturn($return,'json');
                     }
                     
                 }
@@ -961,7 +833,6 @@ class DeliverGoodsController extends CommonController {
             //修改订单总金额与订单总利润
             $order_edit_result = $OrderInfo->editData(array('order_id'=>$order_id),array('order_total_money'=>$order_total_money,'order_total_profit'=>$order_total_profit,'goods_total_stock'=>$order_total_stock));
             
-            
             //添加发货商品
             $order_goods_result = $OrderGoods->addAll($add_order_goods);
 
@@ -969,78 +840,8 @@ class DeliverGoodsController extends CommonController {
             $deliver_result = $DeliverGoods->addAll($add_deliver_data);
                
         }
-        
-        //特约添加兑奖记录 开始
-        $result_data['prize_code_sucess'] = 2; //是否返回兑奖码成功: 1:是,2:否
-
-        if($admin_lv == 4){
-
-            $CashPrizeLog = D('CashPrizeLog');
-            $prize_count = $CashPrizeLog->getCount(array('agent_id'=>$admin_id),array('key'=>false,'expire'=>null,'cache_type'=>null));
-
-            $CASH_PRIZE_NUMBER = C('CASH_PRIZE_NUMBER');
-            $agent_info = $this->getAgent($admin_id);
-
-            $all_sale_total_stock = $agent_info['all_sale_total_stock']; //出库总库存
-            $code_number = floor(($all_sale_total_stock - $prize_count*$CASH_PRIZE_NUMBER)/$CASH_PRIZE_NUMBER);
-
-            if($code_number > 0){
-                $url = C('GET_CASH_PRIZE_CODE_URL');
-                $url_params = array('num'=>$code_number,'pw'=>1);
-                $url_method = 'GET';
-
-                $return_data = http($url, $url_params, $url_method);
-
-                if($return_data !== FALSE){
-                    $json_data = json_decode($return_data);
-                    $return_result = $json_data->result->list;
-
-                    if($json_data->status == 1 && !empty($return_result)){
-
-                        foreach ($return_result as $rk => $rv) {
-                            $prize_code = $rv->number;
-
-                            if($prize_code){
-                                $addResultData[$rk]['agent_id'] = $admin_id;
-                                $addResultData[$rk]['prize_code'] = $prize_code;
-                                $addResultData[$rk]['is_prize'] = 2; //是否兑奖(1:已兑奖,2:未兑奖)
-                                $addResultData[$rk]['get_time'] = $dataTime;
-                                $addResultData[$rk]['out_time'] = date('Y-m-d H:i:s',strtotime(' +3 day'));
-                                $addResultData[$rk]['add_time'] = $dataTime;
-                            }
-                        }
-
-                        $addCashResult = $CashPrizeLog->addAll($addResultData);
-
-                        if($addCashResult){
-                            $result_data['prize_code_sucess'] = 1;
-                        }else{
-                            
-                            $is_add_success = FALSE;
-                            $return['msg'] = '错误码:228';
-                            $OrderInfo->rollback(); //事务回滚
-                            $this->ajaxReturn($return,'json');
-                           
-                        }
-
-                    }else{
-                        $is_add_success = FALSE;
-                        $return['msg'] = '错误码:229';
-                        $OrderInfo->rollback(); //事务回滚
-                        $this->ajaxReturn($return,'json');
-                    }
-                }else{
-                    $is_add_success = FALSE;
-                    $return['msg'] = '错误码:230';
-                    $OrderInfo->rollback(); //事务回滚
-                    $this->ajaxReturn($return,'json');
-                }
-            }
-
-        }
-        //特约添加兑奖记录 结束
-            
-        if($order_goods_result && $deliver_result && $order_edit_result){
+       
+        if($order_goods_result && $deliver_result && $is_add_success && $order_edit_result){
             //删除购物车的商品
             $del_where['admin_id'] = $admin_id;
             $del_where['member_id'] = $agent_id;
@@ -1048,20 +849,19 @@ class DeliverGoodsController extends CommonController {
             
             $result_data['order_id'] = $order_id;
             $result_data['order_sn'] = $order_sn;
-            
-            $OrderInfo->commit(); //提交事务
-            
-            //清除会员缓存
-            S(C('AGENT_INFO').$admin_id,  NULL);
-            S(C('AGENT_INFO').$agent_id,  NULL);
-            
             $return = array('status'=>1,'msg'=>'发货成功','result'=>$result_data);
-            
+            $OrderInfo->commit(); //提交事务
         }else{
             $OrderInfo->rollback(); //事务回滚
-           
+            
+            //清除缓存
+            if(empty($suc_code_list)){
+                foreach ($suc_code_list as $scv) {
+                    S($code,NULL);
+                }
+            }
         }
-     
+
         $this->ajaxReturn($return,'json');
     }
     
@@ -1154,14 +954,14 @@ class DeliverGoodsController extends CommonController {
             $this->ajaxReturn($return,'json');
         }
         
-        if(empty($member_id) && $admin_lv != 4){
+        if(empty($member_id)){
             $return['msg'] = '请选择代理';
             $this->ajaxReturn($return,'json');
         }
         
         //收货人信息
         $member_info = $this->getAgent($member_id);
-        $member_lv = $member_info['agent_grade'] ? $member_info['agent_grade'] : 5; //收货人等级
+        $member_lv = $member_info['agent_grade']; //收货人等级
         
         $Cards = D('Cards');
         
@@ -1272,21 +1072,30 @@ class DeliverGoodsController extends CommonController {
                 if(empty($new_min_code_list)){
                     $min_code_list = $LabelCode->getAllList($where,'',array('field'=>array('min_code'),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
                     if($min_code_list){
+                        $new_middle_code_list = array();
+                        
                         foreach ($min_code_list as $cv) {
                             $new_min_code_list[] = $cv['min_code'];
+                            
+                            if($code_type == 1 && !in_array($cv['middle_code'], $new_middle_code_list)){
+                                $new_middle_code_list[] = $cv['middle_code'];
+                            }
                         }
+                        
+                        //所有的小标签
                         S($laber_cache_key,serialize($new_min_code_list));
+                        
                     }
                 }else{
                     $new_min_code_list = unserialize($new_min_code_list);
                 }
                 
-                //如果代理发了大标或者中标中的小标商品,就不能再扫大标或者小标
+                //如果代理发了大标或者中标中的小标商品,就不能再扫大标或者中标
                 $de_all_where['code'] = array('IN',$new_min_code_list);
                 $deliv_count = $DeliverGoods->getCount($de_all_where,array('key'=>false,'expire'=>null,'cache_type'=>null));
                 
                 if($deliv_count > 0){
-                    $return['msg'] = '因为您已经拆分了大标的商品,不能再发大标的商品!';
+                    $return['msg'] = '因为您已经发了该标签中小标签的商品,不能再发中标或者大标的商品!';
                     $this->ajaxReturn($return,'json');
                 }
                 */
@@ -1317,7 +1126,7 @@ class DeliverGoodsController extends CommonController {
                     $return['msg'] = '因为您已经发了该标签大标签的商品,不能再发中标签的商品!';
                     $this->ajaxReturn($return,'json');
                 }
-                
+        
                 //判断上级是否已经发货,不然下级不能发货
                 $de_where['agent_id'] = $admin_id;
                 $de_where['code']  = array(array('eq',$label_info['max_code']),array('eq',$label_info['middle_code']),array('eq',$code),'or'); 
@@ -1377,19 +1186,11 @@ class DeliverGoodsController extends CommonController {
             $this->ajaxReturn($return,'json');
         }
         
-        $mark_price = $goods_info['mark_price'];
+        $buy_profit = $this->getAgentGoodsProfit($goods_id,$member_lv); //收货人的商品价格信息
         
-        if($admin_lv != 4){
-            $buy_profit = $this->getAgentGoodsProfit($goods_id,$member_lv); //收货人的商品价格信息
-
-            if(empty($buy_profit)){
-                $return['msg'] = '没有收货人金额!';
-                $this->ajaxReturn($return,'json');
-            }
-            
-            $buy_profit = $buy_profit['agent_price'];
-        }else{
-            $buy_profit = $mark_price;
+        if(empty($buy_profit)){
+            $return['msg'] = '没有收货人金额!';
+            $this->ajaxReturn($return,'json');
         }
 
         //获取商品的价格与利润
@@ -1400,9 +1201,8 @@ class DeliverGoodsController extends CommonController {
                 $return['msg'] = '没有发货人金额!';
                 $this->ajaxReturn($return,'json');
             }
-            
-            $sale_profit = $sale_profit['agent_price'] ? $sale_profit['agent_price'] : 0;
-            $goods_profit = $buy_profit - $sale_profit; //商品利润
+
+            $goods_profit = $buy_profit['agent_price'] - $sale_profit['agent_price']; //商品利润
         }else{
             $goods_profit = 0;
         }
@@ -1415,9 +1215,9 @@ class DeliverGoodsController extends CommonController {
         $addData['goods_id'] = $goods_id;
         $addData['goods_name'] = $goods_info['short_name'];
         $addData['goods_number'] = $label_count;
-        $addData['market_price'] = $mark_price;
-        $addData['admin_price'] = $sale_profit;
-        $addData['member_price'] = $buy_profit;
+        $addData['market_price'] = $goods_info['mark_price'];
+        $addData['admin_price'] = $sale_profit['agent_price'] ? $sale_profit['agent_price'] : 0;
+        $addData['member_price'] = $buy_profit['agent_price'];
         $addData['goods_profit'] = $goods_profit;
        
         //添加到购物车

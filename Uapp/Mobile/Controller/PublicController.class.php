@@ -24,6 +24,14 @@ class PublicController extends Controller {
     }
     
     public function test() {
+        $Agent = D('Agent');
+        
+        $agent_id = 2;
+        $edit_next_agent3_where['_string'] = ' agentId IN(SELECT member_id FROM agent_relation WHERE agent2_id = "'.$agent_id.'" AND agent_grade = 3)';
+                             
+        $editNextAgent3Result = $Agent->getDetail($edit_next_agent3_where);
+        dump($Agent->_sql());die;
+                                            
         $url = 'http://msb.kudouys.me/Public/searchSecurityResult.html';
         $url_params = array();
         $url_method = 'GET';
@@ -38,7 +46,7 @@ class PublicController extends Controller {
         $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT middle_code FROM label_code WHERE min_code = "'.$code.'") AND admin_id ='.$admin_id; //发了中标不能发小标
         $label_code_retult = $LabelCode->query($sql);
         
-        dump($LabelCode->_sql());
+        
         dump($label_code_retult[0]['count']);
 //        $return_data = http($url, $url_params, $url_method);
 //        dump(date('Y-m-d',strtotime(' +3 day')));
@@ -191,7 +199,7 @@ class PublicController extends Controller {
     public function searchSecurityResult() {
         $code = I('code');
         
-        $return = array('status'=>0,'msg'=>'没有该防伪码','result'=>'');
+        $return = array('status'=>0,'msg'=>'没有该防伪码 请谨慎购买!','result'=>'');
                 
         if(empty($code)){
             $$return['msg'] = '请输入防伪码';
@@ -257,7 +265,7 @@ class PublicController extends Controller {
                 $log_where['code'] = $code;
                 $result['list'] = $SecurityCheckLog->getList($log_where,10,1,'add_time DESC',array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
                 
-                $result['log_count'] = count($list);
+                $result['log_count'] = count($result['list']);
                
             }
         }else{

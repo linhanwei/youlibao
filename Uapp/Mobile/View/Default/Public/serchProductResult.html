@@ -66,7 +66,7 @@
 			  		
 
 			  		$(this).ajaxSubmit(function(data){
-		  				showMsg(data.msg);
+		  				
 		  				if(data.status == 1){
 	  						var html= '',
 	  							count = data.result.log_count,
@@ -77,9 +77,12 @@
 								html += '<li>'+list[i]['add_time']+'</li>';
 							}
 
+							$('.searchResult').removeClass('hide');
 							$('#log_count').html(count+'次');
 							$('#log_list').html(html);
-		  					$('.searchResult').show();
+		  					
+		  				}else{
+		  					showMsg(data.msg);
 		  				}
 		                console.log(data);
 			  		}); 

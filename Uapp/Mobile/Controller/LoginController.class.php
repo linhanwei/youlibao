@@ -229,8 +229,8 @@ class LoginController extends Controller {
             $this->ajaxReturn($return,'json');
         }
         
-        $tel_where['cardNo'] = $cardno;
-        $is_count = $Agent->getCount($tel_where,array('key'=>false,'expire'=>null,'cache_type'=>null));
+        $cardNo_where['cardNo'] = $cardno;
+        $is_count = $Agent->getCount($cardNo_where,array('key'=>false,'expire'=>null,'cache_type'=>null));
         if($is_count > 0){
             $return['msg'] = '身份证号码已经存在,请换一个!';
             $this->ajaxReturn($return,'json');

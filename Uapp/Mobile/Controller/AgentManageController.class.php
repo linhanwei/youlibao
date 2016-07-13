@@ -218,7 +218,7 @@ class AgentManageController extends CommonController {
            
             //下线列表
             $join = ' ar LEFT JOIN agent a on ar.member_id = a.agentId';
-            $order = 'all_buy_total_stock DESC';
+            $order = 'a.all_buy_total_stock DESC';
             $next_list = $AgentRelation->getAllList($list_where,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),$join);
 
             if($next_list){
@@ -591,18 +591,18 @@ class AgentManageController extends CommonController {
             $indirect_where['line_number'] = $line_number;
             $indirect_next_agent_count = $AgentRelation->getCount($indirect_where,array('key'=>false,'expire'=>null,'cache_type'=>null));
             
-            if($direct_next_agent_count >= 10){
-                if($indirect_next_agent_count < 1110){
-                    $return['msg'] = '您的第'.$line_number.'条线还没全部满员,不能生成邀请码!';
-                    $this->ajaxReturn($return,'json');
-                }
-                
-            }
+//            if($direct_next_agent_count >= 10){
+//                if($indirect_next_agent_count < 1110){
+//                    $return['msg'] = '您的第'.$line_number.'条线还没全部满员,不能生成邀请码!';
+//                    $this->ajaxReturn($return,'json');
+//                }
+//                
+//            }
         }else{
-            if($direct_next_agent_count >= 10){
-                $return['msg'] = '您已经满员,不能再发展下级!';
-                $this->ajaxReturn($return,'json');
-            }
+//            if($direct_next_agent_count >= 10){
+//                $return['msg'] = '您已经满员,不能再发展下级!';
+//                $this->ajaxReturn($return,'json');
+//            }
             
         }
         
