@@ -28,19 +28,19 @@
 </ul>
 <form id="myForm" class="form-horizontal" method="post" action="__APP__/AgentManage/editAgent.html" enctype="multipart/form-data">
 	<input type="hidden" name="aid" value="<{$info.agentid}>"  id="aid" >
-	<div class="form-group">
+	<!-- <div class="form-group">
 		<label for="p_weixin" class="col-sm-2 control-label">上级代理微信号</label>
 		<div class="col-sm-3">
 		  	<input type="text" name="p_weixin" value="" class="form-control" id="p_weixin" placeholder="输入上级微信号, 填写1的时候默认上级为工厂">
 		</div>
 		<div class="is_must">必填(<i>*</i>) </div>
-	</div>
+	</div> -->
 	<div class="form-group">
 		<label for="team_name" class="col-sm-2 control-label">团队名称</label>
 		<div class="col-sm-2">
 		  	<input type="text" name="team_name" value="<{$info.team_name}>" class="form-control" id="team_name" placeholder="输入团队名称">
 		</div>
-		<div class="is_must">必填(<i>*</i>)</div>
+		<!-- <div class="is_must">必填(<i>*</i>)</div> -->
 	</div>
 	<div class="form-group">
 		<label for="name" class="col-sm-2 control-label">代理姓名</label>
@@ -83,12 +83,27 @@
 		<div class="col-sm-2">
 		  	<select class="form-control" name="star" id="star">
 		  		<volist name="agent_lv_list" id="lvo">
-		  		<option value="<{$lvo.lv}>" <if condition="$lvo['lv'] eq $info['star']">selected</if> ><{$lvo.name}></option>
+		  		<option value="<{$lvo.lv}>" <if condition="$lvo['lv'] eq $info['agent_grade']">selected</if> ><{$lvo.name}></option>
 			  	</volist>
 			  
 			</select>
 		</div>
 	</div>
+	<!-- 只有大区与总代才显示 -->
+	<if condition="($info['agent_grade'] eq 2) OR ($info['agent_grade'] eq 3)">
+		<div class="form-group">
+			<label for="agent2_id" class="col-sm-2 control-label"><{$agent_lv_list[2]['name']}>ID</label>
+			<div class="col-sm-2">
+			  	<input type="text" name="agent2_id" value="" class="form-control " id="agent2_id" placeholder="">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="agent3_id" class="col-sm-2 control-label"><{$agent_lv_list[3]['name']}>ID</label>
+			<div class="col-sm-2">
+			  	<input type="text" name="agent3_id" value="" class="form-control " id="agent3_id" placeholder="">
+			</div>
+		</div>
+	</if>
 	<div class="form-group">
 		<label for="startime" class="col-sm-2 control-label">开始时间</label>
 		<div class="col-sm-2">

@@ -7,17 +7,19 @@
 	    <select class="form-control" name="star" id="star">
   			<option value="">--请选择--</option>
 	  		<volist name="agent_lv_list" id="lvo">
-		  		<option value="<{$lvo.lv}>"><{$lvo.name}></option>
+		  		<option value="<{$lvo.lv}>" <if condition="$lvo['lv'] eq $search['star']">selected</if> ><{$lvo.name}></option>
 		  	</volist>
 		</select>
   	</div>
   	<div class="form-group">
 	    <label for="exampleInputName2">
 		    <select class="form-control" name="search_field" id="search_field">
-		  		<option value="weixin">微信号</option>
-		  		<option value="tel">手机号</option>
-		  		<option value="name">姓名</option>
-		  		<option value="agentNo">授权编号</option>
+		    	<option value="agentId" <if condition="$search['search_field'] eq 'agentId'">selected</if> >会员ID</option>
+		    	<option value="weixin" <if condition="$search['search_field'] eq 'weixin'">selected</if> >微信号</option>
+		  		<option value="cardNo" <if condition="$search['search_field'] eq 'cardNo'">selected</if> >身份证号</option>
+		  		<option value="tel" <if condition="$search['search_field'] eq 'tel'">selected</if> >手机号</option>
+		  		<option value="name" <if condition="$search['search_field'] eq 'name'">selected</if> >姓名</option>
+		  		<option value="agentNo" <if condition="$search['search_field'] eq 'agentNo'">selected</if> >授权编号</option>
 			</select>
 		</label>
 		<input type="text" class="form-control" id="search_value" name="search_value" value="<{$search.search_value}>">
@@ -34,7 +36,10 @@
           <tr>
           	<th>ID</th>
             <th>姓名</th>
-            <th>手机</th>
+            <th>微信号</th>
+            <th>手机号</th>
+            <th>身份证号</th>
+            <th>授权号码</th>
             <th>级别</th>
             <th>推荐人</th>
             <th>到期时间</th>
@@ -46,13 +51,16 @@
 				<tr>
 					<th scope="row"><{$vo.agentid}></th>
 					<th scope="row"><{$vo.name}></th>
+					<td><{$vo.weixin}></td>
 					<td><{$vo.tel}></td>
+					<td><{$vo.cardno}></td>
+					<td><{$vo.agentno}></td>
 					<td><{$vo.lv_name}></td>
 					<td><{$vo.parent_name}></td>
 					<td><{$vo.date_end_time}></td>
 					<td>
 						<if condition="$search['stat'] neq -2">
-							<button type="button" aid="<{$vo.agentid}>" class="btn btn-info next_agent" style="width: 150px;">下级(<{$vo.agent_count}>)</button>
+							<button type="button" aid="<{$vo.agentid}>" class="btn btn-info next_agent">下级(<{$vo.agent_count}>)</button>
 							<button type="button" aid="<{$vo.agentid}>" class="btn btn-info download">下载证书</button>
 							<button type="button" aid="<{$vo.agentid}>" class="btn btn-info show_auth">查看证书</button>
 						<else />
