@@ -2,53 +2,32 @@
     <li class="list-group-item list-group-item-success">财务管理<h4 style="margin:0;"></h4></li>
 </ul>
 <form id="myForm" class="form-inline" method="post" action="__APP__/Finance/index.html?flag=1" enctype="multipart/form-data">
-<!--	<div class="form-group">
-	    <label for="exampleInputName2">代理星级</label>
-	    <select class="form-control" name="star" id="star">
-  			<option value="">--请选择--</option>
-	  		<volist name="agent_lv_list" id="lvo">
-		  		<option value="<{$lvo.lv}>"><{$lvo.name}></option>
-		  	</volist>
-		</select>
-  	</div>-->
-        <!--<input name="flag" value="1" style="display: none"/>-->
-        <div class="form-group">
-	    <label for="exampleInputName2">
+
+    <div class="form-group">
+	    <label for="exampleInputName2">年份</label>
 		    <select class="form-control" name="year" id="search_field">
-<!--		  		<option value="">年份</option>
-                                <option value="<{$year}>"><{$year}></option>-->
-                                 <{$year}>
-		  		<option value="2016">2016</option>
-                                <option value="2017">2017</option>
-			</select>
-		</label>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+			  </select>
+		
   	</div>
-   <div class="form-group">
-	    <label for="exampleInputName2">
-		    <select class="form-control" name="month" id="search_field">
-                                 <!--<{$month}>-->
-                                 <{$month}>
-<!--		  		<option value="">月份</option>
-                                <option value="<{$month}>"><{$month}></option>-->
-		  		<option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-			</select>
-		</label>
+    <div class="form-group">
+	    <label for="exampleInputName2">月份</label>
+	    <select class="form-control" name="month" id="search_field">
+	  		<option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+		  </select>
   	</div>
-  	<!-- <div class="form-group">
-	    <label for="exampleInputEmail2">商品标题</label>
-	    <input type="text" class="form-control" id="title" name="title">
-  	</div> -->
   	<button type="submit" class="btn btn-default">搜索</button>
 </form>
 
@@ -107,15 +86,15 @@
 	    $('.pagination li').click(function(){
 	        var page = $(this).children('a').attr('page');
 	        var class_name = $(this).attr('class');
-	        var pid = '<{$search.parent_id}>';
 	        var search_field = '<{$search.search_field}>';
 	        var search_value = '<{$search.search_value}>';
-	        var star = '<{$search.star}>';
-	        var stat = '<{$search.stat}>';
+	        var year = '<{$year}>';
+          var month = '<{$month}>';
+          var flag = '<{$flag}>';
 
-	        if(class_name != 'active'){
-		        LoadPage('__APP__/Finance/index.html',{'p': page,'pid':pid,'search_field':search_field,'search_value':search_value,'star':star,'status':stat});
-	        }
+          if(class_name != 'active'){
+            LoadPage('__APP__/Finance/index.html',{'p': page,'flag':flag,'search_field':search_field,'search_value':search_value,'year':year,'month':month});
+          }
 	        
 	    });
         });

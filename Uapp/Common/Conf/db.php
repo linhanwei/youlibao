@@ -16,16 +16,16 @@
 		//全局数据库
 		'DB_TYPE'   => 'mysql', // 数据库类型
 		'DB_HOST'   => '127.0.0.1', // 服务器地址  120.24.225.43
-		'DB_NAME'   => 'kudousmb', // 数据库名 msg  //  test_msb
+		'DB_NAME'   => 'kudousmb', // 数据库名 msb  //  test_msb
 		'DB_USER'   => 'root', // 用户名  admin
 		'DB_PWD'    => 'root', // 密码  iA7CCVDpBpx
 		'DB_PORT'   => 3306, // 端口
 		'DB_PREFIX' => '', // 数据库表前缀 
 		'DB_CHARSET'=> 'utf8', // 字符集
-
+               
 		//数据库配置2
-	 	'DB_CONFIG1' => 'mysql://admin:admin@127.0.0.1:3306/kudouys',
-//                'DB_CONFIG2' => 'mysql://root:root@localhost:3306/test',
+	 	'DB_CONFIG1' => 'mysql://admin:iA7CCVDpBpx@120.24.225.43:3306/msb', //生产环境
+                'DB_CONFIG2' => 'mysql://admin:iA7CCVDpBpx@120.24.225.43:3306/test_msb', //测试环境
 
 	);
 

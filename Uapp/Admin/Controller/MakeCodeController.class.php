@@ -464,7 +464,7 @@ class MakeCodeController extends CommonController {
         $config = array(
             'fields'=>array('编号','大标签','中标签','小标签','防伪标'),//导入/导出文件字段[导入时为数据字段,导出时为字段标题]
              'data'=>$data, //导出Excel的数组
-             'savename'=>date('Y-m-d_H_I_s').'_一拖'.$min_number,
+             'savename'=>date('Y-m-d_H_i_s').'_一拖'.$min_number,
              'title'=>'一拖'.$min_number,     //导出文件栏目标题
              'suffix'=>'xlsx',//文件格式
     	   );

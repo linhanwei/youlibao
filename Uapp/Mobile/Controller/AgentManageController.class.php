@@ -80,6 +80,13 @@ class AgentManageController extends CommonController {
             $profit_day_where['profit_agent_id'] = $member_id;
             $profit_day_where['is_refund'] = 1; //是否退货:1:否,2:是
             
+            //公司返利
+            $profit_day_total = $AgentProfitLog->getSum($profit_day_where,'profit_total_money');
+            $profit_day_total = $profit_day_total ? $profit_day_total : 0;
+            
+            $this->assign('day_total_profit',$sale_day_total+$profit_day_total);
+            
+            /*
             //下级分润
             $profit_day_where2 = $profit_day_where;
             $profit_day_where2['profit_type'] = 1;
@@ -93,7 +100,7 @@ class AgentManageController extends CommonController {
             $profit_day_total1 = $profit_day_total1 ? $profit_day_total1 : 0;
            
             $this->assign('day_total_profit',$sale_day_total+$profit_day_total1+$profit_day_total2);
-            
+            */
         //本月收入
         $month_profit_where['year'] = $year;
         $month_profit_where['month'] = $month;
@@ -119,7 +126,41 @@ class AgentManageController extends CommonController {
                     $new_sale_one_day_list[$sv['day']] = $sv['sale_day_total'];
                 }
             }
-         
+            
+            //公司返利收入
+            $profit_one_day_where['year'] = $year;
+            $profit_one_day_where['month'] = $month;
+            $profit_one_day_where['profit_agent_id'] = $member_id;
+            $profit_one_day_where['is_refund'] = 1; //是否退货:1:否,2:是
+            
+            $new_profit_one_day_list = array();
+            $profit_one_day_list = $AgentProfitLog->where($profit_one_day_where)->field('day,SUM(profit_total_money) as profit_day_total')->group('day')->order('day')->select();
+            if($profit_one_day_list){
+                foreach ($profit_one_day_list as $pv) {
+                    $new_profit_one_day_list[$pv['day']] = $pv['profit_day_total'];
+                }
+            }
+            
+            $new_month_day_list = array();
+            $new_month_day = array();
+            
+            if(empty($new_sale_one_day_list) && empty($new_profit_one_day_list)){
+                for($d=1;$d<=$month_last_day;$d++){
+                    
+                    $new_month_day_list[] = 0;
+                    $new_month_day[] = $d;
+                }
+            }else{
+                for($d=1;$d<=$month_last_day;$d++){
+                    $sale_one_day_total = $new_sale_one_day_list[$d] ? $new_sale_one_day_list[$d] : 0;
+                    $profit_one_day_total = $new_profit_one_day_list[$d] ? $new_profit_one_day_list[$d] : 0;
+                    
+                    $new_month_day_list[] = $sale_one_day_total + $profit_one_day_total;
+                    $new_month_day[] = $d;
+                }
+            }
+            
+            /*
             //下级返利收入
             $profit_one_day_where['year'] = $year;
             $profit_one_day_where['month'] = $month;
@@ -169,13 +210,8 @@ class AgentManageController extends CommonController {
                     $new_month_day[] = $d;
                 }
             }
+            */
             
-            if($new_sale_one_day_list || $profit_one_day_list){
-                
-            }else{
-                
-            }
-
             $new_month_day_list = implode(',', $new_month_day_list);
             $this->assign('month_day_list',$new_month_day_list);
             $new_month_day = implode(',', $new_month_day);
@@ -218,9 +254,9 @@ class AgentManageController extends CommonController {
            
             //下线列表
             $join = ' ar LEFT JOIN agent a on ar.member_id = a.agentId';
-            $order = 'a.all_buy_total_stock DESC';
+            $order = 'a.all_sale_total_stock DESC';
             $next_list = $AgentRelation->getAllList($list_where,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),$join);
-
+            
             if($next_list){
                 foreach ($next_list as $ak => $av) {
                     $next_all_where['pid'] = $av['member_id'];

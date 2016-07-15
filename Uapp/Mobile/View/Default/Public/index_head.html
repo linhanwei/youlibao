@@ -4,7 +4,7 @@
             <div class="user_pic">
                 <a href="__APP__/Profile/index.html" title="">
                     <if condition="$member_info['head_img']">
-                        <img src="$member_info['head_img']"/>
+                        <img src="<{$member_info['head_img']}>" style="border-radius: 50px;"/>
                     <else/>
                         <img src="__PUBLIC__/Mobile/images/home_pic.png"/>
                     </if>

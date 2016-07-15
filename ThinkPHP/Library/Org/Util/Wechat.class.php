@@ -69,6 +69,10 @@ class Wechat {
 	const MATERIAL_UPDATE_URL     = 'https://api.weixin.qq.com/cgi-bin/material/update_news';       // 修改永久图文素材
 	const MATERIAL_COUNT_URL      = 'https://api.weixin.qq.com/cgi-bin/material/get_materialcount'; // 获取永久素材数量 1
 	const MATERIAL_LISTS_URL      = 'https://api.weixin.qq.com/cgi-bin/material/batchget_material'; // 获取永久素材列表 1
+        
+        /* 企业付款 */
+        const PAY_TRANSFERS_URL = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';  //企业付款接口
+        const GET_TRANSFERS_INFO_URL = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/gettransferinfo';//查询企业付款接口
 
 	private $token;
 	private $appid;
@@ -98,7 +102,7 @@ class Wechat {
 		$this->AESKey       =  isset($options['aeskey'])       ? $options['aeskey']       : '';
 		$this->mch_id       =  isset($options['mch_id'])       ? $options['mch_id']       : '';
 		$this->payKey       =  isset($options['payKey'])       ? $options['payKey']       : '';
-		$this->pem          =  isset($options['pem'])          ? $options['pem']          : '';
+		$this->pem          =  isset($options['pem'])          ? $options['pem']          : 'apiclient';
 		if ($this->encode && strlen($this->AESKey) != 43) {
 			$this->error = 'AESKey Lenght Error';
 			return false;
@@ -753,8 +757,11 @@ class Wechat {
 	 * @return string
 	 * @author 、lin
 	 */
-	public function getOAuthRedirect($callback, $state='', $scope='snsapi_base'){
-		return self::OAUTH_AUTHORIZE_URL.'?appid='.$this->appid.'&redirect_uri='.urlencode($callback).'&response_type=code&scope='.$scope.'&state='.$state.'#wechat_redirect';
+	public function getOAuthRedirect($callback = '', $state='', $scope='snsapi_base'){
+                $callback = $callback ? $callback : C('WEB_URL').__SELF__;
+                $state= $state ? $state : \Org\Util\String::randString(10);
+		$url = self::OAUTH_AUTHORIZE_URL.'?appid='.$this->appid.'&redirect_uri='.urlencode($callback).'&response_type=code&scope='.$scope.'&state='.$state.'#wechat_redirect';
+                redirect($url);
 	}
 	
 	/**
@@ -762,9 +769,9 @@ class Wechat {
 	 * @return array|boolean
 	 * @author 、lin
 	 */
-	public function getOauthAccessToken(){
+	public function getOauthAccessToken($callback = '', $state='', $scope='snsapi_base'){
 		$code = isset($_GET['code']) ? $_GET['code'] : '';
-		if (!$code) return false;
+		if (!$code) return $this->getOAuthRedirect($callback, $state, $scope);
 		$params = array(
 			'appid' => $this->appid,
 			'secret'=> $this->secret,
@@ -1057,9 +1064,11 @@ class Wechat {
 				break;
 		}
 		if ($ssl) {
-			$pemPath = dirname(__FILE__).'/Wechat/';
+//			$pemPath = dirname(__FILE__).'/Wechat/';
+                        $pemPath = str_replace('\\', '/', dirname(THINK_PATH)).'/Wechat/';
 			$pemCret = $pemPath.$this->pem.'_cert.pem';
 			$pemKey  = $pemPath.$this->pem.'_key.pem';
+                      
 			if (!file_exists($pemCret)) {
 				$this->error = '证书不存在';
 				return false;
@@ -1072,9 +1081,10 @@ class Wechat {
 			$opts[CURLOPT_SSLCERT]     = $pemCret;
 			$opts[CURLOPT_SSLKEYTYPE]  = 'PEM';
 			$opts[CURLOPT_SSLKEY]      = $pemKey;
+                       
 		}
 		/* nodejs 控制台输出日志 */
-		$CSdata = ($method == 'POST' ? json_decode($params, true) : '');
+//		$CSdata = ($method == 'POST' ? json_decode($params, true) : '');
 		
 		/* 初始化并执行curl请求 */
 		$ch     = curl_init();
@@ -1445,7 +1455,7 @@ class Wechat {
 		$params['mch_id']         = $this->mch_id;
 		$params['nonce_str']      = self::_getRandomStr();
 		$params['sign']           = self::_getOrderMd5($params);
-		dump($params);
+		
 		$data = self::_array2Xml($params);
 		$data = $this->http(self::DOWNLOAD_BILL_URL, $data, 'POST');
 		return self::parsePayRequest($data, false);
@@ -1458,7 +1468,7 @@ class Wechat {
 	private function createMchBillNo() {
 		$micro = microtime(true) * 100;
 		$micro = ceil($micro);
-		$rand  = substr($micro, -8) . \Tools\String::randNumber(0,99);
+		$rand  = substr($micro, -8) . \Org\Util\String::randNumber(0,99);
 		return   $this->mch_id . date('Ymd') . $rand;
 	}
 
@@ -1534,6 +1544,54 @@ class Wechat {
 		$data = $this->http(self::GET_RED_PACK_INFO, $data, 'POST', true);
 		return self::parsePayRequest($data, false);
 	}
+        
+        /**
+         * 企业付款接口
+         * @param type $openid 用户openid
+         * @param type $name  收款用户姓名
+         * @param type $money 金额(单位:元)
+         * @param type $desc 企业付款描述信息
+         * 校验用户姓名选项: 
+            * NO_CHECK：不校验真实姓名 
+            * FORCE_CHECK：强校验真实姓名（未实名认证的用户会校验失败，无法转账） 
+            * OPTION_CHECK：针对已实名认证的用户才校验真实姓名（未实名认证用户不校验，可以转账成功）
+         * @param type $check_name
+         * @return type
+         */
+        public function payTransfers($openid='',$name='',$money=0,$desc = '',$check_name = 'NO_CHECK') {
+            $params['mch_appid']        = $this->appid; //公众账号appid	
+            $params['mchid']            = $this->mch_id; //商户号
+            $params['nonce_str']        = self::_getRandomStr(); //随机字符串
+            $params['partner_trade_no'] = self::createMchBillNo(); //商户订单号
+            $params['openid']           = (string)$openid;  //用户openid
+            $params['check_name']       = $check_name; //校验用户姓名选项: 
+            $params['re_user_name']     = $name;  //收款用户姓名
+            $params['amount']           = $money * 100;  //金额
+            $params['desc']             = $desc;  //企业付款描述信息
+            $params['spbill_create_ip'] = get_client_ip(); //Ip地址
+            $params['sign']             = self::_getOrderMd5($params);  //签名
+           
+            $data = self::_array2Xml($params);
+            $data = $this->http(self::PAY_TRANSFERS_URL, $data, 'POST', true);
+            return self::parsePayRequest($data, false);
+        }
+        
+        /**
+         * 企业付款查询接口
+         * @param type $trade_no //商户订单号
+         * @return type
+         */
+        public function getTransfersInfo($trade_no = '') {
+            $params['nonce_str']        = self::_getRandomStr(); //随机字符串
+            $params['partner_trade_no'] = $trade_no; //商户订单号
+            $params['mch_id']           = $this->mch_id; //商户号
+            $params['appid']            = $this->appid; //Appid
+            $params['sign']             = self::_getOrderMd5($params); //签名
+            
+            $data = self::_array2Xml($params);
+            $data = $this->http(self::GET_TRANSFERS_INFO_URL, $data, 'POST', true);
+            return self::parsePayRequest($data, false);
+        }
 
 	/**
 	 * 解析支付接口的返回结果

@@ -11,50 +11,12 @@
 		  	</volist>
 		</select>
   	</div>-->
-<!--        <div class="form-group">
-	    <label for="exampleInputName2">
-		    <select class="form-control" name="year" id="search_field">
-		  		<option value="">年份</option>
-                                <option value="<{$year}>"><{$year}></option>
-                                 <{$year}>
-		  		<option value="2016">2016</option>
-                                <option value="2017">2017</option>
-			</select>
-		</label>
-  	</div>
-   <div class="form-group">
-	    <label for="exampleInputName2">
-		    <select class="form-control" name="month" id="search_field">
-                                 <{$month}>
-                                 <{$month}>
-		  		<option value="">月份</option>
-                                <option value="<{$month}>"><{$month}></option>
-		  		<option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-			</select>
-		</label>
-  	</div>-->
-  	<!-- <div class="form-group">
-	    <label for="exampleInputEmail2">商品标题</label>
-	    <input type="text" class="form-control" id="title" name="title">
-  	</div> -->
-  	<!--<button type="submit" class="btn btn-default">搜索</button>-->
-  	
+
 </form>
-<if condition="$flag eq 2 ">
-     <button class="btn btn-default" onclick='LoadPage("__APP__/Finance/operate.html")'><--返回</button>
-    <else />
-    <button class="btn btn-default" onclick='LoadPage("__APP__/Finance/index.html",{flag:<{$flag}>})'><--返回</button>
+<if condition="$is_profit eq 1 ">
+     <button class="btn btn-default" onclick='LoadPage("__APP__/Finance/operate.html")'>返回</button>
+<else />
+    <button class="btn btn-default" onclick='LoadPage("__APP__/Finance/index.html",{flag:<{$is_profit}>})'>返回</button>
 </if>
 <!--<button class="btn btn-default" onclick='LoadPage("__APP__/Finance/index.html",{flag:<{$flag}>})'>返回</button>-->
 <div class="panel panel-default" style="margin-top: 20px;">
@@ -69,6 +31,7 @@
             <th>条码</th>
             <th>商品名称</th>
             <th>商品价格</th>
+            <th>商品数量</th>
             <th>时间</th>
             <th>状态</th>
             <th>总分润</th>
@@ -77,27 +40,27 @@
         </thead>
         <tbody>
         	<volist name="list" id="vo">
-				<tr>
-					<th scope="row">
-                                            <{$vo.profit_agent_name}>
-                                            (<{$vo.profit_agent_id}>)
-                                        </th>
-					<td>
-                                             <{$vo.buy_agent_id}>
-                                             (<{$vo.profit_agent_id}>)
-                                        </td>
-                                        <td><{$vo.buy_agent_name}></td>
-                                        <td><{$vo.buy_agent_lv_name}>(<{$vo.buy_agent_lv}>)</td>
-                                        <td><{$vo.order_sn}></td>
-					<td><{$vo.code}></td>
-					<td><{$vo.goods_name}> X <{$vo.goods_num}></td>
-                                        <td><{$vo.goods_price}></td>
-                                        <td><{$vo.year}>-<{$vo.month}>-<{$vo.day}></td>
-					<td><{$vo.status_name}></td>
-                                        <td><{$vo.profit_total_money}></td>
-                                        <td><{$vo.profit_money}></td>
-				</tr>
-			</volist>
+    				<tr>
+    					<th scope="row">
+                  <{$vo.profit_agent_name}>
+                  (<{$vo.profit_agent_id}>)
+              </th>
+    					<td>
+                   <{$vo.profit_agent_lv_name}>
+              </td>
+              <td><{$vo.buy_agent_name}></td>
+              <td><{$vo.buy_agent_lv_name}>(<{$vo.buy_agent_lv}>)</td>
+              <td><{$vo.order_sn}></td>
+    					<td><{$vo.code}></td>
+    					<td><{$vo.goods_name}> X <{$vo.goods_num}></td>
+              <td><{$vo.goods_price}></td>
+              <td><{$vo.goods_num}></td>
+              <td><{$vo.year}>-<{$vo.month}>-<{$vo.day}></td>
+    					<td><{$vo.status_name}></td>
+              <td><{$vo.profit_total_money}></td>
+              <td><{$vo.profit_money}></td>
+    				</tr>
+    			</volist>
         </tbody>
   	</table>
 </div>
@@ -105,28 +68,28 @@
   <ul class="pagination">
     <{$page}>
     <li>
-		<a>总记录数:<{$count}></a>
-	</li>
+  		<a>总记录数:<{$count}></a>
+  	</li>
   </ul>
 </nav>
 <script>
 	$(function(){
-
 	  	//分页
 	    $('.pagination li').click(function(){
 	        var page = $(this).children('a').attr('page');
 	        var class_name = $(this).attr('class');
-	        var pid = '<{$search.parent_id}>';
 	        var search_field = '<{$search.search_field}>';
 	        var search_value = '<{$search.search_value}>';
-	        var star = '<{$search.star}>';
-	        var stat = '<{$search.stat}>';
+	        var year = '<{$year}>';
+	        var month = '<{$month}>';
+          var is_profit = '<{$is_profit}>';
+          var agent_id = '<{$agent_id}>';
 
 	        if(class_name != 'active'){
-		        LoadPage('__APP__/Finance/index.html',{'p': page,'pid':pid,'search_field':search_field,'search_value':search_value,'star':star,'status':stat});
+		        LoadPage('__APP__/Finance/showAllDetail.html',{'p': page,'search_field':search_field,'search_value':search_value,'year':year,'month':month,'is_profit':is_profit,'agent_id':agent_id});
 	        }
 	        
 	    });
-        });
+  });
 
 </script>

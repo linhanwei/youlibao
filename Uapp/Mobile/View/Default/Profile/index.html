@@ -6,7 +6,7 @@
     <header class="grid">
         <div class="user-photo">
         	<if condition="$member_info['head_img']">
-        		<img src="$member_info['head_img']"/>
+        		<img src="<{$member_info['head_img']}>"/>
         	<else/>
         		<img src="__PUBLIC__/Mobile/images/home_pic.png"/>
     		</if>

@@ -13,8 +13,9 @@ class CommonController extends Controller {
         
         //微信浏览器中才去调用
         $is_weixin = is_weixin();
+        $linBug = I('linBug');
         
-        if(!APP_DEBUG && !$is_weixin){
+        if(!$linBug && !$is_weixin){
            echo '<h2>请在微信中打开!</h2>';
            die;
         }

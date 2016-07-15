@@ -15,10 +15,22 @@ class FinanceController extends CommonController {
     }
     
     public function index(){
-         //进行跳转到对应页面:显示对应的数据
-         $flag = I('flag');
-         $year = I('year');
-         $month = I('month');
+        //进行跳转到对应页面:显示对应的数据
+        $flag = I('flag');
+        $year = I('year');
+        $month = I('month');
+        $dateYear = date('Y');
+        
+        $search_value = I('search_value');
+        $search_field = I('search_field');
+        if($search_field && $search_value){
+            $search['search_field'] = $search_field;
+            $search['search_value'] = $search_value;
+            $where['_string']= ' agent_id IN(SELECT agentId FROM `agent` WHERE '.$search_field.' = "'.$search_value.'")';
+            
+            $this->assign('search', $search);
+        }
+         
          if($year && $month){
             //条件内容
             $where['year']=$year;
@@ -35,13 +47,14 @@ class FinanceController extends CommonController {
          $order='add_time desc';
          $page = I('p',1);
          //总的条件为：未分润  is_profit=2
-          if($flag=="0"){
+          if($flag == 2){
              $where['is_profit']=2;     
           }else{
               $where['is_profit']=1; 
           }
-//          dump($flag=="0");
-//          dump($flag);
+          
+        $where['company_profit'] = array('gt',0); 
+        
          //获取的数据库模型的对象
          $AgentMonthProfit = D('AgentMonthProfit');
          $Agent = D('Agent');
@@ -61,32 +74,30 @@ class FinanceController extends CommonController {
                 $list[$k]['bank_name'] =$agentModel['bank_name'];
                 $list[$k]['team_name'] =$agentModel['team_name'];
                 $list[$k]['tel'] =$agentModel['tel'];
+                $list[$k]['weixin'] =$agentModel['weixin'];
                 $list[$k]['lv_name'] = $agent_lv_list[$agentModel['star']]['name'];
             }
         }
         //先显示的全部的数据先
-//      $Alllist= $AgentMonthProfit->getAllList();
+        $this->assign('flag', $flag);
+        $this->assign('year', $year);
+        $this->assign('month', $month);
         $this->assign('count',$count);
         $this->assign('list',$list);
         $this->assign('year',$year);
         $this->assign('count',$count);
         
-        if($year){
-             $this->assign('year','<option value='.$year.'>'.$year.'</option>');
-        }else{
-             $this->assign('year','<option value="">年份</option>');
+        //输出查询年份
+        $year_html = '<option value="2016">2016</option>';
+        for($y=2016;$y<$dateYear;$y++){
+            $year_html .= '<option value="'.$y.'">'.$y.'</option>';
         }
-        if($month){
-             $this->assign('month','<option value='.$month.'>'.$month.'</option>');
-        }else{
-              $this->assign('month','<option value="">月份</option>');
-        }
+        
+        $this->assign('year_html',$year_html);
+      
         $this->assign('page',$show);// 赋值分页输出
-        if($flag){
-             $this->display('list'); 
-        }else{
-             $this->display('index');
-        }
+       
+        $this->display('index');
     }
     
     
@@ -111,9 +122,7 @@ class FinanceController extends CommonController {
         }else{
              $this->assign('year','<option value="">年份</option>');
         }
-//        dump($count);
-//        dump($list);
-//        dump($year);
+
         $this->assign('page',$show);// 赋值分页输出
         $this->assign('count',$count);
         $this->assign('list',$list);
@@ -129,7 +138,6 @@ class FinanceController extends CommonController {
          $month = I('month');
          $is_profit = I('is_profit');
          $agent_id = I('agent_id');
-         $flag = I('flag');
          $page = I('p',1);
          if($year && $month){
             //条件内容
@@ -137,7 +145,7 @@ class FinanceController extends CommonController {
             $where['month']=$month;
          }
          //增加对应的选择条件
-         if($is_profile){
+         if($is_profit){
              $where['is_profit']=$is_profit;
          }
          if($agent_id){
@@ -163,30 +171,32 @@ class FinanceController extends CommonController {
               
             }
         }
-        if($year){
-             $this->assign('year','<option value='.$year.'>'.$year.'</option>');
-        }else{
-             $this->assign('year','<option value="">年份</option>');
-        }
-        if($month){
-             $this->assign('month','<option value='.$month.'>'.$month.'</option>');
-        }else{
-              $this->assign('month','<option value="">月份</option>');
-        } 
+//        if($year){
+//             $this->assign('year','<option value='.$year.'>'.$year.'</option>');
+//        }else{
+//             $this->assign('year','<option value="">年份</option>');
+//        }
+//        if($month){
+//             $this->assign('month','<option value='.$month.'>'.$month.'</option>');
+//        }else{
+//              $this->assign('month','<option value="">月份</option>');
+//        } 
+        
+        $this->assign('year',$year);
+        $this->assign('month',$month);
+        $this->assign('is_profit',$is_profit);
+        $this->assign('agent_id',$agent_id);
         $this->assign('page',$show);// 赋值分页输出
         $this->assign('count',$count);
         $this->assign('list',$list);
-        $this->assign('flag',$flag);
         $this->assign('count',$count);
         $this->display('detail');
     }
-
-
-
-
+    
+    //审核
     public function shOneData(){
         $id = I('id');
-        
+        exit('暂时不能审核');
         //实体模型对象
         $AgentMonthProfit = D('AgentMonthProfit');
         $Agent = D('Agent');

@@ -2,7 +2,9 @@
 namespace Mobile\Controller;
 use Think\Controller;
 class LoginController extends Controller {
-   
+    
+    private $Wechat; //定义微信类变量
+    
     public function __construct() {
         parent::__construct();
        
@@ -11,8 +13,78 @@ class LoginController extends Controller {
     //用户登录页面
     public function index(){
 //        dump(md5(123456)); //e10adc3949ba59abbe56e057f20f883e
+        
+        $agent_info = array(); //代理信息
+        $is_base = I('is_base',1); //是否唔感知获取openid:  1:是,2:否
+        $is_weixin = is_weixin();
+        
+        //唔感知获取openid
+        /*
+        if($is_weixin){
+            
+            $options['token'] = C('WX_TOKEN');
+            $options['appid'] = C('WX_APPID');
+            $options['secret'] = C('WX_APPSECRET');
 
+            $this->Wechat = new \Org\Util\Wechat($options);
+            
+            if($is_base == 1){
+                $base_info = $this->Wechat->getOauthAccessToken($callback = '', $state='', $scope='snsapi_base'); //snsapi_userinfo  snsapi_base
+
+                //获取失败重新调用
+                if(!$base_info){
+                    $base_info = $this->Wechat->getOauthAccessToken($callback = '', $state='', $scope='snsapi_base'); //snsapi_userinfo  snsapi_base
+                }
+                
+                $openid = $base_info['openid'];
+               
+                //根据openid查询代理信息
+                $Agent = D('Agent');
+                $where['openid'] = $openid;
+                $agent_info = $Agent->where($where)->find();
+
+                if($agent_info){
+
+                    session('member_id',$agent_info['agentid']);
+                    session('member_info',$agent_info);
+
+                    redirect(C('WEB_URL').'/AgentManage/index.html'); //跳转到代理首页
+
+                }
+            }
+            
+            $wx_info = session('weixin_info');
+            if(empty($wx_info)){  //如果获取微信用户信息失败重新获取
+                $this->getWeixinInfo();
+            }
+           
+        }
+        */
         $this->display();
+    }
+    
+    //获取微信用户信息
+    public function getWeixinInfo() {
+        $url = C('WEB_URL').__SELF__;
+        $url_result = strrpos($url,'?');
+        if($url_result){
+            $url .= '&is_base=2';
+        }else{
+            $url .= '?is_base=2';
+        }
+        
+        $base_info = $this->Wechat->getOauthAccessToken($url,'','snsapi_userinfo'); //snsapi_userinfo  snsapi_base
+      
+        if($base_info){
+            $wx_info = $this->Wechat->getOauthUserInfo($base_info['access_token'],$base_info['openid']);
+            if($wx_info){
+                session(array('name'=>'session_id','expire'=>7100));
+                session('weixin_info', $wx_info);
+            }
+        }else{ //获取OauthAccessToken失败,重新获取
+            $this->Wechat->getOAuthRedirect($url,'','snsapi_userinfo');
+        }
+       
     }
     
     //用户登录
@@ -34,7 +106,8 @@ class LoginController extends Controller {
 //        $where['is_cancel'] = 0;
 //        $where['is_validate'] = 1;
         
-        $result = D('Agent')->getDetail($where,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
+        $Agent = D('Agent');
+        $result = $Agent->getDetail($where,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
        
         if(!$result){
           
@@ -84,7 +157,24 @@ class LoginController extends Controller {
             }
         }
         
-        session('member_id',$result['agentid']);
+        $member_id = $result['agentid'];
+        
+        //添加代理openid 与 头像
+        $weixin_info = session('weixin_info');
+        
+        if($weixin_info){
+            $headimgurl = $weixin_info['headimgurl'];
+            $openid = $weixin_info['openid'];
+            
+            $result['head_img'] = $headimgurl;
+            $result['openid'] = $openid;
+            $edit_where['agentId'] = $member_id;
+            $editData['openid'] = $openid;
+            $editData['head_img'] = $headimgurl;
+            $Agent->editData($edit_where,$editData);
+        }
+        
+        session('member_id',$member_id);
         session('member_info',$result);
         
         $return = array('status'=>1,'msg'=>'','result');

@@ -42,6 +42,8 @@ header {
         background-image: url("../images/icon_rank2.png"); }
       header .user-info .rank.rank3:before {
         background-image: url("../images/icon_rank3.png"); }
+      header .user-info .rank.rank4:before {
+        background-image: url("../images/icon_rank4.png"); }
     header .user-info .registerTime {
       font-size: 12px; }
     header .user-info .team {
@@ -142,6 +144,8 @@ header {
     background-image: url("../images/icon_function5.png"); }
   .main .tool .my-delivery:before {
     background-image: url("../images/icon_function6.png"); }
+  .main .tool .my-ticket:before {
+    background-image: url("../images/icon_ticket.png"); }
   .main .tool .right {
     position: absolute;
     right: 5%;

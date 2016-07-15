@@ -24,5 +24,6 @@ return array(
     'CODE_LABEL'=>'code_label_',                    //防伪码信息
     'AGENT_GOODS_PROFIT'=>'agent_goods_profit_',    //代理分润信息
     'ENCOURAGE_INFO'=>'encourage_info_',            //激励语信息
+    'OAUTH_ACCESS_TOKEN'=>'OauthAccessToken',        //获取微信网页授权OauthAccessToken
     
 );

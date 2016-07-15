@@ -2,52 +2,44 @@
     <li class="list-group-item list-group-item-success">财务管理<h4 style="margin:0;"></h4></li>
 </ul>
 <form id="myForm" class="form-inline" method="post" action="__APP__/Finance/index.html" enctype="multipart/form-data">
-<!--	<div class="form-group">
-	    <label for="exampleInputName2">代理星级</label>
-	    <select class="form-control" name="star" id="star">
-  			<option value="">--请选择--</option>
-	  		<volist name="agent_lv_list" id="lvo">
-		  		<option value="<{$lvo.lv}>"><{$lvo.name}></option>
-		  	</volist>
-		</select>
-  	</div>-->
-        <div class="form-group">
-	    <label for="exampleInputName2">
-		    <select class="form-control" name="year" id="search_field">
-<!--		  		<option value="">年份</option>
-                                <option value="<{$year}>"><{$year}></option>-->
-                                 <{$year}>
-		  		<option value="2016">2016</option>
-                                <option value="2017">2017</option>
-			</select>
-		</label>
-  	</div>
-   <div class="form-group">
-	    <label for="exampleInputName2">
-		    <select class="form-control" name="month" id="search_field">
-                                 <!--<{$month}>-->
-                                 <{$month}>
-<!--		  		<option value="">月份</option>
-                                <option value="<{$month}>"><{$month}></option>-->
-		  		<option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-			</select>
-		</label>
-  	</div>
-  	<!-- <div class="form-group">
-	    <label for="exampleInputEmail2">商品标题</label>
-	    <input type="text" class="form-control" id="title" name="title">
-  	</div> -->
+    <input type="hidden" name="flag" value="<{$flag}>">
+    <div class="form-group">
+      <label for="exampleInputName2">
+        <select class="form-control" name="search_field" id="search_field">
+          <option value="weixin" <if condition="$search['search_field'] eq 'weixin'">selected</if> >微信号</option>
+          <option value="cardNo" <if condition="$search['search_field'] eq 'cardNo'">selected</if> >身份证号</option>
+          <option value="tel" <if condition="$search['search_field'] eq 'tel'">selected</if> >手机号</option>
+          <option value="name" <if condition="$search['search_field'] eq 'name'">selected</if> >姓名</option>
+          <option value="agentId" <if condition="$search['search_field'] eq 'agentId'">selected</if> >会员ID</option>
+        </select>
+      </label>
+      <input type="text" class="form-control" id="search_value" name="search_value" value="<{$search.search_value}>">
+    </div>
+    <div class="form-group">
+      <label for="exampleInputName2">年份</label>
+        <select class="form-control" name="year" id="search_field">
+            <option value="">--请选择--</option>
+            <{$year_html}>
+        </select>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputName2">月份</label>
+      <select class="form-control" name="month" id="search_field">
+        <option value="">--请选择--</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+    </div>
   	<button type="submit" class="btn btn-default">搜索</button>
 </form>
 
@@ -57,12 +49,12 @@
           <tr>
             <th>姓名</th>
             <th>等级</th>
-            <th>团队</th>
+            <th>微信号</th>
             <th>手机</th>
             <th>时间</th>
-            <th>提款账户</th>
             <th>提款金额</th>
             <th>提款姓名</th>
+            <th>提款账户</th>
             <th>提款银行</th>
             <th>操作</th>
           </tr>
@@ -72,20 +64,17 @@
 				<tr>
 					<th scope="row"><{$vo.agentName}></th>
 					<td><{$vo.lv_name}></td>
-                                        <td><{$vo.team_name}></td>
-                                        <td><{$vo.tel}></td>
+          <td><{$vo.weixin}></td>
+          <td><{$vo.tel}></td>
 					<td><{$vo.year}>-<{$vo.month}></td>
-					<td><{$vo.bank_account}></td>
-                                        <td><{$vo.company_profit}></td>
+          <td><{$vo.company_profit}></td>
+          <td><{$vo.bank_account}></td>
 					<td><{$vo.agent_true_name}></td>
-                                        <td><{$vo.bank_name}></td>
-                                        <td><{$vo.is_profit}>
-                                            <!--LoadPage("__APP__/Finance/index.html",{flag:1})-->
-                                            <!--<button onclick="window.location.replace('__APP__/Finance/shOneData.html?id=<{$vo.id}>')">审核</button>-->
-                                            <button onclick='LoadPage("__APP__/Finance/shOneData.html",{id:<{$vo.id}>})'>审核</button>
-                                            <!--<button onclick="window.location.replace('__APP__/Finance/showAllDetail.html?year=<{$vo.year}>&month=<{$vo.month}>')">详情</button>-->
-                                             <button onclick='LoadPage("__APP__/Finance/showAllDetail.html",{year:<{$vo.year}>,month:<{$vo.month}>,is_profit:<{$vo.is_profit}>,agent_id:<{$vo.agent_id}>,flag:"0"})'>详情</button>
-                                        </td>
+          <td><{$vo.bank_name}></td>
+          <td>
+              <button class="btn btn-warning" onclick='LoadPage("__APP__/Finance/shOneData.html",{id:<{$vo.id}>})'>审核</button>
+              <button class="btn btn-info" onclick='LoadPage("__APP__/Finance/showAllDetail.html",{year:<{$vo.year}>,month:<{$vo.month}>,is_profit:<{$vo.is_profit}>,agent_id:<{$vo.agent_id}>})'>详情</button>
+          </td>
 				</tr>
 			</volist>
         </tbody>
@@ -106,32 +95,27 @@
 	    $('.pagination li').click(function(){
 	        var page = $(this).children('a').attr('page');
 	        var class_name = $(this).attr('class');
-	        var pid = '<{$search.parent_id}>';
 	        var search_field = '<{$search.search_field}>';
 	        var search_value = '<{$search.search_value}>';
-	        var star = '<{$search.star}>';
-	        var stat = '<{$search.stat}>';
+	        var year = '<{$year}>';
+	        var month = '<{$month}>';
+          var flag = '<{$flag}>';
 
 	        if(class_name != 'active'){
-		        LoadPage('__APP__/Finance/index.html',{'p': page,'pid':pid,'search_field':search_field,'search_value':search_value,'star':star,'status':stat});
+		        LoadPage('__APP__/Finance/index.html',{'p': page,'flag':flag,'search_field':search_field,'search_value':search_value,'year':year,'month':month});
 	        }
 	        
 	    });
-        });
-        
-        
-        
-        
-	    //搜索
-	    $('#myForm').submit(function() {
-		  		 
-	  		$(this).ajaxSubmit(function(data){
+
+      //搜索
+      $('#myForm').submit(function() {
+           
+        $(this).ajaxSubmit(function(data){
                $('.main .container-fluid').html(data);
-	  		}); 
+        }); 
 
-		    //防止页面刷新
-		    return false;
-	   	});
-
-
+        //防止页面刷新
+        return false;
+      });
+  });
 </script>

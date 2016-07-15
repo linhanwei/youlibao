@@ -19,6 +19,11 @@
     <script type="text/javascript">
     	$(function(){
     		$('#myForm').submit(function() {
+
+    			// if(!confirm('本次登录后,将永久绑定该微信账号,一经绑定无法修改!')){
+    			// 	return false;
+    			// }
+
 		  		var weixin = is_empty('#name');
 		  		var password = is_empty('#password');
 		  		

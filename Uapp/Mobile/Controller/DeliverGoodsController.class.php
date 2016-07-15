@@ -190,6 +190,9 @@ class DeliverGoodsController extends CommonController {
         $admin_lv = $member_info['agent_grade'] ? $member_info['agent_grade'] : 0; //发货人代理等级
         $admin_is_agent = $member_info['is_agent'];
         $is_add_success = TRUE; //是否添加成功
+//        
+//        $return['msg'] = '系统升级,暂时不能发货,一个小时之后再使用发货功能!';
+//        $this->ajaxReturn($return,'json');
         
         if($admin_lv != 4){
             if(empty($agent_id)){
@@ -778,8 +781,8 @@ class DeliverGoodsController extends CommonController {
                             $profitLogData['profit_agent_id'] = $agent_top2_id;
                             $profitLogData['profit_agent_name'] = $agent_top2_info['name'];
                             $profitLogData['profit_agent_lv'] = $agent_top2_info['agent_grade'];
-                            $profitLogData['profit_total_money'] = $top2_profit;
-                            $profitLogData['profit_money'] = $top2_profit_total_money;
+                            $profitLogData['profit_total_money'] = $top2_profit_total_money;
+                            $profitLogData['profit_money'] = $top2_profit;
 
                             $profit_result = $AgentProfitLog->addData($profitLogData);
                             
@@ -1005,7 +1008,7 @@ class DeliverGoodsController extends CommonController {
                                 $addResultData[$rk]['prize_code'] = $prize_code;
                                 $addResultData[$rk]['is_prize'] = 2; //是否兑奖(1:已兑奖,2:未兑奖)
                                 $addResultData[$rk]['get_time'] = $dataTime;
-                                $addResultData[$rk]['out_time'] = date('Y-m-d H:i:s',strtotime(' +3 day'));
+                                $addResultData[$rk]['out_time'] = date('Y-m-d H:i:s',strtotime(' +7 day'));
                                 $addResultData[$rk]['add_time'] = $dataTime;
                             }
                         }
