@@ -428,34 +428,35 @@ class DeliverGoodsController extends CommonController {
                 //发货人为代理  减发货人出货金额与出货利润与出货库存 结束
                
                 //减收货人进库金额与进库数量  开始
-                  
-                    //代理商品实际库存,购买库存与金额
-                    $edit_buy_goods_stock_where['agent_id'] = $member_id;
-                    $edit_buy_goods_stock_where['goods_id'] = $goods_id;
-                    $edit_buy_goods_stock_where['goods_stock'] = array('egt',$goods_number);
-                    
-                    $editBuyGoodsStockData['goods_stock'] = array('exp','goods_stock-'.$goods_number);
-                    $editBuyGoodsStockData['buy_total_stock'] = array('exp','buy_total_stock-'.$goods_number);
-                    $editBuyGoodsStockData['buy_total_money'] = array('exp','buy_total_money-'.$buy_total_money);
-                    $editBuyGoodsStockResult = $AgentGoodsStockRale->editData($edit_buy_goods_stock_where,$editBuyGoodsStockData);
-                    
-                    if(!$editBuyGoodsStockResult){
-                        $is_vilid_success = FALSE;
-                        $return['msg'] = '收货人更改商品实际库存,购买库存与金额失败!';
-                    }
-                    
-                    //代理每月报表
-                    $edit_buy_month_profit_where['agent_id'] = $member_id;
-                    $edit_buy_month_profit_where['year'] = $order_year;
-                    $edit_buy_month_profit_where['month'] = $order_month;
-                   
-                    $editBuyMonthProfitData['buy_total_money'] = array('exp','buy_total_money-'.$buy_total_money);
-                    $editBuyMonthProfitData['buy_total_stock'] = array('exp','buy_total_stock-'.$goods_number);
-                    $editBuyMonthProfitResult = $AgentMonthProfit->editData($edit_buy_month_profit_where,$editBuyMonthProfitData);
-                    
-                    if(!$editBuyMonthProfitResult){
-                        $is_vilid_success = FALSE;
-                        $return['msg'] = '收货人更改每月购买库存与金额失败!';
+                    if($member_id > 0){
+                        //代理商品实际库存,购买库存与金额
+                        $edit_buy_goods_stock_where['agent_id'] = $member_id;
+                        $edit_buy_goods_stock_where['goods_id'] = $goods_id;
+                        $edit_buy_goods_stock_where['goods_stock'] = array('egt',$goods_number);
+
+                        $editBuyGoodsStockData['goods_stock'] = array('exp','goods_stock-'.$goods_number);
+                        $editBuyGoodsStockData['buy_total_stock'] = array('exp','buy_total_stock-'.$goods_number);
+                        $editBuyGoodsStockData['buy_total_money'] = array('exp','buy_total_money-'.$buy_total_money);
+                        $editBuyGoodsStockResult = $AgentGoodsStockRale->editData($edit_buy_goods_stock_where,$editBuyGoodsStockData);
+
+                        if(!$editBuyGoodsStockResult){
+                            $is_vilid_success = FALSE;
+                            $return['msg'] = '收货人更改商品实际库存,购买库存与金额失败!';
+                        }
+
+                        //代理每月报表
+                        $edit_buy_month_profit_where['agent_id'] = $member_id;
+                        $edit_buy_month_profit_where['year'] = $order_year;
+                        $edit_buy_month_profit_where['month'] = $order_month;
+
+                        $editBuyMonthProfitData['buy_total_money'] = array('exp','buy_total_money-'.$buy_total_money);
+                        $editBuyMonthProfitData['buy_total_stock'] = array('exp','buy_total_stock-'.$goods_number);
+                        $editBuyMonthProfitResult = $AgentMonthProfit->editData($edit_buy_month_profit_where,$editBuyMonthProfitData);
+
+                        if(!$editBuyMonthProfitResult){
+                            $is_vilid_success = FALSE;
+                            $return['msg'] = '收货人更改每月购买库存与金额失败!';
+                        }
                     }
                     
                 //减收货人进库金额与进库数量  结束
@@ -493,15 +494,17 @@ class DeliverGoodsController extends CommonController {
             }
             
             //减收货人该订单购买总库存与总金额
-            $edit_agent_info_where['agentId'] = $member_id;
-            
-            $editAgentInfoData['all_buy_total_stock'] = array('exp','all_buy_total_stock-'.$order_goods_total_stock);
-            $editAgentInfoData['all_buy_total_money'] = array('exp','all_buy_total_money-'.$order_sale_all_money);
-            $editAgentInfoResult = $Agent->editData($edit_agent_info_where,$editAgentInfoData);
+            if($member_id > 0){
+                $edit_agent_info_where['agentId'] = $member_id;
 
-            if(!$editAgentInfoResult){
-               $is_vilid_success = FALSE;
-               $return['msg'] = '收货人更改代理总销售库存与金额失败!';
+                $editAgentInfoData['all_buy_total_stock'] = array('exp','all_buy_total_stock-'.$order_goods_total_stock);
+                $editAgentInfoData['all_buy_total_money'] = array('exp','all_buy_total_money-'.$order_sale_all_money);
+                $editAgentInfoResult = $Agent->editData($edit_agent_info_where,$editAgentInfoData);
+
+                if(!$editAgentInfoResult){
+                   $is_vilid_success = FALSE;
+                   $return['msg'] = '收货人更改代理总销售库存与金额失败!';
+                }
             }
                     
             $edit_order_info_where['order_id'] = $order_id;
@@ -837,50 +840,52 @@ class DeliverGoodsController extends CommonController {
                 }
         }
         //发货人为代理  减发货人出货金额与出货利润与出货库存 结束
+        
+        if($member_id > 0){
+            //减收货人进库金额与进库数量  开始
 
-        //减收货人进库金额与进库数量  开始
+                //代理商品实际库存,购买库存与金额
+                $edit_buy_goods_stock_where['agent_id'] = $member_id;
+                $edit_buy_goods_stock_where['goods_id'] = $goods_id;
+                $edit_buy_goods_stock_where['goods_stock'] = array('egt',$goods_number);
 
-            //代理商品实际库存,购买库存与金额
-            $edit_buy_goods_stock_where['agent_id'] = $member_id;
-            $edit_buy_goods_stock_where['goods_id'] = $goods_id;
-            $edit_buy_goods_stock_where['goods_stock'] = array('egt',$goods_number);
+                $editBuyGoodsStockData['goods_stock'] = array('exp','goods_stock-'.$goods_number);
+                $editBuyGoodsStockData['buy_total_stock'] = array('exp','buy_total_stock-'.$goods_number);
+                $editBuyGoodsStockData['buy_total_money'] = array('exp','buy_total_money-'.$buy_total_money);
+                $editBuyGoodsStockResult = $AgentGoodsStockRale->editData($edit_buy_goods_stock_where,$editBuyGoodsStockData);
 
-            $editBuyGoodsStockData['goods_stock'] = array('exp','goods_stock-'.$goods_number);
-            $editBuyGoodsStockData['buy_total_stock'] = array('exp','buy_total_stock-'.$goods_number);
-            $editBuyGoodsStockData['buy_total_money'] = array('exp','buy_total_money-'.$buy_total_money);
-            $editBuyGoodsStockResult = $AgentGoodsStockRale->editData($edit_buy_goods_stock_where,$editBuyGoodsStockData);
+                if(!$editBuyGoodsStockResult){
+                    $is_vilid_success = FALSE;
+                    $return['msg'] = '收货人更改商品实际库存,购买库存与金额失败!';
+                }
 
-            if(!$editBuyGoodsStockResult){
-                $is_vilid_success = FALSE;
-                $return['msg'] = '收货人更改商品实际库存,购买库存与金额失败!';
+                //代理每月报表
+                $edit_buy_month_profit_where['agent_id'] = $member_id;
+                $edit_buy_month_profit_where['year'] = $order_year;
+                $edit_buy_month_profit_where['month'] = $order_month;
+
+                $editBuyMonthProfitData['buy_total_money'] = array('exp','buy_total_money-'.$buy_total_money);
+                $editBuyMonthProfitData['buy_total_stock'] = array('exp','buy_total_stock-'.$goods_number);
+                $editBuyMonthProfitResult = $AgentMonthProfit->editData($edit_buy_month_profit_where,$editBuyMonthProfitData);
+
+                if(!$editBuyMonthProfitResult){
+                    $is_vilid_success = FALSE;
+                    $return['msg'] = '收货人更改每月购买库存与金额失败!';
+                }
+
+            //减收货人进库金额与进库数量  结束
+
+            //减收货人该订单购买总库存与总金额
+            $edit_agent_info_where['agentId'] = $member_id;
+
+            $editAgentInfoData['all_buy_total_stock'] = array('exp','all_buy_total_stock-'.$order_goods_total_stock);
+            $editAgentInfoData['all_buy_total_money'] = array('exp','all_buy_total_money-'.$order_sale_all_money);
+            $editAgentInfoResult = $Agent->editData($edit_agent_info_where,$editAgentInfoData);
+
+            if(!$editAgentInfoResult){
+               $is_vilid_success = FALSE;
+               $return['msg'] = '收货人更改代理总销售库存与金额失败!';
             }
-
-            //代理每月报表
-            $edit_buy_month_profit_where['agent_id'] = $member_id;
-            $edit_buy_month_profit_where['year'] = $order_year;
-            $edit_buy_month_profit_where['month'] = $order_month;
-
-            $editBuyMonthProfitData['buy_total_money'] = array('exp','buy_total_money-'.$buy_total_money);
-            $editBuyMonthProfitData['buy_total_stock'] = array('exp','buy_total_stock-'.$goods_number);
-            $editBuyMonthProfitResult = $AgentMonthProfit->editData($edit_buy_month_profit_where,$editBuyMonthProfitData);
-
-            if(!$editBuyMonthProfitResult){
-                $is_vilid_success = FALSE;
-                $return['msg'] = '收货人更改每月购买库存与金额失败!';
-            }
-
-        //减收货人进库金额与进库数量  结束
-            
-        //减收货人该订单购买总库存与总金额
-        $edit_agent_info_where['agentId'] = $member_id;
-
-        $editAgentInfoData['all_buy_total_stock'] = array('exp','all_buy_total_stock-'.$order_goods_total_stock);
-        $editAgentInfoData['all_buy_total_money'] = array('exp','all_buy_total_money-'.$order_sale_all_money);
-        $editAgentInfoResult = $Agent->editData($edit_agent_info_where,$editAgentInfoData);
-
-        if(!$editAgentInfoResult){
-           $is_vilid_success = FALSE;
-           $return['msg'] = '收货人更改代理总销售库存与金额失败!';
         }
         
         //修改订单商品为退货: is_refund : 是否退货:1:否,2:是
