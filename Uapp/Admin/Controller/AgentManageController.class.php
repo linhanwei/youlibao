@@ -273,8 +273,8 @@ class AgentManageController extends CommonController {
                             //判断总代是否有下级,没有的话可以直接升级
                             $get_agent2_count_where['agent'.$agent_lv.'_id'] = $agent_id;
                             $getAgent2Count = $AgentRelation->getCount($get_agent2_count_where);
-
-                            if($getAgent2Count > 0){
+                           
+                            if($getAgent2Count > 0  || $agent2_id  || $agent3_id){
                                 if(empty($agent2_id)){
                                     $return['msg'] = $MEMBER_LEVEL[2]['name'].'ID不能为空!';
                                     $this->ajaxReturn($return,'json');
@@ -523,14 +523,16 @@ class AgentManageController extends CommonController {
                         //判断总代是否有下级,没有的话可以直接升级
                         $get_agent3_count_where['agent'.$agent_lv.'_id'] = $agent_id;
                         $getAgent3Count = $AgentRelation->getCount($get_agent3_count_where);
-
-                        if($getAgent3Count > 0){
+                        
+                        if($getAgent3Count > 0 || $agent2_id  || $agent3_id){
+                            
                             //判断总代ID信息
                             if(empty($agent3_id)){
-                                $is_edit_success = FALSE;
+                               
                                 $return['msg'] = $MEMBER_LEVEL[3]['name'].'ID不能为空!';
+                                $this->ajaxReturn($return,'json');
                             }
-
+                            
                             $agent3_info = $this->getAgent($agent3_id);
 
                             if(empty($agent3_info)){
@@ -549,16 +551,18 @@ class AgentManageController extends CommonController {
 
                             //判断是取下级还是会员替代总代的位置
                             if($agent3_info['agent_grade'] > 0 && $agent3_info['agent3_id'] != $agent_id){
-                                $is_edit_success = FALSE;
+                             
                                 $return['msg'] = $MEMBER_LEVEL[3]['name'].'ID不是代理的下级!';
+                                $this->ajaxReturn($return,'json');
                             }
 
                             //升级为创始人
                             if($star == 1){
                                 //判断大区ID信息
                                 if(empty($agent2_id)){
-                                    $is_edit_success = FALSE;
+                               
                                     $return['msg'] = $MEMBER_LEVEL[2]['name'].'ID不能为空!';
+                                    $this->ajaxReturn($return,'json');
                                 }
 
                                 $agent2_info = $this->getAgent($agent2_id);
@@ -579,8 +583,9 @@ class AgentManageController extends CommonController {
 
                                 //判断是取下级还是会员替代总代的位置
                                 if($agent2_info['agent_grade'] > 0 && $agent2_info['agent3_id'] != $agent_id){
-                                    $is_edit_success = FALSE;
+                                    
                                     $return['msg'] = $MEMBER_LEVEL[2]['name'].'ID不是代理的下级!';
+                                    $this->ajaxReturn($return,'json');
                                 }
 
                                 //修改大区ID信息
@@ -657,14 +662,14 @@ class AgentManageController extends CommonController {
                             $editAgent331RelaData['pid'] = $agent3_parent_id;
                             $editAgent331RelaData['agent_grade'] = 3;
 
-                            $editAgent331RelaCount = $AgentRelation->getCount($edit_agent_next_agent3_where);
-
+                            $editAgent331RelaCount = $AgentRelation->getCount($edit_agent331_rale_where);
+                            
                             if($editAgent331RelaCount > 0){
                                 $editAgent331RelaResult = $AgentRelation->editData($edit_agent331_rale_where,$editAgent331RelaData);
                             }else{
                                 $editAgent331RelaResult = $AgentRelation->addData($editAgent331RelaData);
                             }
-
+                            
                             if(!$editAgent331RelaResult){
                                 $is_edit_success = FALSE;
                                 $return['msg'] = '修改'.$MEMBER_LEVEL[3]['name'].'ID关系信息失败!';
@@ -1020,11 +1025,28 @@ class AgentManageController extends CommonController {
         $Agent = D('Agent');
         
         $Agent->startTrans();
+        $is_edit_success = TRUE;
         
         $a_result = $Agent->delData(array('agentId'=>$agent_id));
-        $ar_result = $AgentRelation->delData(array('member_id'=>$agent_id));
         
-        if($a_result && $ar_result){
+        if(!$a_result){
+            $is_edit_success = FALSE;
+            $return['msg'] = '删除代理信息失败!';
+        }
+        
+        //判断是否有关系信息,有就删除
+        $del_rale_where['member_id'] = $agent_id;
+        $raleCount = $AgentRelation->getCount($del_rale_where);
+        
+        if($raleCount > 0){
+            $ar_result = $AgentRelation->delData($del_rale_where);
+            if(!$ar_result){
+                $is_edit_success = FALSE;
+                $return['msg'] = '删除代理关系信息失败!';
+            }
+        }
+        
+        if($is_edit_success){
             $return = array('status'=>1,'msg'=>'删除成功','result'=>'');
             S(C('AGENT_INFO').$agent_id,NULL);
             $Agent->commit();

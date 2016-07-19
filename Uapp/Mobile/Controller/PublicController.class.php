@@ -24,70 +24,35 @@ class PublicController extends Controller {
     }
     
     public function test() {
-        dump(strrpos('sdaadfa?fsadfsdaa', "?"));die;
-
+        
+        $pay_money = 13;
+        $mod_money = 3;
+        $mod_sup_money = $pay_money%$mod_money;
+        $sup_step = ceil($pay_money/$mod_money);
+        dump($mod_sup_money);
+        dump($sup_step);
+        
+//        dump(md5('youlbaotest'));die;
         $options['token'] = C('WX_TOKEN');
         $options['appid'] = C('WX_APPID');
         $options['secret'] = C('WX_APPSECRET');
         $options['payKey'] = C('WX_PAY_KEY');
         $options['mch_id'] = C('WX_MCH_ID');
-       // $options['access_token'] = $options['access_token'];
-//        $options['debug'] = $options['debug'];
-//	$options['encode']= true;
-//        $options['aeskey'] = $options['aeskey'];
-//        $options['pem'] = $options['pem'];
-//        
+      
         $Wechat = new \Org\Util\Wechat($options);
         
-        $openid = '';
-        $name = '';
-        $money = 0;
-        $desc = '优利宝推广佣金';
-        
-        $returnResult = $Wechat->payTransfers($openid,$name,$money,$desc);
-        
-        $base_info = $Wechat->getOauthAccessToken($callback = '', $state='', $scope='snsapi_userinfo'); //snsapi_userinfo  snsapi_base
-        S(C('OAUTH_ACCESS_TOKEN'),$base_info['access_token'],7100);
-            
-        $wx_info = $Wechat->getOauthUserInfo($base_info['access_token'],$base_info['openid']);
-        dump($base_info);
-        dump($wx_info);
-        dump($Wechat->getError());
-        die;
-        $OrderGoods = D('OrderGoods');
-        $sql = 'SELECT a2.agentId AS zd_member_id,a2.name AS zd_name,a2.weixin AS zd_weixin,a2.star AS zd_star,a.agentId AS ty_member_id,a.name AS ty_name,a.weixin AS ty_weixin,a.star AS ty_star,SUM(og.goods_number) AS count_goods_num FROM order_goods og LEFT JOIN agent_relation ar ON ar.member_id = og.member_id LEFT JOIN agent a ON a.agentId = og.member_id LEFT JOIN agent a2 ON ar.pid = a2.agentId WHERE a.star = 4 GROUP BY og.member_id HAVING count_goods_num > 0 ORDER BY a.agentId';
-        
-        $data = $OrderGoods->query($sql);
+        //查询企业付款
+        $pay_result = $Wechat->getTransfersInfo($partner_trade_no  = '1288272801201607188396325184');
+        dump($pay_result);die;
         
         
-        dump($data);
-        die;
+//        $base_info = $Wechat->getOauthAccessToken($callback = '', $state='', $scope='snsapi_base'); //snsapi_userinfo  snsapi_base
+//        $openid = $base_info['openid'];
         
-        $agent_id = 2;
-        $edit_next_agent3_where['_string'] = ' agentId IN(SELECT member_id FROM agent_relation WHERE agent2_id = "'.$agent_id.'" AND agent_grade = 3)';
-                             
-        $editNextAgent3Result = $Agent->getDetail($edit_next_agent3_where);
-        dump($Agent->_sql());die;
-                                            
-        $url = 'http://msb.kudouys.me/Public/searchSecurityResult.html';
-        $url_params = array();
-        $url_method = 'GET';
-        
-        $LabelCode = D('LabelCode');
-        $admin_id = 1;
-        $code = '10011247606';
-        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT min_code FROM label_code WHERE max_code = "'.$code.'" OR middle_code = "'.$code.'") AND admin_id ='.$admin_id; //发了小标签,不能再发中标或者大标
-        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT middle_code FROM label_code WHERE max_code = "'.$code.'") AND admin_id ='.$admin_id; //发了中标,不能再发大标
-        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT max_code FROM label_code WHERE middle_code = "'.$code.'") AND admin_id ='.$admin_id; //发了大标不能发中标
-        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT max_code FROM label_code WHERE min_code = "'.$code.'") AND admin_id ='.$admin_id; //发了大标不能发小标
-        $sql = 'SELECT COUNT(*) AS COUNT FROM deliver_goods WHERE CODE IN(SELECT middle_code FROM label_code WHERE min_code = "'.$code.'") AND admin_id ='.$admin_id; //发了中标不能发小标
-        $label_code_retult = $LabelCode->query($sql);
+        $openid = 'oB2snuOfsiRHr302V4kzdp-Jxk6c';
         
         
-        dump($label_code_retult[0]['count']);
-//        $return_data = http($url, $url_params, $url_method);
-//        dump(date('Y-m-d',strtotime(' +3 day')));
-//        dump(json_decode($return_data));
+        
     }
     
     

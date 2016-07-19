@@ -982,9 +982,10 @@ class DeliverGoodsController extends CommonController {
             $prize_count = $CashPrizeLog->getCount(array('agent_id'=>$admin_id),array('key'=>false,'expire'=>null,'cache_type'=>null));
 
             $CASH_PRIZE_NUMBER = C('CASH_PRIZE_NUMBER');
-            $agent_info = $this->getAgent($admin_id);
-
-            $all_sale_total_stock = $agent_info['all_sale_total_stock']; //出库总库存
+//            $agent_info = $this->getAgent($admin_id);
+//            $all_sale_total_stock = $agent_info['all_sale_total_stock']; //出库总库存
+            
+            $all_sale_total_stock = $Agent->where(array('agentId'=>$admin_id))->getField('all_sale_total_stock');
             $code_number = floor(($all_sale_total_stock - $prize_count*$CASH_PRIZE_NUMBER)/$CASH_PRIZE_NUMBER);
 
             if($code_number > 0){

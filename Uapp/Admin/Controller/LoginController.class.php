@@ -35,6 +35,7 @@ class LoginController extends Controller {
         }
         
         session('member_id',$result['userid']);
+        session('admin_info',$result);
         $this->redirect('Index/index', '', 0, '页面跳转中...');
     }
     

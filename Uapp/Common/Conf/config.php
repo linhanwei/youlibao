@@ -17,7 +17,7 @@ return array(
         
         //特约兑奖信息
         'CASH_PRIZE_NUMBER'=>10,//兑奖比例 10:1
-        'GET_CASH_PRIZE_CODE_URL'=>'http://miku.unesmall.com/api/m/1.0/createScanCodeCash.json',//获取兑奖码url  http://miku.unesmall.com/    http://wechat.unesmall.com/
+        'GET_CASH_PRIZE_CODE_URL'=>'http://wechat.unesmall.com/api/m/1.0/createScanCodeCash.json',//获取兑奖码url  http://miku.unesmall.com/    http://wechat.unesmall.com/
     
         //下级限制总人数
         'NEXT_AGENT_COUNT'=>10,

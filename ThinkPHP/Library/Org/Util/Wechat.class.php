@@ -91,8 +91,9 @@ class Wechat {
 	private $payKey;
 	private $pemCret;
 	private $pemKey;
+        public  $mchBillNo;//商户订单号
 
-	public function __construct($options = array()) {
+        public function __construct($options = array()) {
 		$this->token        =  isset($options['token'])        ? $options['token']        : '';
 		$this->appid        =  isset($options['appid'])        ? $options['appid']        : '';
 		$this->secret       =  isset($options['secret'])       ? $options['secret']       : '';
@@ -1465,11 +1466,12 @@ class Wechat {
 	 * 创建一个商户订单号
 	 * @return integer  28位订单号
 	 */
-	private function createMchBillNo() {
+	public function createMchBillNo() {
 		$micro = microtime(true) * 100;
 		$micro = ceil($micro);
 		$rand  = substr($micro, -8) . \Org\Util\String::randNumber(0,99);
-		return   $this->mch_id . date('Ymd') . $rand;
+                $this->mchBillNo = $this->mch_id . date('Ymd') . $rand;
+		return   $this->mchBillNo;
 	}
 
 	/**
@@ -1481,7 +1483,12 @@ class Wechat {
 	 * @return boolean|array
 	 */
 	public function sendGroupRedPack($openid, $money, $num = 1, $data) {
-		$params['mch_billno']   = self::createMchBillNo();
+                if(empty($this->mchBillNo)){
+                    $this->error = '商户订单号不能为空';
+                    return false;
+                }
+                
+		$params['mch_billno']   = $this->mchBillNo;
 		$params['send_name']    = $data['send_name'];
 		$params['re_openid']    = (string)$openid;
 		$params['total_amount'] = $money * 100;
@@ -1507,7 +1514,12 @@ class Wechat {
 	 * @return boolean|array
 	 */
 	public function sendRedPack($openid, $money, $data) {
-		$params['mch_billno']   = self::createMchBillNo();
+                if(empty($this->mchBillNo)){
+                    $this->error = '商户订单号不能为空';
+                    return false;
+                }
+                
+		$params['mch_billno']   = $this->mchBillNo;
 		$params['nick_name']    = $data['send_name'];
 		$params['send_name']    = $data['send_name'];
 		$params['re_openid']    = (string)$openid;
@@ -1557,12 +1569,25 @@ class Wechat {
             * OPTION_CHECK：针对已实名认证的用户才校验真实姓名（未实名认证用户不校验，可以转账成功）
          * @param type $check_name
          * @return type
+         * 
+         * 接口调用规则：
+            ◆ 给同一个实名用户付款，单笔单日限额2W/2W
+            ◆ 给同一个非实名用户付款，单笔单日限额2000/2000
+            ◆ 一个商户同一日付款总额限额100W
+            ◆ 单笔最小金额默认为1元
+            ◆ 每个用户每天最多可付款10次，可以在商户平台--API安全进行设置
+            ◆ 给同一个用户付款时间间隔不得低于15秒
          */
         public function payTransfers($openid='',$name='',$money=0,$desc = '',$check_name = 'NO_CHECK') {
+            if(empty($this->mchBillNo)){
+                $this->error = '商户订单号不能为空';
+                return false;
+            }
+           
             $params['mch_appid']        = $this->appid; //公众账号appid	
             $params['mchid']            = $this->mch_id; //商户号
             $params['nonce_str']        = self::_getRandomStr(); //随机字符串
-            $params['partner_trade_no'] = self::createMchBillNo(); //商户订单号
+            $params['partner_trade_no'] = $this->mchBillNo; //商户订单号
             $params['openid']           = (string)$openid;  //用户openid
             $params['check_name']       = $check_name; //校验用户姓名选项: 
             $params['re_user_name']     = $name;  //收款用户姓名
@@ -1573,6 +1598,10 @@ class Wechat {
            
             $data = self::_array2Xml($params);
             $data = $this->http(self::PAY_TRANSFERS_URL, $data, 'POST', true);
+            
+            if($data === false){
+                return false;
+            }
             return self::parsePayRequest($data, false);
         }
         
@@ -1601,6 +1630,7 @@ class Wechat {
 	 */
 	private function parsePayRequest($data, $checkSign = true) {
 		$data = self::_extractXml($data);
+              
 		if (empty($data)) {
 			$this->error = '支付返回内容解析失败';
 			return false;
@@ -1613,7 +1643,7 @@ class Wechat {
 			if ($data['result_code'] == 'SUCCESS') {
 				return $data;
 			} else {
-				$this->error = $data['err_code'];
+				$this->error = $data['err_code_des'];
 				return false;
 			}
 		} else {

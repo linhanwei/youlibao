@@ -68,7 +68,10 @@
 						</if>
 						<button type="button" aid="<{$vo.agentid}>" class="btn btn-warning edit_agent">修改</button>
 						<button type="button" aid="<{$vo.agentid}>" class="btn btn-danger del_agent">删除</button>
-						
+						<button type="button" aid="<{$vo.agentid}>" class="btn btn-info cash_prize_list">兑奖信息</button>
+						<if condition="$vo['star'] eq 4">
+							<button type="button" aid="<{$vo.agentid}>" class="btn btn-danger agent_cash_prize">立即兑奖</button>
+						</if>
 					</td>
 				</tr>
 			</volist>
@@ -186,6 +189,40 @@
 		    		alert(data.msg);
 		    		if(data.status == 1){
 		    			LoadPage("__APP__/AgentManage/index.html");
+		    		}
+		    	});
+		    }
+
+		    return false;
+
+	    });
+
+	    //兑奖列表信息 cash_prize
+	    $('.cash_prize_list').click(function(event) {
+	    	/* Act on the event */
+	    	var aid = $(this).attr('aid');
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+	    	LoadPage('__APP__/CashPrizeManege/index.html',{'aid':aid});
+
+	    });
+
+	    //代理兑奖
+	    $('.agent_cash_prize').click(function(event) {
+	    	/* Act on the event */
+	    	var aid = $(this).attr('aid');
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+	    	
+	    	if (confirm("是否确定兑奖"))  {  
+		    	$.post('__APP__/CashPrizeManege/cashPrize.html', {aid: aid}, function(data) {
+		    		alert(data.msg);
+		    		if(data.status == 1){
+		    			LoadPage('__APP__/CashPrizeManege/index.html',{'aid':aid});
 		    		}
 		    	});
 		    }

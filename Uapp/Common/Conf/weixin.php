@@ -21,7 +21,7 @@ return array(
     'WX_APPID'=> 'wxcd0184c686f004c1',  
     'WX_APPSECRET'=>'9780c7fcc355bb954b8c990c39dd5182',
     'WX_TOKEN'=>'wxfx2015dd',
-    'WX_PAY_KEY' => '',
-    'WX_MCH_ID' => '',
+    'WX_PAY_KEY' => 'cc5982a9613218a7b7e3ccb601b1f3cc',//支付秘钥
+    'WX_MCH_ID' => '1288272801',//商户号
 
 );
