@@ -18,7 +18,7 @@ class AgentManageController extends CommonController {
         $parent_id = I('pid');
         $star = I('star');
         $page = I('p',1);
-        $status = I('status');
+        $status = I('status',1);
       
         if($search_field && $search_value){
             $where[$search_field] = $search_value;
@@ -747,6 +747,8 @@ class AgentManageController extends CommonController {
 
             $editAgentRelaData['agent_grade'] = $star;
             $editAgentRelaData['pid'] = $parent_id;
+            
+            $editAgentData['parent_id'] = $parent_id;
         }
         
         
@@ -769,7 +771,6 @@ class AgentManageController extends CommonController {
         
         $editAgentData['team_name'] = $team_name;
         $editAgentData['star'] = $star;
-        $editAgentData['parent_id'] = $parent_id;
         $editAgentData['name'] = $name;
         $editAgentData['weixin'] = $weixin;
         $editAgentData['qq'] = $qq;
@@ -1193,6 +1194,43 @@ class AgentManageController extends CommonController {
         if($result){
             $return = array('status'=>1,'msg'=>'删除成功','result'=>'');
         }
+        
+        $this->ajaxReturn($return,'json');
+        
+    }
+    
+    //微信解绑
+    public function weixinUnbing() {
+        $return = array('status'=>0,'msg'=>'更改失败','result'=>'');
+        
+        $agent_id = I('aid');
+        
+        if(empty($agent_id)){
+            $return['msg'] = '请选择代理';
+            $this->ajaxReturn($return,'json');
+        }
+        
+        $Agent = D('Agent');
+        
+        $where['agentId'] = $agent_id;
+        
+        $openid = $Agent->where($where)->getField('openid');
+        
+        if(empty($openid)){
+            $return['msg'] = '该代理还没有绑定微信!';
+            $this->ajaxReturn($return,'json');
+        }
+        
+        $editData['openid'] = NULL;
+        $editData['head_img'] = NULL;
+        
+        $result = $Agent->editData($where,$editData);
+        
+        if($result){
+            $return = array('status'=>1,'msg'=>'更改成功','result'=>'');
+        }
+        
+        $return['result'] = $Agent->_sql();
         
         $this->ajaxReturn($return,'json');
         

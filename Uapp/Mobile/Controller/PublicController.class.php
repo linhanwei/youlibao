@@ -6,10 +6,10 @@ namespace Mobile\Controller;
 use Think\Controller;
 class PublicController extends Controller {
     protected $Wechat = ''; //微信类
-    
+   
     public function __construct() {
         parent::__construct();
-     
+      
        //微信浏览器中才去调用
         $is_weixin = is_weixin();
         $this->assign('is_weixin',$is_weixin);
@@ -24,15 +24,39 @@ class PublicController extends Controller {
     }
     
     public function test() {
+//                dump(md5('youlbaopay'));die;
+       
+        die;
+        ini_set("max_execution_time", 0);
+        $money = 10001;
+        $mod_money = 20000; //微信限制单笔最高金额
+        if($money > $mod_money){
+            $mod_sup_money = $money%$mod_money;
+            $sup_step = ceil($money/$mod_money);
+            $pay_money = $mod_money;
+        }else{
+            $sup_step = 1;
+            $pay_money = $money;
+        }
         
-        $pay_money = 13;
-        $mod_money = 3;
-        $mod_sup_money = $pay_money%$mod_money;
-        $sup_step = ceil($pay_money/$mod_money);
-        dump($mod_sup_money);
-        dump($sup_step);
+        $pay_total_money = 0; //累计支付总金额
+        G('begin');
+        for($pi=1;$pi <= $sup_step;$pi++){
+            if($pi > 1 && $sup_step == $pi){
+                $pay_money = $mod_sup_money;
+            }
+            
+            $pay_total_money += $pay_money;
+            
+            dump($pay_money);
+            
+            G('end');
+            dump(G('begin','end',6).'s');
+        }
         
-//        dump(md5('youlbaotest'));die;
+        dump($pay_total_money);DIE;
+        
+
         $options['token'] = C('WX_TOKEN');
         $options['appid'] = C('WX_APPID');
         $options['secret'] = C('WX_APPSECRET');
@@ -493,11 +517,11 @@ class PublicController extends Controller {
             $DeliverGoods = D('DeliverGoods');
 
             $co_where['code'] = $code;
-            $code_info = $DeliverGoods->getDetail($co_where,array('field'=>array('goods_id','agent_id'),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),'id DESC');
+            $code_info = $DeliverGoods->getDetail($co_where,array('field'=>array('goods_id','agent_id','admin_id'),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),'id DESC');
            
             if(empty($code_info)){
                 $co_where['code'] = array(array('eq',$label_info['max_code']),array('eq',$label_info['middle_code']),'or'); 
-                $code_info = $DeliverGoods->getDetail($co_where,array('field'=>array('goods_id','agent_id'),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),'id DESC');
+                $code_info = $DeliverGoods->getDetail($co_where,array('field'=>array('goods_id','agent_id','admin_id'),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null),'id DESC');
             }
            
             if($code_info){
@@ -510,6 +534,9 @@ class PublicController extends Controller {
         if($code_info){
             $goods_id = $code_info['goods_id'];
             $agent_id = $code_info['agent_id'];
+            $admin_id = $code_info['admin_id'];
+            
+            $agent_id = $agent_id ? $agent_id : $admin_id;
             
             $agent_info = S(C('AGENT_INFO').$agent_id);
             
@@ -525,6 +552,7 @@ class PublicController extends Controller {
             }
             
             if(empty($agent_info) || $agent_info['stat'] == -1){
+                
                 echo '<center><h3>您所购买的商品为假货!</h3></center>';
                 die;
             }

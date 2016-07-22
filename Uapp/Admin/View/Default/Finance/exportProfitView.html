@@ -1,18 +1,9 @@
 <ul class="list-group" >
-    <li class="list-group-item list-group-item-success"><{$title}><h4 style="margin:0;"></h4></li>
+    <li class="list-group-item list-group-item-success">分润导出管理<h4 style="margin:0;"></h4></li>
 </ul>
-<form id="myForm" class="form-inline" method="post" action="__APP__/Finance/index.html" enctype="multipart/form-data">
+<form id="myForm" class="form-inline" method="post" action="__APP__/Finance/exportProfitView.html" enctype="multipart/form-data">
     <input type="hidden" name="flag" value="<{$flag}>">
-    <input type="hidden" name="title" value="<{$title}>">
-    <div class="form-group">
-      <label for="exampleInputName2">代理星级</label>
-      <select class="form-control" name="star" id="star">
-        <option value="">--请选择--</option>
-        <volist name="agent_lv_list" id="lvo">
-          <option value="<{$lvo.lv}>" <if condition="$lvo['lv'] eq $star">selected</if> ><{$lvo.name}></option>
-        </volist>
-    </select>
-    </div>
+    
     <div class="form-group">
       <label for="exampleInputName2">
         <select class="form-control" name="search_field" id="search_field">
@@ -84,13 +75,10 @@
           <td>
 
               <button class="btn btn-info" onclick='LoadPage("__APP__/Finance/showAllDetail.html",{year:<{$vo.year}>,month:<{$vo.month}>,is_profit:<{$vo.is_profit}>,agent_id:<{$vo.agent_id}>,title:"<{$title}>"})'>详情</button>
-              <!-- <if condition="$vo['star'] eq 1">
-                <button class="btn btn-warning" onclick='LoadPage("__APP__/Finance/exportProfit.html",{aid:<{$vo.agent_id}>})'>导出分润</button>
-              </if> -->
-             <!--  <if condition="$flag eq 2">
-                <button class="btn btn-warning check_pay"  mpid="<{$vo.id}>">查询支付</button>
-                <button class="btn btn-danger pay_money"  mpid="<{$vo.id}>">返利支付</button>
-              </if> -->
+             
+              <button class="btn btn-warning" onclick='LoadPage("__APP__/Finance/exportProfit.html",{aid:<{$vo.agent_id}>})'>导出分润</button>
+              
+              
           </td>
 				</tr>
 			</volist>
@@ -121,7 +109,7 @@
 	        
 
 	        if(class_name != 'active'){
-		        LoadPage('__APP__/Finance/index.html',{'p': page,'flag':flag,'search_field':search_field,'search_value':search_value,'year':year,'month':month,'star':star});
+		        LoadPage('__APP__/Finance/exportProfitView.html',{'p': page,'flag':flag,'search_field':search_field,'search_value':search_value,'year':year,'month':month,'star':star});
 	        }
 	        
 	    });

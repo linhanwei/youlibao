@@ -1,25 +1,32 @@
 <ul class="list-group" >
-    <li class="list-group-item list-group-item-success">财务管理<h4 style="margin:0;"></h4></li>
+    <li class="list-group-item list-group-item-success">公司报表<h4 style="margin:0;"></h4></li>
 </ul>
 <form id="myForm" class="form-inline" method="post" action="__APP__/Finance/operate.html" enctype="multipart/form-data">
-<!--	<div class="form-group">
-	    <label for="exampleInputName2">代理星级</label>
-	    <select class="form-control" name="star" id="star">
-  			<option value="">--请选择--</option>
-	  		<volist name="agent_lv_list" id="lvo">
-		  		<option value="<{$lvo.lv}>"><{$lvo.name}></option>
-		  	</volist>
-		</select>
-  	</div>-->
-        <div class="form-group">
-	    <label for="exampleInputName2">
-		    <select class="form-control" name="year" id="search_field">
-                                 <{$year}>
-		  		<option value="2016">2016</option>
-                                <option value="2017">2017</option>
-			</select>
-		</label>
-  	</div>
+	<div class="form-group">
+      	<label for="year">年份</label>
+        <select class="form-control" name="year" id="year">
+            <option value="">--请选择--</option>
+            <{$year_html}>
+        </select>
+    </div>
+    <div class="form-group">
+      <label for="month">月份</label>
+      <select class="form-control" name="month" id="month">
+        <option value="">--请选择--</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+    </div>
   	<button type="submit" class="btn btn-default">搜索</button>
 </form>
 
@@ -29,11 +36,11 @@
           <tr>
             <th>时间</th>
             <th>当月总分润</th>
-            <th>未提分润</th>
-            <th>实际已提分润</th>
+            <th>当月剩余分润</th>
+            <th>当月已提分润</th>
             <th>累加总分润</th>
             <th>累加剩余分润</th>
-            <th>累加实际提分润</th>
+            <th>累加已提分润</th>
             <th>操作</th>
           </tr>
         </thead>
@@ -42,14 +49,14 @@
 				<tr>
 					<th scope="row"><{$vo.year}>-<{$vo.month}></th>
 					<td><{$vo.total_profit}></td>
-                                        <td><{$vo.not_profit}></td>
-                                        <td><{$vo.real_profit}></td>
+                    <td><{$vo.not_profit}></td>
+                    <td><{$vo.real_profit}></td>
 					<td><{$vo.all_total_profit}></td>
-                                        <td><{$vo.all_surplus_profit}></td>
+                    <td><{$vo.all_surplus_profit}></td>
 					<td><{$vo.all_real_profit}></td>
-                                        <td>
-                                            <button onclick='LoadPage("__APP__/Finance/showAllDetail.html",{year:<{$vo.year}>,month:<{$vo.month}>,flag:"2"})'>详情</button>
-                                        </td>
+                    <td>
+                        <button  class="btn btn-info" onclick='LoadPage("__APP__/Finance/showAllDetail.html",{year:<{$vo.year}>,month:<{$vo.month}>})'>详情</button>
+                    </td>
 				</tr>
 			</volist>
         </tbody>
@@ -70,14 +77,10 @@
 	    $('.pagination li').click(function(){
 	        var page = $(this).children('a').attr('page');
 	        var class_name = $(this).attr('class');
-	        var pid = '<{$search.parent_id}>';
-	        var search_field = '<{$search.search_field}>';
-	        var search_value = '<{$search.search_value}>';
-	        var star = '<{$search.star}>';
-	        var stat = '<{$search.stat}>';
+	        
 
 	        if(class_name != 'active'){
-		        LoadPage('__APP__/Finance/index.html',{'p': page,'pid':pid,'search_field':search_field,'search_value':search_value,'star':star,'status':stat});
+		        LoadPage('__APP__/Finance/index.html',{'p': page});
 	        }
 	        
 	    });

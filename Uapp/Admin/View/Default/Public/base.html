@@ -142,9 +142,11 @@
                                 <!-- 财务管理-->
                                 <div class="list-group-item list-group-item-warning">财务管理</div>
                                 <div class="list-group">
-                                    <a onclick='LoadPage("__APP__/Finance/index.html",{flag:"2"})' class="list-group-item">提现管理</a>
-                                    <a onclick='LoadPage("__APP__/Finance/index.html",{flag:"1"})' class="list-group-item">已审核管理</a>
-                                    <a onclick='LoadPage("__APP__/Finance/operate.html")' class="list-group-item">数据统计</a>
+                                    <a onclick='LoadPage("__APP__/Finance/exportProfitView.html")' class="list-group-item">分润导出管理</a>
+                                    <a onclick='LoadPage("__APP__/Finance/index.html",{flag:"3",title:"未提现管理"})' class="list-group-item">未提现管理</a>
+                                    <a onclick='LoadPage("__APP__/Finance/index.html",{flag:"2",title:"已提现管理"})' class="list-group-item">已提现管理</a>
+                                    <!-- <a onclick='LoadPage("__APP__/Finance/index.html",{flag:"1",title:"已返利管理"})' class="list-group-item">已返利管理</a> -->
+                                    <a onclick='LoadPage("__APP__/Finance/operate.html")' class="list-group-item">公司报表</a>
                                 </div>
                             </li>
                           
@@ -156,7 +158,7 @@
                     
                 </block>
             </div>
-            <block name="footer">底部</block>
+            <!-- <block name="footer">底部</block> -->
        
     </body>
 </html>

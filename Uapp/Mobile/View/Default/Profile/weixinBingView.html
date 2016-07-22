@@ -1,0 +1,35 @@
+<extend name="Public:base" />
+<block name="title"><title>微信绑定</title></block>
+<block name="header">
+	<link href="__PUBLIC__/Mobile/css/login.css" rel="stylesheet"/>
+    <!-- <include file="Public/agentHeader" /> -->
+</block>
+<block name="main">
+	<div class="container">
+	    
+	    <form class="inputBox" id="myForm" method="post" action="__APP__/Profile/weixinBing.html" enctype="multipart/form-data">
+	        <input type="text" name="password" id="password" placeholder="输入密码" />
+	        <!-- <input type="password" id="password" name="password" placeholder="密码" /> -->
+	        <!-- <p class="tips">温馨提示：登录成功后请尽快修改密码！</p> -->
+	        <input type="submit"  value="提交" class="submit" />
+	    </form>
+	</div>
+
+    <script type="text/javascript">
+    	$(function(){
+    		$('#myForm').submit(function() {
+		  		var password = is_empty('#password');
+
+		  		if(password === false){
+		  			showMsg('请输入密码!');
+		  			return false;
+		  		}
+		  		
+		   	});
+    	});
+
+    </script>
+</block>
+<block name="footer">
+	<!-- <include file="Public/footer" /> -->
+</block>

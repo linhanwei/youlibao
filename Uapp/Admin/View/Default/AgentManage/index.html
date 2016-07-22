@@ -2,6 +2,7 @@
     <li class="list-group-item list-group-item-success"><h4 style="margin:0;">代理商列表</h4></li>
 </ul>
 <form id="myForm" class="form-inline" method="post" action="__APP__/AgentManage/index.html" enctype="multipart/form-data">
+	<input type="hidden" name="status" value="<{$search.stat}>">
 	<div class="form-group">
 	    <label for="exampleInputName2">代理星级</label>
 	    <select class="form-control" name="star" id="star">
@@ -72,6 +73,7 @@
 						<if condition="$vo['star'] eq 4">
 							<button type="button" aid="<{$vo.agentid}>" class="btn btn-danger agent_cash_prize">立即兑奖</button>
 						</if>
+						<button type="button" aid="<{$vo.agentid}>" class="btn btn-info weixin_unbing">微信解绑</button>
 					</td>
 				</tr>
 			</volist>
@@ -224,6 +226,25 @@
 		    		if(data.status == 1){
 		    			LoadPage('__APP__/CashPrizeManege/index.html',{'aid':aid});
 		    		}
+		    	});
+		    }
+
+		    return false;
+
+	    });
+
+	    //微信解绑 
+	    $('.weixin_unbing').click(function(event) {
+	    	/* Act on the event */
+	    	var aid = $(this).attr('aid');
+	    	if(aid == ''){
+	    		alert('请选择代理');
+	    		return false;
+	    	}
+	    	
+	    	if (confirm("是否确定解绑"))  {  
+		    	$.post('__APP__/AgentManage/weixinUnbing.html', {aid: aid}, function(data) {
+		    		alert(data.msg);
 		    	});
 		    }
 

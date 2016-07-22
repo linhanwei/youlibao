@@ -1,24 +1,7 @@
 <ul class="list-group" >
-    <li class="list-group-item list-group-item-success">财务管理<h4 style="margin:0;"></h4></li>
+    <li class="list-group-item list-group-item-success"><{$title}><h4 style="margin:0;"></h4></li>
 </ul>
-<form id="myForm" class="form-inline" method="post" action="__APP__/Finance/index.html" enctype="multipart/form-data">
-<!--	<div class="form-group">
-	    <label for="exampleInputName2">代理星级</label>
-	    <select class="form-control" name="star" id="star">
-  			<option value="">--请选择--</option>
-	  		<volist name="agent_lv_list" id="lvo">
-		  		<option value="<{$lvo.lv}>"><{$lvo.name}></option>
-		  	</volist>
-		</select>
-  	</div>-->
 
-</form>
-<if condition="$is_profit eq 1 ">
-     <button class="btn btn-default" onclick='LoadPage("__APP__/Finance/operate.html")'>返回</button>
-<else />
-    <button class="btn btn-default" onclick='LoadPage("__APP__/Finance/index.html",{flag:<{$is_profit}>})'>返回</button>
-</if>
-<!--<button class="btn btn-default" onclick='LoadPage("__APP__/Finance/index.html",{flag:<{$flag}>})'>返回</button>-->
 <div class="panel panel-default" style="margin-top: 20px;">
 	<table class="table">
         <thead>

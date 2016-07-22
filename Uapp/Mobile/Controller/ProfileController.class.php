@@ -5,6 +5,9 @@
 namespace Mobile\Controller;
 use Think\Controller;
 class ProfileController extends CommonController {
+    
+    private $Wechat; //定义微信类变量
+    
     public function __construct() {
         parent::__construct();
         
@@ -125,4 +128,109 @@ class ProfileController extends CommonController {
         return $return;
     }
     
+    //微信绑定页面
+    public function weixinBingView() {
+        
+        $is_base = I('is_base',1); //是否唔感知获取openid:  1:是,2:否
+        $is_weixin = is_weixin();
+        
+        if($is_weixin){
+            
+            $options['token'] = C('WX_TOKEN');
+            $options['appid'] = C('WX_APPID');
+            $options['secret'] = C('WX_APPSECRET');
+
+            $this->Wechat = new \Org\Util\Wechat($options);
+            
+            //获取微信信息
+            $this->getWeixinInfo();
+           
+        }
+        
+        $this->display('weixinBingView');
+    }
+    
+    //获取微信用户信息
+    public function getWeixinInfo() {
+        $url = C('WEB_URL').__SELF__;
+        $url_result = strrpos($url,'?');
+        if($url_result){
+            $url .= '&is_base=2';
+        }else{
+            $url .= '?is_base=2';
+        }
+        
+        $base_info = $this->Wechat->getOauthAccessToken($url,'','snsapi_userinfo'); //snsapi_userinfo  snsapi_base
+      
+        if($base_info){
+            $wx_info = $this->Wechat->getOauthUserInfo($base_info['access_token'],$base_info['openid']);
+            if($wx_info){
+                session(array('name'=>'session_id','expire'=>7100));
+                session('weixin_info', $wx_info);
+            }
+        }else{ //获取OauthAccessToken失败,重新获取
+            $this->Wechat->getOAuthRedirect($url,'','snsapi_userinfo');
+        }
+       
+    }
+    
+    
+    //微信绑定
+    public function weixinBing() {
+        $return = array('status'=>0,'msg'=>'绑定失败','result'=>'');
+        
+        $password = I('password');
+        
+        if(empty($password)){
+            $return['msg'] = '请输入密码!';
+            $this->ajaxReturn($return,'json');
+        }
+        
+        $agent_id = session('member_id');
+        
+        if(empty($agent_id)){
+            $return['msg'] = '您还没登录,请重新登录!';
+            $this->ajaxReturn($return,'json');
+        }
+        
+        //微信信息
+        $wx_info = session('weixin_info');
+        
+        if(empty($wx_info)){
+            $return['msg'] = '微信信息没有获取成功!';
+            $this->ajaxReturn($return,'json');
+        }
+        
+        $headimgurl = $wx_info['headimgurl'];
+        $openid = $wx_info['openid'];
+        
+        $Agent = D('Agent');
+        
+        $where['agentId'] = $agent_id;
+        
+        $agent_info = $Agent->where($where)->find();
+        
+        $password = md5($password);
+        $agent_password = $agent_info['password'];
+        
+        if($password != $agent_password){
+            $return['msg'] = '输入密码不正确,请重新输入!';
+            $this->ajaxReturn($return,'json');
+        }
+        
+        if($agent_info['openid']){
+            $return['msg'] = '您已经绑定微信,不能再绑定!';
+            $this->ajaxReturn($return,'json');
+        }
+        
+        $editData['openid'] = $openid;
+        $editData['head_img'] = $headimgurl;
+        $result = $Agent->editData($where,$editData);
+        
+        if($result){
+            $return = array('status'=>1,'msg'=>'绑定成功','result'=>'');
+        }
+        
+        $this->ajaxReturn($return,'json');
+    }
 }

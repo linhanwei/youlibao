@@ -260,10 +260,6 @@ class DeliverGoodsController extends CommonController {
             $month = date('m');
             $day = date('d');
             
-            //获取最新一条公司月份统计报表
-            $last_new_profit_info = $CompanyReportsLog->order('year DESC,month DESC')->find();
-            $last_all_total_profit = $last_new_profit_info ? $last_new_profit_info['all_total_profit'] : 0; //总支出利润
-            
             foreach ($goods_list as $k => $v) {
                 //添加订单商品
                 $code = $v['code'];
@@ -630,6 +626,7 @@ class DeliverGoodsController extends CommonController {
 //                        $company_log_result2 = $CompanyReportsLog->editInc($company_reports_where,'all_total_profit',$companyAllGoodsTotalProfit,0); 
 //                        
                         $companyReportsEditData['total_profit'] = array('exp','total_profit+'.$companyAllGoodsTotalProfit);
+                        $companyReportsEditData['not_profit'] = array('exp','not_profit+'.$companyAllGoodsTotalProfit);
                         $companyReportsEditData['all_total_profit'] = array('exp','all_total_profit+'.$companyAllGoodsTotalProfit);
                         
                         $companyReportsEditResult = $CompanyReportsLog->editData($company_reports_where,$companyReportsEditData);
@@ -642,14 +639,16 @@ class DeliverGoodsController extends CommonController {
                         }
                     }else{
                         //修改可修改的数据
+                        $last_all_total_profit = 0; //最后一个剩余总支出金额
+                        $last_all_real_profit = 0; //最后一个总实际支出
                         $edit_company_log_where['status'] = 2;
-                        $company_log_info = $CompanyReportsLog->getDetail($edit_company_log_where,array('field'=>array('all_surplus_profit','all_real_profit'),'is_opposite'=>false));
+                        $company_log_info = $CompanyReportsLog->getDetail($edit_company_log_where);
                         
                         if($company_log_info){
                             $edit_company_log_data2['status'] = 1;
-                            $edit_company_log_data2['all_surplus_profit'] = $company_log_info['all_surplus_profit'];
-                            $edit_company_log_data2['all_real_profit'] = $company_log_info['all_real_profit'];
-                            $edit_company_log_result = $CompanyReportsLog->editData($edit_company_log_where,$edit_company_log_data2);
+                            $edit_company_log_result = $CompanyReportsLog->editData(array('id'=>$company_log_info['id']),$edit_company_log_data2);
+                            $last_all_total_profit = $company_log_info['all_total_profit'];
+                            $last_all_real_profit = $company_log_info['all_real_profit'];
                             
                             if(!$edit_company_log_result){
                                 $is_add_success = FALSE;
@@ -661,11 +660,15 @@ class DeliverGoodsController extends CommonController {
                         
                         //修改最新的数据
                         $edit_company_log_where['status'] = 3;
-                        $company_log_count = $CompanyReportsLog->getCount($edit_company_log_where);
+                        $company_log3_info = $CompanyReportsLog->getDetail($edit_company_log_where);
                         
-                        if($company_log_count > 0){
+                        if($company_log3_info){
                             $edit_company_log_data['status'] = 2;
-                            $edit_company_log_result = $CompanyReportsLog->editData($edit_company_log_where,$edit_company_log_data);
+                            $edit_company_log_data['all_surplus_profit'] = $company_log3_info['all_total_profit'] - $last_all_real_profit;
+                            $edit_company_log_data['all_real_profit'] = $last_all_real_profit;
+                            $edit_company_log_result = $CompanyReportsLog->editData(array('id'=>$company_log3_info['id']),$edit_company_log_data);
+                            
+                            $last_all_total_profit =  $last_all_total_profit > 0 ? $last_all_total_profit : $company_log3_info['all_total_profit'];
                             
                             if(!$edit_company_log_result){
                                 $is_add_success = FALSE;
@@ -678,6 +681,7 @@ class DeliverGoodsController extends CommonController {
                         $companyReportsData['year'] = $year;
                         $companyReportsData['month'] = $month;
                         $companyReportsData['total_profit'] = $companyAllGoodsTotalProfit;
+                        $companyReportsData['not_profit'] = $companyAllGoodsTotalProfit;
                         $companyReportsData['add_time'] = $dataTime;
                         $companyReportsData['all_total_profit'] = $last_all_total_profit + $companyAllGoodsTotalProfit;
                         $companyReportsData['all_surplus_profit'] = 0;
