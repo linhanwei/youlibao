@@ -493,7 +493,8 @@ class FinanceController extends CommonController {
          $page = I('p',1);
          
         $where['is_profit'] = 2;     
-        
+        $where['year'] = $year;     
+        $where['month'] = $month;     
         $where['company_profit'] = array('gt',0); 
         
          //获取的数据库模型的对象
