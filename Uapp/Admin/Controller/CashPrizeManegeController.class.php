@@ -9,6 +9,8 @@ use Think\Controller;
  */
 class CashPrizeManegeController extends CommonController{
     
+    private $CashPrizeLog;
+    
     //列表
     public function index() {
         $code = I('code');
@@ -128,4 +130,115 @@ class CashPrizeManegeController extends CommonController{
         
         $this->ajaxReturn($return,'json');
     }
+    
+    //添加奖励页面
+    public function addReward() {
+        $this->display('addReward');
+    }
+    
+    //公司奖励列表
+    public function showReward() {
+        $code = I('code');
+        $page = I('p',1);
+        $limit = 15;
+        
+        $where['agent_id'] = 1;
+        if($code){
+            $where['prize_code'] = $code;
+        }
+        
+        $CashPrizeLog = D('CashPrizeLog');
+        
+        $count      = $CashPrizeLog->where($where)->count();// 查询满足要求的总记录数
+        $Page       = new \Think\Page($count,$limit);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show       = $Page->show();// 分页显示输出
+        
+        $list = $CashPrizeLog->where($where)->page($page)->limit($limit)->order('add_time DESC')->select();
+        
+        $this->assign('agent_id',$agent_id);
+        $this->assign('code',$code);
+        $this->assign('list_count',$count);
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('page',$show);// 赋值分页输出
+        
+        $this->display('showReward');
+    }
+    
+    //兑奖奖励,只奖励到公司的账号
+    public function rewardCashPrize() {
+        
+        $return = array('status'=>0,'msg'=>'奖励失败','result'=>'');
+        
+        $number = I('number',0);
+        $agent_id = 1; //只能奖励到公司的账号
+        
+        //只能是特约才能兑奖
+        if($number <= 0){
+            $return['msg'] = '数量不能为空!';
+            $this->ajaxReturn($return,'json');
+        }
+        
+        $this->CashPrizeLog = D('CashPrizeLog');
+       
+        $result = self::getCashPrizeCode($number,$agent_id);
+        
+        if($result === TRUE){
+            $return = array('status'=>1,'msg'=>'奖励成功','result'=>'');
+        }else{
+            $return['msg'] = $result;
+        }
+        
+        $this->ajaxReturn($return,'json');
+    }
+    
+    /**
+     * 获取兑奖码
+     * @param type $number
+     * @return boolean|string
+     */
+    private function getCashPrizeCode($number,$agent_id) {
+        $dataTime = date('Y-m-d H:i:s');
+        $outDateTime = date('Y-m-d H:i:s',strtotime(' +7 day'));
+        $url = C('GET_CASH_PRIZE_CODE_URL');
+        $url_params = array('num'=>$number,'pw'=>1);
+        $url_method = 'GET';
+
+        $return_data = http($url, $url_params, $url_method);
+
+        if($return_data !== FALSE){
+            $json_data = json_decode($return_data);
+            $return_result = $json_data->result->list;
+
+            if($json_data->status == 1 && !empty($return_result)){
+
+                foreach ($return_result as $rk => $rv) {
+                    $prize_code = $rv->number;
+
+                    if($prize_code){
+                        $addResultData[$rk]['agent_id'] = $agent_id;
+                        $addResultData[$rk]['prize_code'] = $prize_code;
+                        $addResultData[$rk]['is_prize'] = 2; //是否兑奖(1:已兑奖,2:未兑奖)
+                        $addResultData[$rk]['get_time'] = $dataTime;
+                        $addResultData[$rk]['out_time'] = $outDateTime;
+                        $addResultData[$rk]['add_time'] = $dataTime;
+                    }
+                }
+
+                $addCashResult = $this->CashPrizeLog->addAll($addResultData);
+
+                if($addCashResult){
+                    return TRUE;
+                }else{
+                    $msg = '添加兑奖码失败!';
+                }
+            }else{
+                $msg = '请求兑奖码失败!';
+            }
+        }else{
+            $msg = '请求兑奖码错误!';
+        }
+        
+        return $msg;
+    }
+    
 }

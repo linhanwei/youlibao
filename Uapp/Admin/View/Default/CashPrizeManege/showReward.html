@@ -1,0 +1,68 @@
+
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">代理兑奖列表</h4></li>
+</ul>
+<form id="myForm" class="form-inline" method="post" action="__APP__/CashPrizeManege/showReward.html" enctype="multipart/form-data">
+  	<div class="form-group">
+	    <label for="code">
+		   兑奖码
+		</label>
+		<input type="text" class="form-control" id="code" name="code" value="<{$code}>">
+  	</div>
+  	<button type="submit" class="btn btn-default">搜索</button>
+</form>
+<div class="panel panel-default" style="margin-top: 20px;">
+	<table class="table">
+        <thead>
+          <tr>
+            <th>兑奖ID</th>
+            <th>兑奖码</th>
+            <th>获取时间</th>
+            <th>过期时间</th>
+          </tr>
+        </thead>
+        <tbody>
+        	<volist name="list" id="vo">
+				<tr>
+					<th scope="row"><{$vo.id}></th>
+					<td><{$vo.prize_code}></td>
+					<td><{$vo.get_time}></td>
+					<td><{$vo.out_time}></td>
+				</tr>
+			</volist>
+        </tbody>
+  	</table>
+</div>
+<nav>
+  <ul class="pagination">
+    <{$page}>
+  </ul>
+</nav>
+<script>
+	$(function(){
+
+	  	//分页
+	    $('.pagination li').click(function(){
+	    	var aid = '<{$agent_id}>';
+	    	var code = '<{$code}>';
+	        var page = $(this).children('a').attr('page');
+	        var class_name = $(this).attr('class');
+
+	        if(class_name != 'active'){
+		        LoadPage('__APP__/CashPrizeManege/index.html',{'p': page,'code':code,'aid':aid});
+	        }
+	    });
+
+
+	    //搜索
+	    $('#myForm').submit(function() {
+	  		$(this).ajaxSubmit(function(data){
+               $('.main .container-fluid').html(data);
+	  		});
+
+		    //防止页面刷新
+		    return false;
+	   	});
+	});
+
+</script>

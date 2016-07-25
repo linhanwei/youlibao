@@ -1,0 +1,46 @@
+
+<ul class="list-group" >
+    <li class="list-group-item list-group-item-success"><h4 style="margin:0;">生成标签</h4></li>
+</ul>
+<form id="myForm" class="form-horizontal" method="post" action="__APP__/CashPrizeManege/rewardCashPrize.html" enctype="multipart/form-data">
+	
+	<div class="form-group">
+		<label for="number" class="col-sm-2 control-label">兑奖码数量</label>
+		<div class="col-sm-3">
+		  	<input type="text" name="number" value="" class="form-control" id="number" placeholder="输入兑奖码数量">
+		</div>
+		<div class="is_must">必填(<i>*</i>)</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-10">
+		  	<button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 12%;margin: 0 auto;">提交</button>
+		</div>
+	</div>
+</form>
+
+<script>
+	$(function(){
+		
+	  	$('#myForm').submit(function() {
+	  		var number = is_empty('#number');
+	  		
+	  		if(number === false){
+	  			showMsg('兑奖码数量不能为空!');
+	  			return false;
+	  		}
+	  		 
+	  		$(this).ajaxSubmit(function(data){
+	  			alert(data.msg);
+	  			if (data.status == 1) {
+                	LoadPage('__APP__/CashPrizeManege/showReward.html');
+                }
+	  		}); 
+
+		    //防止页面刷新
+		    return false;
+	   	});
+
+
+	});
+
+</script>
