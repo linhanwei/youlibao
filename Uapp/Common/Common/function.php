@@ -1,14 +1,112 @@
 <?php
 
     /**
-    * 验证手机号是否正确
-    * @param INT $mobile
+    * 判断是否手机号码
+    * @param  {[type]}  $tel [手机号码]
+    * @return {Boolean}     [返回值: ture:是,false:否]
     */
-    function isMobile($mobile) {
-        if (!is_numeric($mobile)) {
+   function isMobile($tel) {
+       if(empty($tel)){
+           return FALSE;
+       }
+       
+       $result = preg_match('/^1[34578]{1}[0-9]{9}$/',$tel);
+       
+       if($result == 1){
+           return TRUE;
+       }
+       
+       return FALSE;
+   }
+   
+   /**
+    * [isEmail 验证电子邮箱格式是否正确]
+    * @param  {[type]}  $email [电子邮箱]
+    * @return {Boolean}       [返回值: ture:是,false:否]
+    */
+    function isEmail($email){
+        if(empty($email)){
+            return FALSE;
+        }
+        
+        $result = preg_match('/^\\w+(([+-_\.])*\\w+)*@\\w+\.(\\w+\.)*\\w+$/',$email);
+        
+        if($result == 1){
+           return TRUE;
+        }
+       
+        return FALSE;
+    }
+    
+    /**
+    * [isChinaWord 只能输入数字跟字母]
+    * @param  {[type]}  $word [字符串]
+    * @param  {[type]}  $min  [最少输入的数量]
+    * @param  {[type]}  $max  [最多输入的数量]
+    * @return {Boolean}      [返回值: true:是,false:否]
+    */
+    function isChinaWord($word,$min = 1,$max = 6){
+        
+        if(empty($word)){
+            return FALSE;
+        }
+        
+        $min = $min > 0 ? $min : 1;
+        $max = $max > $min ? $max : ($min + 1); 
+        
+        $result = preg_match('/^\\w{'.$min.','.$max.'}$/',$word);
+        
+        if($result == 1){
+           return TRUE;
+        }
+       
+        return FALSE;
+        
+    }
+
+    /**
+    * 判断是否身份证号码
+    * @param  {[type]}  $card [身份证号码]
+    * @return {Boolean}     [返回值: ture:是,false:否]
+    */
+    function isCard($card) {
+        
+        $card_len = strlen($card);
+        
+        //判断身份证的长度,只有: 15 位与 18位两种
+        if($card_len != 18 && $card_len != 15){
             return false;
         }
-        return preg_match('#^13[\d]{9}$|^14[5,7]{1}\d{8}$|^15[^4]{1}\d{8}$|^17[0,6,7,8]{1}\d{8}$|^18[\d]{9}$#', $mobile) ? true : false;
+
+        //判断是否是数字
+        $is_card = preg_match('/^[0-9]{15,17}[0-9x]?$/',$card);
+        if($is_card == 0){
+            return false;
+        }
+
+        //15位的身份证不做验证
+        if($card_len == 15){
+            return true;
+        }else{ //获取18位身份证最后一位数
+            $last_num = strtolower(substr($card, -1));    ;
+        }
+
+        $sum = 0; //初始化和
+        $W = array(7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2); //加权因子值
+        $validCode = array(1,0,'x',9,8,7,6,5,4,3,2);  //校验码
+
+        //求和
+        for($i=0;$i < 17 ;$i++){
+            $sum = $sum + $card[$i] * $W[$i];
+        }
+       
+        $mod = $sum%11;
+       
+        if($validCode[$mod] == $last_num){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     //XML转成数组

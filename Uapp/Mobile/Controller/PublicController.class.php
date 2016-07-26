@@ -25,7 +25,8 @@ class PublicController extends Controller {
     
     public function test() {
 //                dump(md5('youlbaopay'));die;
-       
+        $str = '130632198702109043';
+       dump(isCard($str));
         die;
         ini_set("max_execution_time", 0);
         $money = 10001;
