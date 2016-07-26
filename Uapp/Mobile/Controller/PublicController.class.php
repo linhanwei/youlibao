@@ -98,13 +98,13 @@ class PublicController extends Controller {
     public function exportTyStock() {
         ini_set("max_execution_time", 0);
        
-//        $OrderGoods = D('OrderGoods');
-//        $AgentGoodsStockRale = D('AgentGoodsStockRale');
-//        $CashPrizeLog = D('CashPrizeLog');
+        $OrderGoods = D('OrderGoods');
+        $AgentGoodsStockRale = D('AgentGoodsStockRale');
+        $CashPrizeLog = D('CashPrizeLog');
         
-        $OrderGoods = M('OrderGoods','','DB_CONFIG1'); 
-        $AgentGoodsStockRale = M('AgentGoodsStockRale','','DB_CONFIG1'); 
-        $CashPrizeLog = M('CashPrizeLog','','DB_CONFIG1'); 
+//        $OrderGoods = M('OrderGoods','','DB_CONFIG1'); 
+//        $AgentGoodsStockRale = M('AgentGoodsStockRale','','DB_CONFIG1'); 
+//        $CashPrizeLog = M('CashPrizeLog','','DB_CONFIG1'); 
         
         $data = $OrderGoods->field('a2.agentId AS zd_member_id,a2.name AS zd_name,a2.weixin AS zd_weixin,a2.star AS zd_star,a.agentId AS ty_member_id,a.name AS ty_name,a.weixin AS ty_weixin,a.star AS ty_star,agsr.goods_stock AS zy_goods_stock,SUM(og.goods_number) AS count_goods_num')
                 ->where(array('ar.agent_grade'=>4))
@@ -210,6 +210,106 @@ class PublicController extends Controller {
             }else{
                 $AgentGoodsStockRale->rollback();
                 exit('修改特约库存失败');
+            }
+        }else{
+            exit('没有查询到数据');
+        }
+        
+    }
+    
+    //更改代理销售信息
+    public function editAgentSaleInfo() {
+        ini_set("max_execution_time", 0);
+       
+        $AgentMonthProfit = D('AgentMonthProfit');
+        $AgentGoodsStockRale = D('AgentGoodsStockRale');
+        $Agent = D('Agent');
+        
+//        $AgentMonthProfit = M('AgentMonthProfit','','DB_CONFIG1'); 
+//        $AgentGoodsStockRale = M('AgentGoodsStockRale','','DB_CONFIG1'); 
+//        $Agent = M('Agent','','DB_CONFIG1'); 
+        
+        $where['ar.agent_grade'] = 4;
+        $where['agsr.buy_total_stock'] = array('gt',0);
+        
+        $data = $AgentGoodsStockRale->field('agsr.*')
+                ->where($where)
+                ->join(' agsr LEFT JOIN agent_relation ar ON ar.member_id = agsr.agent_id')
+                ->select();
+        
+        
+        dump(count($data));
+//        dump($data);
+//        die;
+        
+        if($data){
+            $is_edit_success = TRUE;
+            $sucess_number = 0; 
+           
+            $AgentGoodsStockRale->startTrans();
+           
+            foreach ($data as $sk => $sv) {
+                $agent_id = $sv['agent_id'];
+                $sale_number = $sv['buy_total_stock'] - $sv['goods_stock'];
+                $sale_total_profit = $sale_number*39; //销售总利润
+                $sale_total_money = $sale_number*99; //销售总金额
+                $sale_goods_number = $sv['sale_total_stock']; //已经卖出去的商品数量
+                
+                //有卖过产品的代理才需要修改
+                if($sale_number > 0 && $sale_goods_number != $sale_number){
+                    $sucess_number += 1;
+                    
+                    //修改代理总销售额与数量
+                    $agent_where['agentId'] = $agent_id;
+                    $editAgentData['all_sale_total_money'] = $sale_total_money;
+                    $editAgentData['all_sale_total_profit'] = $sale_total_profit;
+                    $editAgentData['all_sale_total_stock'] = $sale_number;
+                    
+                    $agentResult = $Agent->where($agent_where)->save($editAgentData);
+                    
+                    if(empty($agentResult)){
+                        $is_edit_success = FALSE;
+                        $msg = '总失败:'.$agent_id;
+                    }
+
+                    //修改代理月销售额与数量
+                    $month_where['agent_id'] = $agent_id;
+                    $month_where['year'] = date('Y');
+                    $month_where['month'] = date('m');
+                    $editMonthData['sale_profit'] = $sale_total_profit;
+                    $editMonthData['sale_total_money'] = $sale_total_money;
+                    $editMonthData['sale_total_stock'] = $sale_number;
+                    
+                    $monthResult = $AgentMonthProfit->where($month_where)->save($editMonthData);
+                    
+                    if(empty($monthResult)){
+                        $is_edit_success = FALSE;
+                        $msg = '月失败:'.$agent_id;
+                    }
+
+                    //修改代理商品销售额与数量  
+                    $goods_where['goods_id'] = 31;
+                    $goods_where['agent_id'] = $agent_id;
+                    $editGoodsData['sale_total_stock'] = $sale_total_money;
+                    $editGoodsData['sale_total_money'] = $sale_number;
+                  
+                    $goodsResult = $AgentGoodsStockRale->where($goods_where)->save($editGoodsData);
+                    
+                    if(empty($goodsResult)){
+                        $is_edit_success = FALSE;
+                        $msg = '商品失败:'.$agent_id;
+                    }
+                }
+               
+            }
+           
+            if($is_edit_success){
+                dump($sucess_number);
+                $AgentGoodsStockRale->commit();
+                exit('修改特约库存与金额成功');
+            }else{
+                $AgentGoodsStockRale->rollback();
+                exit($msg);
             }
         }else{
             exit('没有查询到数据');
