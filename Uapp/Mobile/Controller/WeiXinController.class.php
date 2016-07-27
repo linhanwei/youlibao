@@ -19,9 +19,10 @@ class WeiXinController extends Controller {
         $options['token'] = C('WX_TOKEN');
         $options['appid'] = C('WX_APPID');
         $options['secret'] = C('WX_APPSECRET');
+        $options['encode']= C('WX_ENCODE'); //消息加密 秘钥
        // $options['access_token'] = $options['access_token'];
 //        $options['debug'] = $options['debug'];
-//	$options['encode']= true;
+	
 //        $options['aeskey'] = $options['aeskey'];
 //        $options['mch_id'] = $options['mch_id'];
 //        $options['payKey'] = $options['payKey'];
@@ -38,10 +39,10 @@ class WeiXinController extends Controller {
         $this->Event = $receive_data['event'];
         $this->EventKey = $receive_data['eventkey'];
         
-        foreach ($receive_data as $k => $v) {
-            $this->content .= $k.'=>'.$v.'//////';
-        }
-        $this->Wechat->response($this->content);
+//        foreach ($receive_data as $k => $v) {
+//            $this->content .= $k.'=>'.$v.'//////';
+//        }
+//        $this->Wechat->response($this->content);
 //        $this->msgId = $postObj ->MsgId;
 //        
 //        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
@@ -74,13 +75,13 @@ class WeiXinController extends Controller {
     
     //获取access_token
     public function getToken() {
-        $this->Wechat->access_token = $this->access_token = S('access_token');
+        $cache_key = md5(C('ACCESS_TOKEN_CACHE_KEY'));
+        $this->Wechat->access_token = $this->access_token = S($cache_key);
         if(empty($this->access_token)){
             $this->Wechat->access_token = $this->access_token = $this->Wechat->getToken();
-            S('access_token',$this->access_token,60*60+60*50);
+            S($cache_key,$this->access_token,60*60+60*50);
         }
-        dump($this->access_token);
-        dump(111);
+       
         return $this->access_token;
     }
 

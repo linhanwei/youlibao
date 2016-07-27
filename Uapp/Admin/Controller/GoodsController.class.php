@@ -91,6 +91,11 @@ class GoodsController extends CommonController {
         if($goods_id){
             $get_where['id'] = $goods_id;
             $goods_info = $Goods->getDetail($get_where,$field=array('field'=>array('pic'),'is_opposite'=>false),$cache=array('key'=>false,'expire'=>null,'cache_type'=>null));
+            
+            if($goods_info['code'] == $data['code']){
+                $return['msg'] = '商品编码已经存在,不能添加该商品!';
+                $this->ajaxReturn($info,'json');
+            }
         }
         
         if($_FILES['images']){

@@ -209,6 +209,27 @@ class Wechat {
             return $this->mchBillNo;
         }
         
+        /**
+         * 获取自定义菜单的类型
+         * @return array
+         */
+        public function getMenuType() {
+            $type_list = array(
+                1=>array('type'=>'click','type_name'=>'点击推事件'),             
+                2=>array('type'=>'view','type_name'=>'跳转URL'),                 
+                3=>array('type'=>'scancode_push','type_name'=>'扫码推事件'),       
+                4=>array('type'=>'scancode_waitmsg','type_name'=>'扫码推事件且弹出“消息接收中”提示框'),      
+                5=>array('type'=>'pic_sysphoto','type_name'=>'弹出系统拍照发图'),                             
+                6=>array('type'=>'pic_photo_or_album','type_name'=>'弹出拍照或者相册发图'),   
+                7=>array('type'=>'pic_weixin','type_name'=>'弹出微信相册发图器'),            
+                8=>array('type'=>'location_select','type_name'=>'弹出地理位置选择器'),       
+                9=>array('type'=>'media_id','type_name'=>'下发消息（除文本消息）'),              
+                10=>array('type'=>'view_limited','type_name'=>'跳转图文消息URL'),          
+            );
+            
+            return $type_list;
+        }
+        
 	/**
 	 * 获取自定义菜单
 	 * @return array|boolean

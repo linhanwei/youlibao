@@ -19,6 +19,7 @@
 
 //丽元堂_化妆品公众号信息
 return array(
+    'WX_ENCODE'=>'', //消息加密 秘钥
     'WX_APPID'=> 'wxcd0184c686f004c1',  
     'WX_APPSECRET'=>'9780c7fcc355bb954b8c990c39dd5182',
     'WX_TOKEN'=>'wxfx2015dd',
@@ -26,5 +27,5 @@ return array(
     'WX_MCH_ID' => '1288272801',//商户号
     'WX_COMPANY_PAY_DESC'=>'优利宝推广佣金测试', //微信企业付款提示语
     'WX_COMPANY_PAY_MAX_MONEY'=>'20000', //微信企业付款单日单笔最大限额
-
+    'ACCESS_TOKEN_CACHE_KEY'=>'access_token', //access_token 缓存键值
 );

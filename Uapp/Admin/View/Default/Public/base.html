@@ -101,6 +101,14 @@
                             <li class="list-group-item list-group-item-success">功能菜单</li>
                             <li class="list-group-item">
                                 <!-- 代理管理 -->
+                                <div class="list-group-item list-group-item-warning">微信管理</div>
+                                <div class="list-group">
+                                    <a onclick='LoadPage("__APP__/WeiXinManage/createMenuView.html")' class="list-group-item">自定义菜单栏</a>
+                                    <a onclick='LoadPage("__APP__/WeiXinManage/index.html")' class="list-group-item">代理商列表</a>
+                                    <a onclick="LoadPage('__APP__/WeiXinManage/index.html',{status:'0,-1,-2,-3'})" class="list-group-item">待审核代理商</a>
+                                    <a onclick='LoadPage("__APP__/WeiXinManage/growthAgentView.html")' class="list-group-item">新增创始人</a>
+                                </div>
+                                <!-- 代理管理 -->
                                 <div class="list-group-item list-group-item-warning">代理管理</div>
                                 <div class="list-group">
                                     <a onclick='LoadPage("__APP__/AgentManage/addAgentView.html")' class="list-group-item">添加会员</a>
