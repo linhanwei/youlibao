@@ -85,14 +85,14 @@ class Wechat {
 	private $error;
 	private $ticket;
 	private $result;
-	private $encode;
+	private $encode; //公众号消息加密
 	private $AESKey;
 	private $mch_id;
 	private $payKey;
 	private $pemCret;
 	private $pemKey;
-        public  $mchBillNo;//商户订单号
-
+        private $mchBillNo;//商户订单号
+       
         public function __construct($options = array()) {
 		$this->token        =  isset($options['token'])        ? $options['token']        : '';
 		$this->appid        =  isset($options['appid'])        ? $options['appid']        : '';
@@ -200,6 +200,14 @@ class Wechat {
                     return false;
 		}
 	}
+        
+        /**
+         * 获取商户订单号
+         * @return type
+         */
+        public function getBillNo() {
+            return $this->mchBillNo;
+        }
         
 	/**
 	 * 获取自定义菜单
@@ -462,15 +470,15 @@ class Wechat {
 	 * @author 、lin
 	 */
 	public function request(){
-		$postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+                $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
 		if (!empty($postStr)) {
-			$data = self::_extractXml($postStr);
-			if ($this->encode) {
-				$data = $this->AESdecode($data['encrypt']);
-			}
-			return $this->data = $data;
+                    $data = self::_extractXml($postStr);
+                    if ($this->encode) {
+                        $data = $this->AESdecode($data['encrypt']);
+                    }
+                    return $this->data = $data;
 		}else {
-			return false;
+                    return false;
 		}
 	}
 
@@ -649,6 +657,7 @@ class Wechat {
 	 * @author 、lin
 	 */
 	public function sendMsg($openid, $content, $msgtype = 'text') {
+           
 		/* 基础数据 */
 		$this->send ['touser'] = (string)$openid;
 		$this->send ['msgtype'] = $msgtype;
@@ -660,6 +669,7 @@ class Wechat {
 		$url    = self::CUSTOM_SEND_URL . '?access_token=' . $this->access_token;
 		$jsonStr = $this->http($url, $params, 'POST');
 		$jsonArr = $this->parseJson($jsonStr);
+                
 		if ($jsonArr) {
 			return true;
 		}else {
@@ -895,14 +905,15 @@ class Wechat {
 	 */
 	private function parseJson($json) {
 		$jsonArr = json_decode($json, true);
+              
 		if (isset($jsonArr['errcode'])) {
-			if ($jsonArr['errcode'] == 0) {
-				$this->result = $jsonArr;
-				return true;
-			} else {
-				$this->error = $this->ErrorCode($jsonArr['errcode']);
-				return false;
-			}
+                    if ($jsonArr['errcode'] == 0) {
+                        $this->result = $jsonArr;
+                        return true;
+                    } else {
+                        $this->error = $this->ErrorCode($jsonArr['errcode']);
+                        return false;
+                    }
 		}else {
 			return $jsonArr;
 		}
@@ -1094,11 +1105,12 @@ class Wechat {
 		$err    = curl_errno($ch);
 		$errmsg = curl_error($ch);
 		curl_close($ch);
+                
 		if ($err > 0) {
-			$this->error = $errmsg;
-			return false;
+                    $this->error = $errmsg;
+                    return false;
 		}else {
-			return $data;
+                    return $data;
 		}
 	}
 
@@ -1712,7 +1724,7 @@ class Wechat {
 	 * @return string 错误信息
 	 */
 	public function getError() {
-		return $this->error;
+            return $this->error;
 	}
 
 	/**
@@ -1723,8 +1735,8 @@ class Wechat {
 	 */
 	private function ErrorCode($code) {
 		switch ($code) {
-			case -1    : return '系统繁忙 ';
-			case 40001 : return '获取access_token时AppSecret错误，或者access_token无效 ';
+			case -1    : return '系统繁忙，此时请开发者稍候再试';
+			case 40001 : return '获取access_token时AppSecret错误，或者access_token无效';
 			case 40002 : return '不合法的凭证类型';
 			case 40003 : return '不合法的OpenID ';
 			case 40004 : return '不合法的媒体文件类型';
@@ -1804,6 +1816,58 @@ class Wechat {
 			case 47001 : return '解析JSON/XML内容错误';
 			case 48001 : return 'api功能未授权';
 			case 50001 : return '用户未授权该api';
+                        case 50002 : return '用户受限，可能是违规后接口被封禁';
+                        case 61451 : return '无效客服账号(invalid kf_account)';
+                        case 61453 : return '客服帐号已存在(kf_account exsited)';
+                        case 61454 : return '客服帐号名长度超过限制(仅允许10个英文字符，不包括@及@后的公众号的微信号)(invalid kf_acount length)';
+                        case 61455 : return '客服帐号名包含非法字符(仅允许英文+数字)(illegal character in kf_account)';
+                        case 61456 : return '客服帐号个数超过限制(10个客服账号)(kf_account count exceeded)';
+                        case 61457 : return '无效头像文件类型(invalid file type)';
+                        case 61450 : return '系统错误(system error)';
+                        case 61500 : return '日期格式错误';
+                        case 65301 : return '不存在此menuid对应的个性化菜单';
+                        case 65302 : return '没有相应的用户';
+                        case 65303 : return '没有默认菜单，不能创建个性化菜单';
+                        case 65304 : return 'MatchRule信息为空';
+                        case 65305 : return '个性化菜单数量受限';
+                        case 65306 : return '不支持个性化菜单的帐号';
+                        case 65307 : return '个性化菜单信息为空';
+                        case 65308 : return '包含没有响应类型的button';
+                        case 65309 : return '个性化菜单开关处于关闭状态';
+                        case 65310 : return '填写了省份或城市信息，国家信息不能为空';
+                        case 65311 : return '填写了城市信息，省份信息不能为空';
+                        case 65312 : return '不合法的国家信息';
+                        case 65313 : return '不合法的省份信息';
+                        case 65314 : return '不合法的城市信息';
+                        case 65316 : return '该公众号的菜单设置了过多的域名外跳（最多跳转到3个域名的链接）';
+                        case 65317 : return '不合法的URL';
+                        case 9001001 : return 'POST数据参数不合法';
+                        case 9001002 : return '远端服务不可用';
+                        case 9001003 : return 'Ticket不合法';
+                        case 9001004 : return '获取摇周边用户信息失败';
+                        case 9001005 : return '获取商户信息失败';
+                        case 9001006 : return '获取OpenID失败 ';
+                        case 9001007 : return '上传文件缺失';
+                        case 9001008 : return '上传素材的文件类型不合法';
+                        case 9001009 : return '上传素材的文件尺寸不合法';
+                        case 9001010 : return '上传失败';
+                        case 9001020 : return '帐号不合法';
+                        case 9001021 : return '已有设备激活率低于50%，不能新增设备';
+                        case 9001022 : return '设备申请数不合法，必须为大于0的数字';
+                        case 9001023 : return '已存在审核中的设备ID申请';
+                        case 9001024 : return '一次查询设备ID数量不能超过50';
+                        case 9001025 : return '设备ID不合法';
+                        case 9001026 : return '页面ID不合法';
+                        case 9001027 : return '页面参数不合法';
+                        case 9001028 : return '一次删除页面ID数量不能超过10';
+                        case 9001029 : return '页面已应用在设备中，请先解除应用关系再删除 ';
+                        case 9001030 : return '一次查询页面ID数量不能超过50';
+                        case 9001031 : return '时间区间不合法';
+                        case 9001032 : return '保存设备与页面的绑定关系参数错误';
+                        case 9001033 : return '门店ID不合法';
+                        case 9001034 : return '设备备注信息过长';
+                        case 9001035 : return '设备申请参数不合法';
+                        case 9001036 : return '查询起始值begin不合法';
 			default    : return '未知错误';
 		}
 	}

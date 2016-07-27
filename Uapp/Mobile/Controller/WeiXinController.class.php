@@ -2,15 +2,17 @@
 namespace Mobile\Controller;
 use Think\Controller;
 class WeiXinController extends Controller {
-    var $Wechat = ''; //微信类
-    var $postObj = '';
-    var $openid='';
-    var $toUsername = '';
-    var $msgType = '';
-    var $msgId = '';
-    var $content = '';
-    var $access_token = '';
-    
+    private $Wechat; //微信类
+    private $postObj;
+    private $openid;
+    private $toUsername;
+    private $msgType;
+    private $msgId;
+    private $content;
+    private $access_token;
+    private $Event;
+    private $EventKey;
+            
     function __construct() {
         parent::__construct();
 
@@ -26,25 +28,48 @@ class WeiXinController extends Controller {
 //        $options['pem'] = $options['pem'];
 //        
         $this->Wechat = new \Org\Util\Wechat($options);
-        $result = $this->Wechat->valid(); //验证令牌是否正确
-
-        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
-            
-        //初始化公众号数据
-        if ($postStr) {
-            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
-            
-            $this->postObj =$postObj;
-            $this->openid = $postObj -> FromUserName;
-            $this->toUsername = $postObj -> ToUserName;
-            $this->msgType = $postObj -> MsgType;
-            $this->content = trim($postObj -> Content);
-            $this->msgId = $postObj ->MsgId;
+//        $this->Wechat->valid(); //验证令牌是否正确
+        
+        $receive_data = $this->Wechat->request(); //接收微信公众号发送过来的消息
+        $this->openid = $receive_data['fromusername'];
+        $this->toUsername = $receive_data['tousername'];
+        $this->msgType = $receive_data['msgtype'];
+        $this->content = $receive_data['content'];
+        $this->Event = $receive_data['event'];
+        $this->EventKey = $receive_data['eventkey'];
+        
+        foreach ($receive_data as $k => $v) {
+            $this->content .= $k.'=>'.$v.'//////';
         }
+        $this->Wechat->response($this->content);
+//        $this->msgId = $postObj ->MsgId;
+//        
+//        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+//            
+//        //初始化公众号数据
+//        if ($postStr) {
+//            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+//            
+//            $this->postObj =$postObj;
+//            $this->openid = $postObj -> FromUserName;
+//            $this->toUsername = $postObj -> ToUserName;
+//            $this->msgType = $postObj -> MsgType;
+//            $this->content = trim($postObj -> Content);
+//            $this->msgId = $postObj ->MsgId;
+//        }
+        
         
         //获取access_token
         $this->getToken();
-
+        $openid = 'oB2snuOfsiRHr302V4kzdp-Jxk6c';
+        $content = '测试';
+        $result = $this->Wechat->sendMsg($openid, $content, $msgtype = 'text');
+        if(!$result){
+            $errMsg = $this->Wechat->getError();
+            dump($errMsg);
+        }
+     
+        die;
     }
     
     //获取access_token
@@ -54,7 +79,8 @@ class WeiXinController extends Controller {
             $this->Wechat->access_token = $this->access_token = $this->Wechat->getToken();
             S('access_token',$this->access_token,60*60+60*50);
         }
-        
+        dump($this->access_token);
+        dump(111);
         return $this->access_token;
     }
 

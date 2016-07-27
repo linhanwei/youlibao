@@ -416,6 +416,50 @@ class LoginController extends Controller {
         return $code;
     }
     
+    //忘记密码页面
+    public function forgetPasswordView() {
+        $this->display('forgetPasswordView');
+    }
+    
+    //修改忘记密码
+    public function forgetPassword() {
+        $return = array('status'=>0,'msg'=>'重置密码失败!');
+        $weixin = I('weixin');
+        
+        if(empty($weixin)){
+            $return['msg'] = '请输入微信号!';
+            $this->ajaxReturn($return, 'json');
+        }
+        
+        $Agent = D('Agent');
+        $where['weixin'] = $weixin;
+        $info = $Agent->where($where)->find();
+        
+        if(empty($info)){
+            $return['msg'] = '该微信号不存在,请重新输入!';
+            $this->ajaxReturn($return, 'json');
+        }
+        
+        $cardNo = $info['cardno'];
+        
+        if(empty($cardNo)){
+            $return['msg'] = '该微信号没有填写身份证号码,密码不能重置!';
+            $this->ajaxReturn($return, 'json');
+        }
+        
+        $password = trim(substr($cardNo, -6));
+        
+        $edit_where['agentId'] = $info['agentid'];
+        $editData['password'] = md5($password);
+        
+        $result = $Agent->editData($edit_where,$editData);
+        
+        if($result){
+            $return = array('status'=>1,'msg'=>'重置密码成功,密码为身份证号码的后6位数字!');
+        }
+        $this->ajaxReturn($return, 'json');
+    }
+    
     /*
      * 随机生成邀请码
      * $length 获取长度
