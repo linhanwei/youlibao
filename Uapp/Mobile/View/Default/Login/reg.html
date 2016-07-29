@@ -123,7 +123,12 @@
 			  			showMsg('请输入微信号!');
 			  			return false;
 			  		}
-			  		
+
+			  		if(isChinaWord(weixin) === false){
+			  			showMsg('微信号只能是数字,字母!');
+			  			return false;
+			  		}
+
 			  		var address = is_empty('#address');
 			  		if(address === false){
 			  			showMsg('请输入详细地址!');

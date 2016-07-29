@@ -36,7 +36,7 @@ class WeiXinManageController extends CommonController {
         //菜单类型
         $type_list = $this->Wechat->getMenuType();
         $this->assign('type_list', $type_list);
-//        dump($type_list);
+    
         $this->display('createMenuView');
     }
     

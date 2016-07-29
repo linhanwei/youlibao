@@ -61,7 +61,10 @@
                 }
             }
 
-            
+            function isChinaWord(word){
+                var ChinaWord = new RegExp("^[\\w-_]+$");
+                return ChinaWord.test(word);
+            }
         </script>
         <block name="title"><title>__WEBNAME__-裂变系统</title></block>
     </head>

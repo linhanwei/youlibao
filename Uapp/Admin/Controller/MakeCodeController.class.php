@@ -195,6 +195,12 @@ class MakeCodeController extends CommonController {
         //获取一组大标对应一组小标的数量
         $minCodeNumber = I('min_num');
         
+        //总数限制数量 一次最多限制5万
+        if($total_number > 50000){
+            $return['msg'] = '总数数量不能大于5万!';
+            $this->ajaxReturn($return,'json');
+        }
+        
         if(empty($total_number) || empty($minCodeNumber)){
             $return['msg'] = '请输入标签总数量与小标的数量';
             $this->ajaxReturn($return,'json');
@@ -434,7 +440,7 @@ class MakeCodeController extends CommonController {
         $add_time = $add_time ? $add_time : date('Y-m-d');
         
         if(empty($min_number)){
-            dump('请输入拖数的数量');die;
+            exit('请输入拖数的数量');
         }
         
         $LabelCode = D('LabelCode');
@@ -444,7 +450,7 @@ class MakeCodeController extends CommonController {
 //        $where['id'] = array(array('ELT',520104),array('GT',420072),'and'); 
 //       $data = $LabelCode->where($where)->count();
 //       dump($data);die;
-        $data = $LabelCode->where($where)->field(array('id','max_code','middle_code','min_code','security_code'))->order('id ASC')->select();
+        $data = $LabelCode->where($where)->field(array('id','max_code','middle_code','min_code','security_code'))->limit(100000)->order('id ASC')->select();
 //         $data = $LabelCode->where($where)->limit(5)->field(array('id','max_code','middle_code','min_code','security_code'))->order('id ASC')->select();
 //        dump($data);die;
         if($status != 1){

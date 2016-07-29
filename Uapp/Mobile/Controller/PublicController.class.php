@@ -23,64 +23,6 @@ class PublicController extends Controller {
         $this->assign('action_name',$action_name);
     }
     
-    public function test() {
-//                dump(md5('youlbaopay'));die;
-        $str = '130632198702109043';
-       dump(isCard($str));
-        die;
-        ini_set("max_execution_time", 0);
-        $money = 10001;
-        $mod_money = 20000; //微信限制单笔最高金额
-        if($money > $mod_money){
-            $mod_sup_money = $money%$mod_money;
-            $sup_step = ceil($money/$mod_money);
-            $pay_money = $mod_money;
-        }else{
-            $sup_step = 1;
-            $pay_money = $money;
-        }
-        
-        $pay_total_money = 0; //累计支付总金额
-        G('begin');
-        for($pi=1;$pi <= $sup_step;$pi++){
-            if($pi > 1 && $sup_step == $pi){
-                $pay_money = $mod_sup_money;
-            }
-            
-            $pay_total_money += $pay_money;
-            
-            dump($pay_money);
-            
-            G('end');
-            dump(G('begin','end',6).'s');
-        }
-        
-        dump($pay_total_money);DIE;
-        
-
-        $options['token'] = C('WX_TOKEN');
-        $options['appid'] = C('WX_APPID');
-        $options['secret'] = C('WX_APPSECRET');
-        $options['payKey'] = C('WX_PAY_KEY');
-        $options['mch_id'] = C('WX_MCH_ID');
-      
-        $Wechat = new \Org\Util\Wechat($options);
-        
-        //查询企业付款
-        $pay_result = $Wechat->getTransfersInfo($partner_trade_no  = '1288272801201607188396325184');
-        dump($pay_result);die;
-        
-        
-//        $base_info = $Wechat->getOauthAccessToken($callback = '', $state='', $scope='snsapi_base'); //snsapi_userinfo  snsapi_base
-//        $openid = $base_info['openid'];
-        
-        $openid = 'oB2snuOfsiRHr302V4kzdp-Jxk6c';
-        
-        
-        
-    }
-    
-    
     public function clearAllCache() {
 //      
 //        $LabelCode = D('LabelCode');
@@ -407,8 +349,9 @@ class PublicController extends Controller {
         $admin_info = $UserCom->getDetail('',array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
        
         if($agent_info){
-           
-                switch ($agent_info['stat']) {
+                $stat = $agent_info['stat'];
+                $MEMBER_STAT = C('MEMBER_STAT');
+                switch ($stat) {
                     case 1: //
                         $notice_msg = $admin_info['agent_notice'];
                         
@@ -420,9 +363,16 @@ class PublicController extends Controller {
                     case -1: //黑名单
                         $notice_msg = $admin_info['agent_hei_notice']; 
                         break;
+                    default :
+                            $notice_msg = ' 该代理授权'.$MEMBER_STAT[$stat]['name'].'请谨慎购买。';
+                        break;
 
                 }
-
+                
+                if(I('debug')){
+                    dump($notice_msg);
+                    dump($agent_info);
+                }
                 $time = time(); //代理 合同过期
                 if($time > $agent_info['endtime']){
                     $notice_msg = $admin_info['agent_guoqi_notice']; 
@@ -433,7 +383,7 @@ class PublicController extends Controller {
         }else{
             $notice_msg = $admin_info['agent_nors_notice']; //代理不存在
         }
-      
+        
         $this->assign('notice_msg',$notice_msg);
         $this->display('agentCheckResult');
         
