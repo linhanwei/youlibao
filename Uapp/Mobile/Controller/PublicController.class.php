@@ -23,6 +23,75 @@ class PublicController extends Controller {
         $this->assign('action_name',$action_name);
     }
     
+    public function test1() {
+        $this->display('test');
+    }
+    
+    public function test() {
+        header('Content-Type: text/event-stream'); 
+        header('Cache-Control: no-cache'); 
+
+        $time = date('r'); 
+        echo "data: The server time is: {$time}\n\n"; 
+        flush(); 
+        die;
+//                dump(md5('youlbaopay'));die;
+        $str = '130632198702109043';
+       dump(isCard($str));
+        die;
+        ini_set("max_execution_time", 0);
+        $money = 10001;
+        $mod_money = 20000; //微信限制单笔最高金额
+        if($money > $mod_money){
+            $mod_sup_money = $money%$mod_money;
+            $sup_step = ceil($money/$mod_money);
+            $pay_money = $mod_money;
+        }else{
+            $sup_step = 1;
+            $pay_money = $money;
+        }
+        
+        $pay_total_money = 0; //累计支付总金额
+        G('begin');
+        for($pi=1;$pi <= $sup_step;$pi++){
+            if($pi > 1 && $sup_step == $pi){
+                $pay_money = $mod_sup_money;
+            }
+            
+            $pay_total_money += $pay_money;
+            
+            dump($pay_money);
+            
+            G('end');
+            dump(G('begin','end',6).'s');
+        }
+        
+        dump($pay_total_money);DIE;
+        
+
+        $options['token'] = C('WX_TOKEN');
+        $options['appid'] = C('WX_APPID');
+        $options['secret'] = C('WX_APPSECRET');
+        $options['payKey'] = C('WX_PAY_KEY');
+        $options['mch_id'] = C('WX_MCH_ID');
+      
+        $Wechat = new \Org\Util\Wechat($options);
+        
+        //查询企业付款
+        $pay_result = $Wechat->getTransfersInfo($partner_trade_no  = '1288272801201607188396325184');
+        dump($pay_result);die;
+        
+        
+//        $base_info = $Wechat->getOauthAccessToken($callback = '', $state='', $scope='snsapi_base'); //snsapi_userinfo  snsapi_base
+//        $openid = $base_info['openid'];
+        
+        $openid = 'oB2snuOfsiRHr302V4kzdp-Jxk6c';
+        
+        
+        
+    }
+    
+    
     public function clearAllCache() {
 //      
 //        $LabelCode = D('LabelCode');

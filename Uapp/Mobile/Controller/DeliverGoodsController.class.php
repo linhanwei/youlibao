@@ -352,12 +352,30 @@ class DeliverGoodsController extends CommonController {
 //                    $AgentMonthProfit->editInc($month_sale_where,'sale_total_stock',$goods_number,0);//增加出库总数量
 //                    $AgentMonthProfit->editInc($month_sale_where,'sale_profit',$sale_total_profit,0);//增加销售利润总金额
 //                    $AgentMonthProfit->editInc($month_sale_where,'sale_total_money',$sale_total_money,0); //增加出库总金额
-//                    
-                    $monthSaleEditData['sale_total_stock'] = array('exp','sale_total_stock+'.$goods_number);//增加出库总数量
-                    $monthSaleEditData['sale_profit'] = array('exp','sale_profit+'.$sale_total_profit);//增加销售利润总金额
-                    $monthSaleEditData['sale_total_money'] = array('exp','sale_total_money+'.$sale_total_money);//增加出库总金额
+//                  
+                    $monthSaleEditCount = $AgentMonthProfit->getCount($month_sale_where);
+                    if($monthSaleEditCount > 0){
+                        $monthSaleEditData['sale_total_stock'] = array('exp','sale_total_stock+'.$goods_number);//增加出库总数量
+                        $monthSaleEditData['sale_profit'] = array('exp','sale_profit+'.$sale_total_profit);//增加销售利润总金额
+                        $monthSaleEditData['sale_total_money'] = array('exp','sale_total_money+'.$sale_total_money);//增加出库总金额
 
-                    $monthSaleEditResult = $AgentMonthProfit->editData($month_sale_where,$monthSaleEditData);
+                        $monthSaleEditResult = $AgentMonthProfit->editData($month_sale_where,$monthSaleEditData);
+                    }else{
+                        $monthSaleEditData['agent_id'] = $admin_id;
+                        $monthSaleEditData['year'] = $year;
+                        $monthSaleEditData['month'] = $month;
+                        $monthSaleEditData['company_profit'] = 0;
+                        $monthSaleEditData['buy_total_money'] = 0;
+                        $monthSaleEditData['buy_total_stock'] = 0;
+                        $monthSaleEditData['is_profit'] = 2;
+                        $monthSaleEditData['is_cash'] = 2;
+                        $monthSaleEditData['edit_time'] = $dataTime;
+                        $monthSaleEditData['add_time'] = $dataTime;
+                        $monthSaleEditData['sale_total_stock'] = $goods_number;//增加出库总数量
+                        $monthSaleEditData['sale_profit'] = $sale_total_profit;//增加销售利润总金额
+                        $monthSaleEditData['sale_total_money'] = $sale_total_money;//增加出库总金额
+                        $monthSaleEditResult = $AgentMonthProfit->addData($monthSaleEditData);
+                    }
                     
                     if(!$monthSaleEditResult){
                         $is_add_success = FALSE;
@@ -432,9 +450,27 @@ class DeliverGoodsController extends CommonController {
                                         $month_profit_where['year'] = $year;
                                         $month_profit_where['month'] = $month;
                                         
-                                        $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$agent1_total_profit,0); 
+                                        $month_profit_agent1_count = $AgentMonthProfit->getCount($month_profit_where);
                                         
-                                        if(!$profit_total_result){
+                                        if($month_profit_agent1_count > 0){
+                                            $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$agent1_total_profit,0); 
+                                        }else{
+                                            $month_profit_agent1_data['agent_id'] = $profit_agent1_id;
+                                            $month_profit_agent1_data['year'] = $year;
+                                            $month_profit_agent1_data['month'] = $month;
+                                            $month_profit_agent1_data['company_profit'] = $agent1_total_profit;
+                                            $month_profit_agent1_data['buy_total_money'] = 0;
+                                            $month_profit_agent1_data['buy_total_stock'] = 0;
+                                            $month_profit_agent1_data['is_profit'] = 2;
+                                            $month_profit_agent1_data['is_cash'] = 2;
+                                            $month_profit_agent1_data['edit_time'] = $dataTime;
+                                            $month_profit_agent1_data['add_time'] = $dataTime;
+                                            $month_profit_agent1_data['sale_total_stock'] = 0;
+                                            $month_profit_agent1_data['sale_profit'] = 0;
+                                            $month_profit_agent1_data['sale_total_money'] = 0;
+                                            $month_profit_total_result = $AgentMonthProfit->addData($month_profit_agent1_data);
+                                        }
+                                        if(!$month_profit_total_result){
                                             $is_add_success = FALSE;
                                             $return['msg'] = '错误码:206';
                                             $OrderInfo->rollback(); //事务回滚
@@ -485,12 +521,30 @@ class DeliverGoodsController extends CommonController {
                                             }
 
                                             //添加该代理公司月返利
-                                            $month_profit_where['agent_id'] = $profit_agent1_id;
-                                            $month_profit_where['year'] = $year;
-                                            $month_profit_where['month'] = $month;
-
-                                            $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$agent1_total_profit,0); 
-
+                                            $month_profit_agent1_where['agent_id'] = $profit_agent1_id;
+                                            $month_profit_agent1_where['year'] = $year;
+                                            $month_profit_agent1_where['month'] = $month;
+                                            
+                                            $month_profit_agent1_count = $AgentMonthProfit->getCount($month_profit_agent1_where);
+                                            
+                                            if($month_profit_agent1_count > 0){
+                                                $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_agent1_where,'company_profit',$agent1_total_profit,0); 
+                                            }else{
+                                                $month_profit_agent1_data['agent_id'] = $profit_agent1_id;
+                                                $month_profit_agent1_data['year'] = $year;
+                                                $month_profit_agent1_data['month'] = $month;
+                                                $month_profit_agent1_data['company_profit'] = $agent1_total_profit;
+                                                $month_profit_agent1_data['buy_total_money'] = 0;
+                                                $month_profit_agent1_data['buy_total_stock'] = 0;
+                                                $month_profit_agent1_data['is_profit'] = 2;
+                                                $month_profit_agent1_data['is_cash'] = 2;
+                                                $month_profit_agent1_data['edit_time'] = $dataTime;
+                                                $month_profit_agent1_data['add_time'] = $dataTime;
+                                                $month_profit_agent1_data['sale_total_stock'] = 0;
+                                                $month_profit_agent1_data['sale_profit'] = 0;
+                                                $month_profit_agent1_data['sale_total_money'] = 0;
+                                                $month_profit_total_result = $AgentMonthProfit->addData($month_profit_agent1_data);
+                                            }
                                             if(!$month_profit_total_result){
                                                 $is_add_success = FALSE;
                                                 $return['msg'] = '错误码:209';
@@ -538,12 +592,31 @@ class DeliverGoodsController extends CommonController {
                                             }
 
                                             //添加该代理公司月返利
-                                            $month_profit_where['agent_id'] = $profit_agent2_id;
-                                            $month_profit_where['year'] = $year;
-                                            $month_profit_where['month'] = $month;
-
-                                            $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$agent2_total_profit,0); 
-
+                                            $month_profit_agent2_where['agent_id'] = $profit_agent2_id;
+                                            $month_profit_agent2_where['year'] = $year;
+                                            $month_profit_agent2_where['month'] = $month;
+                                            
+                                            $month_profit_agent2_count = $AgentMonthProfit->getCount($month_profit_agent2_where);
+                                            
+                                            if($month_profit_agent2_count > 0){
+                                                $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_agent2_where,'company_profit',$agent2_total_profit,0); 
+                                            }else{
+                                                $month_profit_agent2_data['agent_id'] = $profit_agent2_id;
+                                                $month_profit_agent2_data['year'] = $year;
+                                                $month_profit_agent2_data['month'] = $month;
+                                                $month_profit_agent2_data['company_profit'] = $agent2_total_profit;
+                                                $month_profit_agent2_data['buy_total_money'] = 0;
+                                                $month_profit_agent2_data['buy_total_stock'] = 0;
+                                                $month_profit_agent2_data['is_profit'] = 2;
+                                                $month_profit_agent2_data['is_cash'] = 2;
+                                                $month_profit_agent2_data['edit_time'] = $dataTime;
+                                                $month_profit_agent2_data['add_time'] = $dataTime;
+                                                $month_profit_agent2_data['sale_total_stock'] = 0;
+                                                $month_profit_agent2_data['sale_profit'] = 0;
+                                                $month_profit_agent2_data['sale_total_money'] = 0;
+                                                $month_profit_total_result = $AgentMonthProfit->addData($month_profit_agent2_data);
+                                            }
+                                            
                                             if(!$month_profit_total_result){
                                                 $is_add_success = FALSE;
                                                 $return['msg'] = '错误码:212';
@@ -572,7 +645,7 @@ class DeliverGoodsController extends CommonController {
                                             $profitLogData['profit_money'] = $agent3_profit;
 
                                             $agent_profit_result = $AgentProfitLog->addData($profitLogData);
-                                            if(!$month_profit_total_result){
+                                            if(!$agent_profit_result){
                                                 $is_add_success = FALSE;
                                                 $return['msg'] = '错误码:213';
                                                 $OrderInfo->rollback(); //事务回滚
@@ -589,12 +662,29 @@ class DeliverGoodsController extends CommonController {
                                             }
 
                                             //添加该代理公司月返利
-                                            $month_profit_where['agent_id'] = $admin_id;
-                                            $month_profit_where['year'] = $year;
-                                            $month_profit_where['month'] = $month;
-
-                                            $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$agent3_total_profit,0); 
-
+                                            $month_profit_agent3_where['agent_id'] = $admin_id;
+                                            $month_profit_agent3_where['year'] = $year;
+                                            $month_profit_agent3_where['month'] = $month;
+                                            
+                                            $month_profit_agent3_count = $AgentMonthProfit->getCount($month_profit_agent3_where);
+                                            if($month_profit_agent3_count){
+                                                $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_agent3_where,'company_profit',$agent3_total_profit,0); 
+                                            }else{
+                                                $month_profit_agent3_data['agent_id'] = $admin_id;
+                                                $month_profit_agent3_data['year'] = $year;
+                                                $month_profit_agent3_data['month'] = $month;
+                                                $month_profit_agent3_data['company_profit'] = $agent3_total_profit;
+                                                $month_profit_agent3_data['buy_total_money'] = 0;
+                                                $month_profit_agent3_data['buy_total_stock'] = 0;
+                                                $month_profit_agent3_data['is_profit'] = 2;
+                                                $month_profit_agent3_data['is_cash'] = 2;
+                                                $month_profit_agent3_data['edit_time'] = $dataTime;
+                                                $month_profit_agent3_data['add_time'] = $dataTime;
+                                                $month_profit_agent3_data['sale_total_stock'] = 0;
+                                                $month_profit_agent3_data['sale_profit'] = 0;
+                                                $month_profit_agent3_data['sale_total_money'] = 0;
+                                                $month_profit_total_result = $AgentMonthProfit->addData($month_profit_agent3_data);
+                                            }
                                             if(!$month_profit_total_result){
                                                 $is_add_success = FALSE;
                                                 $return['msg'] = '错误码:215';
@@ -742,12 +832,12 @@ class DeliverGoodsController extends CommonController {
                             $month_profit_where['year'] = $year;
                             $month_profit_where['month'] = $month;
                             $month_profit_total_count = $AgentMonthProfit->getCount($month_profit_where);
-                            if(!$month_profit_total_count){
-                                $is_add_success = FALSE;
-                                $return['msg'] = '错误码:221';
-                                $OrderInfo->rollback(); //事务回滚
-                                $this->ajaxReturn($return,'json');
-                            }
+//                            if(!$month_profit_total_count){
+//                                $is_add_success = FALSE;
+//                                $return['msg'] = '错误码:221';
+//                                $OrderInfo->rollback(); //事务回滚
+//                                $this->ajaxReturn($return,'json');
+//                            }
                             
                             if($month_profit_total_count > 0){
                                 $month_profit_total_result = $AgentMonthProfit->editInc($month_profit_where,'company_profit',$top1_profit_total_money,0); 

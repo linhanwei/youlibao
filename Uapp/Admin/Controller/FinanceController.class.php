@@ -555,7 +555,8 @@ class FinanceController extends CommonController {
         ini_set("max_execution_time", 0);
         
         $agent_id = I('aid');
-        
+        $is_profit = I('is_profit',0);
+    
         $MEMBER_LEVEL = C('MEMBER_LEVEL');
         
         if(empty($agent_id)){
@@ -581,10 +582,10 @@ class FinanceController extends CommonController {
         }else{
             $month = $month - 1;
         }
-        
-        if($day < 15){
-            exit('<h1>分润时间还没到,请耐心等待!</h1>');
-        }
+//        
+//        if($day < 15){
+//            exit('<h1>分润时间还没到,请耐心等待!</h1>');
+//        }
         
         $Agent = D('Agent');
         $AgentMonthProfit = D('AgentMonthProfit');
@@ -715,28 +716,29 @@ class FinanceController extends CommonController {
             }
             
             //修改代理分润状态 开始
-                //月分润
-                $edit_company_month_profit_where['_string'] = 'agent_id IN(SELECT member_id FROM agent_relation WHERE (agent1_id = '.$agent_id.' OR member_id = '.$agent_id.'))';
-                $edit_company_month_profit_where['is_profit'] = 2;
-                $edit_company_month_profit_where['year'] = $year;
-                $edit_company_month_profit_where['month'] = $month;
-                $editCompanyMonthProfitData['is_profit'] = 1;
-        
-                $AgentMonthProfit->editData($edit_company_month_profit_where,$editCompanyMonthProfitData);
-                
-                //分润日志
-                $edit_agent_profit_log_where['_string'] = 'profit_agent_id IN(SELECT member_id FROM agent_relation WHERE (agent1_id = '.$agent_id.' OR member_id = '.$agent_id.'))';
-                $edit_agent_profit_log_where['is_profit'] = 2;
-                $edit_agent_profit_log_where['year'] = $year;
-                $edit_agent_profit_log_where['month'] = $month;
-                $editAgentProfitLogData['is_profit'] = 1;
+                if($is_profit == 1){
+                    //月分润
+                    $edit_company_month_profit_where['_string'] = 'agent_id IN(SELECT member_id FROM agent_relation WHERE (agent1_id = '.$agent_id.' OR member_id = '.$agent_id.'))';
+                    $edit_company_month_profit_where['is_profit'] = 2;
+                    $edit_company_month_profit_where['year'] = $year;
+                    $edit_company_month_profit_where['month'] = $month;
+                    $editCompanyMonthProfitData['is_profit'] = 1;
 
-                $AgentProfitLog->editData($edit_agent_profit_log_where,$editAgentProfitLogData);
-                
-                //公司报表
-                $pay_money = $export_data[0]['pay_sum_money'];
-                self::editCompanyReport($pay_money);
-                
+                    $AgentMonthProfit->editData($edit_company_month_profit_where,$editCompanyMonthProfitData);
+
+                    //分润日志
+                    $edit_agent_profit_log_where['_string'] = 'profit_agent_id IN(SELECT member_id FROM agent_relation WHERE (agent1_id = '.$agent_id.' OR member_id = '.$agent_id.'))';
+                    $edit_agent_profit_log_where['is_profit'] = 2;
+                    $edit_agent_profit_log_where['year'] = $year;
+                    $edit_agent_profit_log_where['month'] = $month;
+                    $editAgentProfitLogData['is_profit'] = 1;
+
+                    $AgentProfitLog->editData($edit_agent_profit_log_where,$editAgentProfitLogData);
+
+                    //公司报表
+                    $pay_money = $export_data[0]['pay_sum_money'];
+                    self::editCompanyReport($pay_money);
+                }
             //修改代理分润状态 结束
                 
             $agent1_name = $export_data[0]['name'];

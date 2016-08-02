@@ -76,7 +76,8 @@
 
               <button class="btn btn-info" onclick='LoadPage("__APP__/Finance/showAllDetail.html",{year:<{$vo.year}>,month:<{$vo.month}>,is_profit:<{$vo.is_profit}>,agent_id:<{$vo.agent_id}>,title:"<{$title}>"})'>详情</button>
              
-              <button class="btn btn-warning" onclick='LoadPage("__APP__/Finance/exportProfit.html",{aid:<{$vo.agent_id}>})'>导出分润</button>
+              <button class="btn btn-warning" onclick='window.location.href="__APP__/Finance/exportProfit.html?aid=<{$vo.agent_id}>&is_profit=1"'>导出与分润</button>
+              <button class="btn btn-warning" onclick='window.location.href="__APP__/Finance/exportProfit.html?aid=<{$vo.agent_id}>&is_profit=0"'>导出不分润</button>
               
               
           </td>
