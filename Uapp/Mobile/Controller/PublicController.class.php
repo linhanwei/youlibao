@@ -671,6 +671,12 @@ class PublicController extends Controller {
                 $agent_info = unserialize($agent_info);
             }
             
+            if(I('debug')){
+                dump($admin_id);
+                dump($agent_id);
+                dump($code_info);
+                dump($agent_info);
+            }
             if(empty($agent_info) || $agent_info['stat'] == -1){
                 
                 echo '<center><h3>您所购买的商品为假货!</h3></center>';

@@ -1041,14 +1041,14 @@ class DeliverGoodsController extends CommonController {
                     }
                    
                     foreach ($code_list as $ck => $cv) {
-                        $cache_info = array('goods_id'=>$goods_id,'agent_id'=>$agent_id);
+                        $cache_info = array('goods_id'=>$goods_id,'agent_id'=>$agent_id,'admin_id'=>$admin_id);
                         $suc_code = $cv['min_code'];
                         S($suc_code,serialize($cache_info));
                         $suc_code_list[] = $suc_code;
                     }
                   
                 }else{
-                    $cache_info = array('goods_id'=>$goods_id,'agent_id'=>$agent_id);
+                    $cache_info = array('goods_id'=>$goods_id,'agent_id'=>$agent_id,'admin_id'=>$admin_id);
                     S($code,serialize($cache_info));
                     $suc_code_list[] = $code;
                 }
