@@ -51,7 +51,7 @@ class ProfitManageController extends CommonController {
         $this->assign('year', $year);
         
         $AgentMonthProfit = D('AgentMonthProfit');
-        $order='month';
+        $order='month ASC';
         
         $where['is_profit'] = 1; //是否已分润:1:已分润,2:未分润
         $where['year'] = $year;
@@ -59,10 +59,21 @@ class ProfitManageController extends CommonController {
         
         $list = $AgentMonthProfit->getAllList($where,$order,array('field'=>array(),'is_opposite'=>false),array('key'=>false,'expire'=>null,'cache_type'=>null));
         
+        $profit_list = array();
+        if($list){
+            foreach ($list as $v) {
+                $profit_list[$v['month']] = $v['company_profit'];
+            }
+        }
+        
         $new_list = array();
         
         for($m=1;$m<$month;$m++){
-            $new_list[] = $list[$m-1]['company_profit'] ? $list[$m-1]['company_profit'] : 0;
+       
+            $company_profit = $profit_list[$m];
+            $company_profit = $company_profit > 0 ? $company_profit : 0;
+           
+            $new_list[$m] = $company_profit;
         }
      
         $new_list = implode(',', $new_list);

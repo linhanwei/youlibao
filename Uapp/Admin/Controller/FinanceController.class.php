@@ -625,6 +625,8 @@ class FinanceController extends CommonController {
                 $company_profit = $v['company_profit'];
                 
                 //查询代理下级所有的金额总和
+                $profit_sum_where['year'] = $year;
+                $profit_sum_where['month'] = $month;
                 $profit_sum_where['_string']= ' agent_id IN(SELECT member_id FROM agent_relation WHERE agent'.$agent_grade.'_id = '.$member_id.')';
                 $profitSumMoney = $AgentMonthProfit->getSum($profit_sum_where,'company_profit');
                 $profitSumMoney = $profitSumMoney ? $profitSumMoney : 0;
