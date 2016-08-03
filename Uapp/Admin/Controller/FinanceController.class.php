@@ -637,9 +637,11 @@ class FinanceController extends CommonController {
                     'children'=>array()
                 );
                 
-                //添加支付日志
-                self::addPayLog($v,$admin_info,$company_profit);
-
+                if($is_profit == 1){
+                    //添加支付日志
+                    self::addPayLog($v,$admin_info,$company_profit);
+                }
+                
                 switch ($agent_grade) {
                     case 1:
                             $new_agent_list[] = $new_v;

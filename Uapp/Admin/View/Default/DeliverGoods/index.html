@@ -39,6 +39,7 @@
             <th>收货人</th>
             <th>发货人</th>
             <th>发货时间</th>
+            <th>订单商品总数量</th>
             <th>是否已退货</th>
             <th>操作</th>
           </tr>
@@ -50,6 +51,7 @@
 					<td><{$vo.member_name}></td>
 					<td><{$vo.admin_name}></td>
 					<td><{$vo.add_time}></td>
+					<td><{$vo.goods_total_stock}></td>
 					<td>
 						
 						<if condition="$vo['order_status'] eq 2">
