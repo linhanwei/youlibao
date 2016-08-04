@@ -452,6 +452,11 @@ class LoginController extends Controller {
         $edit_where['agentId'] = $info['agentid'];
         $editData['password'] = md5($password);
         
+        if($editData['password'] == $info['password']){
+            $return = array('status'=>1,'msg'=>'重置密码成功,密码为身份证号码的后6位数字!');
+            $this->ajaxReturn($return, 'json');
+        }
+       
         $result = $Agent->editData($edit_where,$editData);
         
         if($result){
