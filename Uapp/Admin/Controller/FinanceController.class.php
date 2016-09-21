@@ -29,7 +29,7 @@ class FinanceController extends CommonController {
         
         $string_where = '';
         
-        $star_sql = '';
+        $star_sql = ' 1=1 ';
         if($star > 0 && $star < 5){
             $star_sql = ' star='.$star;
         }
@@ -76,7 +76,9 @@ class FinanceController extends CommonController {
          $AgentMonthProfit = D('AgentMonthProfit');
          $Agent = D('Agent');
          $agent_lv_list = C('MEMBER_LEVEL');
-         
+         if(I('debug')){
+             dump($where);
+         }
          $count      = $AgentMonthProfit->getCount($where,array('key'=>false,'expire'=>null,'cache_type'=>null));// 查询满足要求的总记录数
          $Page       = new \Think\Page($count,$limit);// 实例化分页类 传入总记录数和每页显示的记录数(25)
          $show       = $Page->show();// 分页显示输出
@@ -605,30 +607,54 @@ class FinanceController extends CommonController {
         }
         
         //查找该条线是否有可分润的代理,代理必须是已审核的状态
-        $sql = 'SELECT ar.*,amp.*,a.name,a.weixin,a.agent_true_name,a.bank_account,a.bank_name FROM agent_month_profit amp '
+//        $sql = 'SELECT ar.*,amp.*,a.name,a.weixin,a.agent_true_name,a.bank_account,a.bank_name FROM agent_month_profit amp '
+//                . 'LEFT JOIN agent a ON a.agentId = amp.agent_id '
+//                . 'LEFT JOIN agent_relation ar ON amp.agent_id = ar.member_id '
+//                . 'WHERE amp.agent_id IN(SELECT member_id FROM agent_relation WHERE (agent1_id = '.$agent_id.' OR member_id = '.$agent_id.') AND is_validate = 1) '
+//                . ' AND  amp.is_profit = 2'
+//                . ' AND amp.company_profit > 0'
+//                . ' AND amp.year= '.$year
+//                . ' AND amp.month = '.$month
+//                . ' ORDER BY ar.agent_grade ASC';
+        
+        $sql = 'SELECT ar.*,amp.*,a.name,a.weixin,a.agent_true_name,a.bank_account,a.bank_name,SUM(apl.profit_total_money) all_profit_total_money FROM agent_month_profit amp '
                 . 'LEFT JOIN agent a ON a.agentId = amp.agent_id '
                 . 'LEFT JOIN agent_relation ar ON amp.agent_id = ar.member_id '
+                . 'LEFT JOIN agent_profit_log apl ON apl.profit_agent_id = amp.agent_id '
                 . 'WHERE amp.agent_id IN(SELECT member_id FROM agent_relation WHERE (agent1_id = '.$agent_id.' OR member_id = '.$agent_id.') AND is_validate = 1) '
                 . ' AND  amp.is_profit = 2'
                 . ' AND amp.company_profit > 0'
-                . ' AND amp.year= '.$year
-                . ' AND amp.month = '.$month;
+                . ' AND amp.year = '.$year
+                . ' AND amp.month = '.$month
+                . ' AND apl.year = '.$year
+                . ' AND apl.month = '.$month
+                . ' GROUP BY amp.agent_id'
+                . ' ORDER BY ar.agent_grade ASC';
      
         $agent_list = $AgentMonthProfit->query($sql);
-//        dump($agent_list);die;
+        
+        if(I('debug')){
+            dump($sql);
+            dump($agent_list);die;
+        }
+        
         if($agent_list){
             
             //循环找出各自的下线与分润金额
             foreach ($agent_list as $k => $v) {
                 $agent_grade = $v['agent_grade'];
                 $member_id = $v['member_id'];
-                $company_profit = $v['company_profit'];
+                $company_profit = $v['all_profit_total_money'];
                 
                 //查询代理下级所有的金额总和
                 $profit_sum_where['year'] = $year;
                 $profit_sum_where['month'] = $month;
-                $profit_sum_where['_string']= ' agent_id IN(SELECT member_id FROM agent_relation WHERE agent'.$agent_grade.'_id = '.$member_id.')';
-                $profitSumMoney = $AgentMonthProfit->getSum($profit_sum_where,'company_profit');
+//                $profit_sum_where['_string']= ' agent_id IN(SELECT member_id FROM agent_relation WHERE agent'.$agent_grade.'_id = '.$member_id.')';
+//                $profitSumMoney = $AgentMonthProfit->getSum($profit_sum_where,'company_profit');
+                
+                $profit_sum_where['_string']= ' profit_agent_id IN(SELECT member_id FROM agent_relation WHERE agent'.$agent_grade.'_id = '.$member_id.')';
+                $profitSumMoney = $AgentProfitLog->getSum($profit_sum_where,'profit_total_money');
+                
                 $profitSumMoney = $profitSumMoney ? $profitSumMoney : 0;
                 
                 $new_v  = array(
