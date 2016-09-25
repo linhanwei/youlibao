@@ -229,6 +229,32 @@ class PublicController extends Controller {
         
     }
     
+    //修改有问题的小码
+    public function editMinCode() {
+        ini_set("max_execution_time", 0);
+       
+//        $OrderGoods = D('OrderGoods');
+      
+        $OrderGoods = M('OrderGoods','','DB_CONFIG1'); 
+        $sql = 'SELECT id,CODE,add_time FROM order_goods 
+                WHERE CODE IN(SELECT middle_code FROM label_code WHERE middle_code IN(SELECT CODE FROM order_goods WHERE goods_number=1)) 
+                AND goods_number=1';
+        $data = $OrderGoods->query($sql);
+        $suc_num = 0;
+        if($data){
+            foreach ($data as $k => $v) {
+                $v['code'] = 'm'.$v['code'];
+//                dump($v);
+                $result = $OrderGoods->save($v); 
+                if($result){
+                    $suc_num++;
+                }
+            }
+        }
+        dump($suc_num);
+        
+    }
+    
     //更改代理销售信息
     public function editAgentSaleInfo() {
         ini_set("max_execution_time", 0);

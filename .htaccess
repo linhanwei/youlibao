@@ -1,8 +1,46 @@
 <IfModule mod_rewrite.c>
-  Options +FollowSymlinks
-  RewriteEngine On
+    RewriteEngine on
 
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+     #禁止对图片等文件重写：没有这一条，所有的404都会执行index.php脚本，耗费大量资源。
+
+    RewriteCond %{REQUEST_URI} !((.*).jpg|.jpeg|.bmp|.gif|.png|.js|.css)$
+
+     #禁止对/public文件夹内重写，作用同上
+
+    RewriteCond %{REQUEST_URI} !(^/public/(.*))$
+
+    #如果是一个物理存在的目录，禁止重写
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    #如果是一个物理存在的文件，禁止重写
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    #上面2条不识别REQUEST_FILENAME时的替代写法
+
+    #RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
+
+    #RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+
+    #php api模式，服务器能识别PATH_INFO
+
+    #RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+
+    #php fastcgi模式 服务器不识别PATH_INFO
+
+    RewriteRule ^(.*)$ index.php [E=PATH_INFO:$1,QSA,PT,L]
+
+
+#  Options +FollowSymlinks
+#  RewriteEngine On
+#
+#  RewriteCond %{REQUEST_FILENAME} !-d
+#  RewriteCond %{REQUEST_FILENAME} !-f
+#  RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+</IfModule>
+<IfModule mod_php5.c>
+    php_value upload_max_filesize 2000M
+    php_value post_max_size       1500M
+    php_value max_file_uploads    50
 </IfModule>
